@@ -9,9 +9,12 @@ import {
     FaReact,
     FaNodeJs,
     FaGitAlt,
-    FaBootstrap
+    FaBootstrap,
+    FaAws,
+    FaDocker
 } from "react-icons/fa";
-import { SiMongodb, SiRedux, SiChakraui, SiExpress } from "react-icons/si";
+import { SiMongodb, SiRedux, SiChakraui, SiExpress, SiNextdotjs, SiSupabase, SiTypescript } from "react-icons/si";
+
 
 export const NAV_LINKS = [
     { id: "home", title: "Home" },
@@ -43,36 +46,36 @@ export const ABOUT_CONTENT = {
 
 export const PROJECTS = [
     {
-        title: "Urban Company Clone",
-        image: "images/UrbanCompany.png",
-        description: "Urban Company is a service provider which helps customers with professional services such as Salon for men & women, Air Conditioners, Refrigerators, Electrical Appliances and Bathroom and repairing.",
-        techStack: ["HTML", "CSS", "JavaScript", "React"],
-        liveLink: "https://surajurban.vercel.app/",
-        sourceLink: "https://github.com/Suraj2320/Urban-Company-Clone"
+        title: "SurajHub - Full Stack Ecommerce Platform",
+        image: "images/surajhub.png",
+        description: "E-commerce Platform: A comprehensive online shopping solution for businesses and individuals, providing a seamless user experience and robust features for managing products, orders, and customer relationships.",
+        techStack: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Vite", "Prisma", "Tailwind CSS", "PostgreSQL", "Docker", "AWS"],
+        liveLink: "http://3.233.229.217:3000/",
+        sourceLink: "https://github.com/Suraj231194/surajEcommerce"
     },
     {
-        title: "Netmeds Clone",
-        image: "images/Netmeds.png",
-        description: "Netmeds is a trusted Indian online pharmacy which provides the online purchase and delivery of medications. An end to end clone of netmeds.com where you can order pharmacy products and get delivered it at your doorstep.",
-        techStack: ["HTML", "CSS", "JavaScript"],
-        liveLink: "https://inspiring-blini-089dcd.netlify.app/",
-        sourceLink: "https://github.com/arulxavierax/Netmeds-Clone"
+        title: "UrbanServices",
+        image: "images/UrbanServices.png",
+        description: "UrbanServices is a cutting-edge web application designed to connect homeowners with trusted service providers, making it easy to find and book reliable services for home maintenance and repair.",
+        techStack: ["JavaScript", "React", "Tailwind CSS", "PostgreSQL", "Supabase"],
+        liveLink: "https://secure-file-hub-7lbt.vercel.app/",
+        sourceLink: "https://github.com/Suraj231194/UrbanServices"
     },
     {
-        title: "Banggood Clone",
-        image: "images/Banggood.png",
-        description: "This is an International online selling service from China with shipping. offers online shopping services areas in the world. Banggood specializes in providing Business-to-consumer retail services.",
-        techStack: ["HTML", "CSS", "JavaScript"],
-        liveLink: "https://superb-torte-4939ea.netlify.app/",
-        sourceLink: "https://github.com/VijaySingh8650/Banggood-Website"
+        title: "Real-time Campaign Performance Dashboard",
+        image: "images/MixoAnalytics.png",
+        description: "AboutA high-performance admin dashboard using Vite + React + Tailwind v4. Features charts, theme switcher, toast notifications, and campaign management screens",
+        techStack: ["React", "Next.js", "Vite", "Tailwind CSS"],
+        liveLink: "https://mixo-analytics.vercel.app/",
+        sourceLink: "https://github.com/Suraj231194/Mixo-Analytics"
     },
     {
-        title: "Cult Fit Clone",
-        image: "images/Cultfit.png",
-        description: "cult.fit is a health and fitness company offering digital and offline experiences across fitness, nutrition, and mental well-being. With the aim to make fitness fun and easy, cult.fit gives workouts a whole new meaning with a range of trainer-led, group workout classes.",
-        techStack: ["HTML", "CSS", "JavaScript", "React"],
-        liveLink: "https://cultfit-two.vercel.app/",
-        sourceLink: "https://github.com/Suraj2320/quickest-seashore-9367-Cultfit.in-Clone/tree/main/cultfit"
+        title: "AI-Model-Prototype",
+        image: "images/AIModelPrototype.png",
+        description: "A polished, frontend-only prototype of an AI chat interface built with React, TypeScript, and Tailwind CSS.",
+        techStack: ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Tailwind CSS"],
+        liveLink: "https://ai-model-prototype-jihu.vercel.app/",
+        sourceLink: "https://github.com/Suraj231194/AI-Model-Prototype"
     }
 ];
 
@@ -88,6 +91,11 @@ export const TOOLS = [
     { name: "Chakra UI", icon: SiChakraui, color: "text-teal-500" },
     { name: "Express", icon: SiExpress, color: "text-gray-400" },
     { name: "Bootstrap", icon: FaBootstrap, color: "text-purple-600" },
+    { name: "Next JS", icon: SiNextdotjs, color: "text-black dark:text-white" },
+    { name: "Supabase", icon: SiSupabase, color: "text-emerald-500" },
+    { name: "AWS", icon: FaAws, color: "text-orange-500" },
+    { name: "Docker", icon: FaDocker, color: "text-blue-500" },
+    { name: "typescript", icon: SiTypescript, color: "text-blue-600" },
 ];
 
 export const EDUCATION = [
@@ -112,8 +120,8 @@ export const EDUCATION = [
 ];
 
 export const SOCIAL_LINKS = {
-    github: "https://github.com/Suraj2320",
-    linkedin: "https://www.linkedin.com/in/suraj-pawar-42b773215/",
+    github: "https://github.com/Suraj231194",
+    linkedin: "https://www.linkedin.com/in/surajpawar2311/",
     email: "surajpawar913@gmail.com"
 };
 

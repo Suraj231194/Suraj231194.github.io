@@ -27,5 +27,10 @@ html {
 }
 
 body {
-    @apply bg-slate-950 text-white font-poppins;
+    @apply bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-poppins transition-colors duration-300;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+    @apply bg-white/30 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10;
 }
