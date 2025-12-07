@@ -53,6 +53,15 @@ export const PROJECTS = [
         liveLink: "http://3.233.229.217:3000/",
         sourceLink: "https://github.com/Suraj231194/surajEcommerce"
     },
+ {
+        title: "ShareBox",
+        image: "images/ShareBox.png",
+        description: "A full-stack file management system featuring secure file upload, download, preview, and shareable public links using AWS S3. Supports multi-file upload, access control, and seamless cloud storage integration.",
+        techStack: ["JavaScript", "React", "Tailwind CSS", "Node", "Express", "MongoDB", "AWS"],
+        liveLink: "https://share-box-orcin.vercel.app/",
+        sourceLink: "https://github.com/Suraj231194/ShareBox"
+    },
+    
     {
         title: "UrbanServices",
         image: "images/UrbanServices.png",
