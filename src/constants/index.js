@@ -53,13 +53,24 @@ export const PROJECTS = [
         liveLink: "http://3.233.229.217:3000/",
         sourceLink: "https://github.com/Suraj231194/surajEcommerce"
     },
- {
+
+     {
         title: "ShareBox",
         image: "images/ShareBox.png",
         description: "A full-stack file management system featuring secure file upload, download, preview, and shareable public links using AWS S3. Supports multi-file upload, access control, and seamless cloud storage integration.",
         techStack: ["JavaScript", "React", "Tailwind CSS", "Node", "Express", "MongoDB", "AWS"],
         liveLink: "https://share-box-orcin.vercel.app/",
         sourceLink: "https://github.com/Suraj231194/ShareBox"
+    },
+
+    
+ {
+        title: "Revenue OS Next",
+        image: "images/Nexus.png",
+        description: "Revenue OS Next is a modern, production-ready Next.js application designed to manage and visualize revenue data with a strong focus on performance, scalability, UI clarity, and SEO.It follows a dark-first professional design system, suitable for SaaS dashboards and enterprise products.",
+        techStack: ["Next.js", "React", "Tailwind CSS", "Supabase", "Vercel"],
+        liveLink: "https://nexus-crm-six.vercel.app/",
+        sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
     },
     
     {
