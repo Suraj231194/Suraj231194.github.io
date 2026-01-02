@@ -148,7 +148,7 @@ export const PROJECTS = [
   },
   {
   title: "Secure Vault – Zero-Knowledge Password Manager",
-  image: "images/secure-vault.png",
+  image: "images/secure.png",
   description:
     "A production-grade, client-side password manager demonstrating zero-knowledge security architecture. Secrets are encrypted and decrypted entirely in the browser using the Web Crypto API, with encrypted localStorage persistence and in-memory-only decryption.",
   techStack: [
