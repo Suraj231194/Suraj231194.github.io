@@ -147,6 +147,36 @@ export const PROJECTS = [
     sourceLink: "https://github.com/Suraj231194/Mixo-Analytics"
   },
   {
+  title: "Secure Vault – Zero-Knowledge Password Manager",
+  image: "images/secure-vault.png",
+  description:
+    "A production-grade, client-side password manager demonstrating zero-knowledge security architecture. Secrets are encrypted and decrypted entirely in the browser using the Web Crypto API, with encrypted localStorage persistence and in-memory-only decryption.",
+  techStack: [
+    "React",
+    "JavaScript",
+    "TypeScript",
+    "Tailwind CSS",
+    "Web Crypto API"
+  ],
+  liveLink: "https://secure-vault-application.vercel.app/",
+  sourceLink: "https://github.com/Suraj231194/Secure-Vault-Application"
+},
+
+{
+  title: "Aadrila Technologies – Modern AI Corporate Website",
+  image: "images/aadrila.png",
+  description:
+    "A pixel-perfect, high-performance corporate website featuring advanced animations, interactive 3D UI elements, and a modern responsive design built for a real-world AI company.",
+  techStack: [
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "Framer Motion"
+  ],
+  liveLink: "https://framer-motion-xi-jade.vercel.app/",
+  sourceLink: "https://github.com/Suraj231194/Framer-Motion-"
+},
+  {
     title: "AI Model Prototype",
     image: "images/AIModelPrototype.png",
     description:
