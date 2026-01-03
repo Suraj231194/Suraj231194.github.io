@@ -113,6 +113,22 @@ export const PROJECTS = [
     liveLink: "https://share-box-orcin.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/ShareBox"
   },
+   {
+  title: "Appointment Booking Platform",
+  image: "images/appoinment.png",
+  description:
+    "A MERN-based appointment booking platform designed for real-world service workflows, featuring role-based access, slot-based scheduling, conflict prevention, and secure booking management for users and service providers.",
+  techStack: [
+    "JavaScript",
+    "React",
+    "Tailwind CSS",
+    "Node.js",
+    "Express.js",
+    "MongoDB"
+  ],
+  liveLink: "https://mern-appointment-booking-app.vercel.app/",
+  sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
+},
   {
     title: "Revenue OS Next – SaaS Dashboard",
     image: "images/Nexus.png",
@@ -122,6 +138,8 @@ export const PROJECTS = [
     liveLink: "https://nexus-crm-six.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
   },
+ 
+
   {
     title: "UrbanServices – Service Booking Platform",
     image: "images/UrbanServices.png",
