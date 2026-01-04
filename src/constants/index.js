@@ -123,12 +123,28 @@ export const PROJECTS = [
     "React",
     "Tailwind CSS",
     "Node.js",
-    "Express.js",
+    "Express",
     "MongoDB"
   ],
   liveLink: "https://mern-appointment-booking-app.vercel.app/",
   sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
 },
+   {
+    title: "MERN-secure-vault-password",
+    image: "images/securevault.png",
+    description:
+      " It features a zero-knowledge architecture, ensuring that your sensitive data is encrypted before it leaves your device.",
+    techStack: [
+      "JavaScript",
+      "React",
+      "Tailwind CSS",
+      "Node.js",
+      "Express",
+      "MongoDB"     
+    ],
+    liveLink: "https://mern-secure-vault-password.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/mern-secure-vault-password"
+  },
   {
     title: "Revenue OS Next – SaaS Dashboard",
     image: "images/Nexus.png",
