@@ -34,6 +34,7 @@ import {
 export const NAV_LINKS = [
   { id: "home", title: "Home" },
   { id: "about", title: "About" },
+  { id: "experience", title: "Experience" },
   { id: "projects", title: "Projects" },
   { id: "tools", title: "Tools" },
   { id: "contact", title: "Contact" },
@@ -113,23 +114,23 @@ export const PROJECTS = [
     liveLink: "https://share-box-orcin.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/ShareBox"
   },
-   {
-  title: "Appointment Booking Platform",
-  image: "images/appoinment.png",
-  description:
-    "A MERN-based appointment booking platform designed for real-world service workflows, featuring role-based access, slot-based scheduling, conflict prevention, and secure booking management for users and service providers.",
-  techStack: [
-    "JavaScript",
-    "React",
-    "Tailwind CSS",
-    "Node.js",
-    "Express",
-    "MongoDB"
-  ],
-  liveLink: "https://mern-appointment-booking-app.vercel.app/",
-  sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
-},
-   {
+  {
+    title: "Appointment Booking Platform",
+    image: "images/appoinment.png",
+    description:
+      "A MERN-based appointment booking platform designed for real-world service workflows, featuring role-based access, slot-based scheduling, conflict prevention, and secure booking management for users and service providers.",
+    techStack: [
+      "JavaScript",
+      "React",
+      "Tailwind CSS",
+      "Node.js",
+      "Express",
+      "MongoDB"
+    ],
+    liveLink: "https://mern-appointment-booking-app.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
+  },
+  {
     title: "MERN-secure-vault-password",
     image: "images/securevault.png",
     description:
@@ -140,7 +141,7 @@ export const PROJECTS = [
       "Tailwind CSS",
       "Node.js",
       "Express",
-      "MongoDB"     
+      "MongoDB"
     ],
     liveLink: "https://mern-secure-vault-password.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/mern-secure-vault-password"
@@ -154,7 +155,7 @@ export const PROJECTS = [
     liveLink: "https://nexus-crm-six.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
   },
- 
+
 
   {
     title: "UrbanServices – Service Booking Platform",
@@ -181,35 +182,35 @@ export const PROJECTS = [
     sourceLink: "https://github.com/Suraj231194/Mixo-Analytics"
   },
   {
-  title: "Secure Vault – Zero-Knowledge Password Manager",
-  image: "images/secure.png",
-  description:
-    "A production-grade, client-side password manager demonstrating zero-knowledge security architecture. Secrets are encrypted and decrypted entirely in the browser using the Web Crypto API, with encrypted localStorage persistence and in-memory-only decryption.",
-  techStack: [
-    "React",
-    "JavaScript",
-    "TypeScript",
-    "Tailwind CSS",
-    "Web Crypto API"
-  ],
-  liveLink: "https://secure-vault-application.vercel.app/",
-  sourceLink: "https://github.com/Suraj231194/Secure-Vault-Application"
-},
+    title: "Secure Vault – Zero-Knowledge Password Manager",
+    image: "images/secure.png",
+    description:
+      "A production-grade, client-side password manager demonstrating zero-knowledge security architecture. Secrets are encrypted and decrypted entirely in the browser using the Web Crypto API, with encrypted localStorage persistence and in-memory-only decryption.",
+    techStack: [
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "Tailwind CSS",
+      "Web Crypto API"
+    ],
+    liveLink: "https://secure-vault-application.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/Secure-Vault-Application"
+  },
 
-{
-  title: "Aadrila Technologies – Modern AI Corporate Website",
-  image: "images/aadrila.png",
-  description:
-    "A pixel-perfect, high-performance corporate website featuring advanced animations, interactive 3D UI elements, and a modern responsive design built for a real-world AI company.",
-  techStack: [
-    "React",
-    "Vite",
-    "Tailwind CSS",
-    "Framer Motion"
-  ],
-  liveLink: "https://framer-motion-xi-jade.vercel.app/",
-  sourceLink: "https://github.com/Suraj231194/Framer-Motion-"
-},
+  {
+    title: "Aadrila Technologies – Modern AI Corporate Website",
+    image: "images/aadrila.png",
+    description:
+      "A pixel-perfect, high-performance corporate website featuring advanced animations, interactive 3D UI elements, and a modern responsive design built for a real-world AI company.",
+    techStack: [
+      "React",
+      "Vite",
+      "Tailwind CSS",
+      "Framer Motion"
+    ],
+    liveLink: "https://framer-motion-xi-jade.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/Framer-Motion-"
+  },
   {
     title: "AI Model Prototype",
     image: "images/AIModelPrototype.png",
@@ -253,6 +254,49 @@ export const TOOLS = [
   { name: "Git", icon: FaGitAlt, color: "text-red-500" },
   { name: "Bootstrap", icon: FaBootstrap, color: "text-purple-600" },
   { name: "Chakra UI", icon: SiChakraui, color: "text-teal-500" }
+];
+
+/* =======================
+   EXPERIENCE
+======================= */
+export const EXPERIENCE = [
+  {
+    role: "Frontend Developer",
+    company: "Care IO Infotech pvt ltd",
+    duration: "August 2022 – Present",
+    location: "Nashik, Maharashtra",
+    description: [
+      "Developed modular user interfaces with React.js and Tailwind CSS for healthcare applications, enabling a 40% increase in code reuse and reducing development time by 25% across 10+ products within a 12-month period.",
+      "Facilitated cross-team integration by partnering with backend engineers to deliver React.js user interfaces, reducing frontend-backend issue resolution time by 40% over a 12-month period using REST APIs and Git.",
+      "Developed and deployed over 30+ reusable React components and custom hooks using React.js and Tailwind CSS, reducing duplicate code by 40% and accelerating feature release cycles by 25%.",
+      "Implemented lazy loading techniques and efficient state management in React.js and Next.js to enhance application responsiveness.",
+      "Worked with backend, product, and QA teams under Agile methodologies to ensure seamless feature delivery."
+    ],
+    technologies: ["React.js", "Next.js", "HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap", "Agile", "REST APIs", "Git"]
+  },
+  {
+    role: "Full-stack Developer",
+    company: "suneko info · Freelance",
+    duration: "Sep 2022 - May 2023",
+    location: "Pune, Maharashtra, India · Hybrid",
+    description: [
+      "Frontend-focused Full-Stack Web Developer specializing in building scalable, responsive, and performance-optimized web interfaces, backed by reliable backend integration.",
+      "Designed and developed responsive, interactive user interfaces using React.js, HTML, CSS, JavaScript, and Tailwind CSS.",
+      "Integrated robust backend APIs built with Node.js to enable seamless data flow and enhance application performance.",
+      "Utilized Bootstrap and Tailwind CSS to implement mobile-first designs, ensuring a consistent user experience across platforms."
+    ],
+    technologies: ["React.js", "Node.js", "HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap"]
+  },
+  {
+    role: "Quality Assurance Quality Control",
+    company: "Mungi Engineers Pvt. Ltd. · Full-time",
+    duration: "Feb 2017 - Dec 2021",
+    location: "Nashik, Maharashtra, India",
+    description: [
+      "In my role at Mungi Engineers Pvt. Ltd., I specialized in Quality Assurance and Quality Control within the automobile manufacturing domain, ensuring adherence to industry standards and internal quality requirements."
+    ],
+    technologies: []
+  }
 ];
 
 /* =======================
