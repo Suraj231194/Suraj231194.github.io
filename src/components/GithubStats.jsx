@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const GithubStats = () => {
     const { theme } = useTheme();
-    const username = "Suraj2320";
+    const username = "Suraj231194";
     const statsTheme = theme === 'dark' ? 'tokyonight' : 'default';
     // Use a blueish color for dark mode (visible on dark bg) and standard green for light mode
     const calendarColor = theme === 'dark' ? '00f2ea' : '196127';
