@@ -34,7 +34,7 @@ const GithubStats = () => {
                     >
                         <img
                             className="w-full"
-                            src={`https://github-readme-stats.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
+                            src={`https://readme-stats-murex-eight.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
                             alt="Github Top Languages"
                         />
                     </motion.div>
@@ -47,7 +47,7 @@ const GithubStats = () => {
                     >
                         <img
                             className="w-full"
-                            src={`https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&locale=en&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
+                            src={`https://readme-stats-murex-eight.vercel.app/api?username=${username}&show_icons=true&locale=en&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
                             alt="Github User Stats"
                         />
                     </motion.div>
