@@ -41,7 +41,7 @@ const Contact = () => {
                                 <FaGithub className="text-2xl text-primary transition-colors group-hover:text-amber-500" />
                                 <div>
                                     <div className="font-medium">Github</div>
-                                    <a className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" target="_blank" rel="noreferrer" href={SOCIAL_LINKS.github}>github.com/Suraj2320</a>
+                                    <a className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" target="_blank" rel="noreferrer" href={SOCIAL_LINKS.github}>github.com/Suraj231194</a>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 group">
