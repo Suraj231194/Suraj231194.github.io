@@ -77,7 +77,7 @@ export const ABOUT_CONTENT = {
 ======================= */
 export const PROJECTS = [
   {
-    title: "SurajHub – Full Stack E-Commerce Platform",
+    title: "Nexaro – Full Stack E-Commerce Platform",
     image: "images/surajhub.png",
     description:
       "A production-grade e-commerce platform featuring authentication, product management, order lifecycle, and cloud deployment.",
@@ -98,21 +98,20 @@ export const PROJECTS = [
     sourceLink: "https://github.com/Suraj231194/surajEcommerce"
   },
   {
-    title: "ShareBox – Secure File Management System",
-    image: "images/ShareBox.png",
+    title: "UrbanServices – Service Booking Platform",
+    image: "images/UrbanServices.png",
     description:
-      "A full-stack file sharing platform with secure uploads, access control, and AWS S3 integration.",
+      "A service booking platform connecting users with verified service providers.",
     techStack: [
+       "Next.js",
       "JavaScript",
       "React",
       "Tailwind CSS",
-      "Node.js",
-      "Express",
-      "MongoDB",
-      "AWS"
+      "PostgreSQL",
+      "Supabase"
     ],
-    liveLink: "https://share-box-orcin.vercel.app/",
-    sourceLink: "https://github.com/Suraj231194/ShareBox"
+    liveLink: "https://secure-file-hub-7lbt.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/UrbanServices"
   },
   {
     title: "Appointment Booking Platform",
@@ -131,6 +130,32 @@ export const PROJECTS = [
     sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
   },
   {
+    title: "ShareBox – Secure File Management System",
+    image: "images/ShareBox.png",
+    description:
+      "A full-stack file sharing platform with secure uploads, access control, and AWS S3 integration.",
+    techStack: [
+      "JavaScript",
+      "React",
+      "Tailwind CSS",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "AWS"
+    ],
+    liveLink: "https://share-box-orcin.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/ShareBox"
+  },  
+   {
+    title: "Revenue OS Next – SaaS Dashboard",
+    image: "images/Nexus.png",
+    description:
+      "A modern SaaS dashboard built with Next.js focusing on performance, SEO, and enterprise-grade UI.",
+    techStack: ["Next.js", "React", "Tailwind CSS", "Supabase", "Vercel"],
+    liveLink: "https://nexus-crm-six.vercel.app/",
+    sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
+  }, 
+  {
     title: "MERN-secure-vault-password",
     image: "images/securevault.png",
     description:
@@ -146,32 +171,7 @@ export const PROJECTS = [
     liveLink: "https://mern-secure-vault-password.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/mern-secure-vault-password"
   },
-  {
-    title: "Revenue OS Next – SaaS Dashboard",
-    image: "images/Nexus.png",
-    description:
-      "A modern SaaS dashboard built with Next.js focusing on performance, SEO, and enterprise-grade UI.",
-    techStack: ["Next.js", "React", "Tailwind CSS", "Supabase", "Vercel"],
-    liveLink: "https://nexus-crm-six.vercel.app/",
-    sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
-  },
-
-
-  {
-    title: "UrbanServices – Service Booking Platform",
-    image: "images/UrbanServices.png",
-    description:
-      "A service booking platform connecting users with verified service providers.",
-    techStack: [
-      "JavaScript",
-      "React",
-      "Tailwind CSS",
-      "PostgreSQL",
-      "Supabase"
-    ],
-    liveLink: "https://secure-file-hub-7lbt.vercel.app/",
-    sourceLink: "https://github.com/Suraj231194/UrbanServices"
-  },
+  
   {
     title: "Real-Time Campaign Performance Dashboard",
     image: "images/MixoAnalytics.png",
