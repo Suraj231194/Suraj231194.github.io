@@ -94,7 +94,7 @@ export const PROJECTS = [
       "Docker",
       "AWS"
     ],
-    liveLink: "http://3.233.229.217:3000/",
+    liveLink: "https://suraj-ecommerce-gamma.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/surajEcommerce"
   },
   {
