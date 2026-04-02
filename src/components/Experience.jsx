@@ -27,9 +27,9 @@ const Experience = () => {
     return (
         <section id="experience" className="py-24 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-poppins transition-colors duration-300 relative overflow-hidden">
             {/* Background Schematic Image */}
-            <div 
+            <div
                 className="absolute inset-0 opacity-20 dark:opacity-30 pointer-events-none bg-no-repeat bg-center bg-cover"
-                style={{ 
+                style={{
                     backgroundImage: "url('/images/about-bg.png')",
                 }}
             ></div>
@@ -86,12 +86,12 @@ const Experience = () => {
                                         {exp.technologies.map((tech, i) => (
                                             <span key={i} className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-sm transition-all hover:border-primary/50 group-hover:bg-white dark:group-hover:bg-gray-700">
                                                 {getTechIcon(tech)}
-                                                {tech}
-                                            </span>
+                                                    {tech}
+                                                </span>
                                         ))}
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
                         </motion.div>
                     ))}
                 </div>

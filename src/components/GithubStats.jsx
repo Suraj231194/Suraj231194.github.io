@@ -33,8 +33,32 @@ const GithubStats = () => {
                 </motion.h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-12 justify-items-center">
-
-
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        viewport={{ once: true }}
+                        className="github-stat w-full max-w-lg hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
+                    >
+                        <img
+                            className="w-full"
+                            src={`https://readme-stats-murex-eight.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
+                            alt="Github Top Languages"
+                        />
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        viewport={{ once: true }}
+                        className="github-stat w-full max-w-lg hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
+                    >
+                        <img
+                            className="w-full"
+                            src={`https://readme-stats-murex-eight.vercel.app/api?username=${username}&show_icons=true&locale=en&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
+                            alt="Github User Stats"
+                        />
+                    </motion.div>
                     <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         whileInView={{ opacity: 1, y: 0 }}

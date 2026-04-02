@@ -12,7 +12,6 @@ import Footer from './components/Footer';
 import ScrollUpBtn from './components/ScrollUpBtn';
 import { ThemeProvider } from './context/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
-import CustomCursor from './components/CustomCursor';
 import Reveal from './components/Reveal';
 import { motion, useScroll, useSpring } from 'framer-motion';
 
