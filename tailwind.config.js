@@ -9,6 +9,8 @@ export default {
         extend: {
             colors: {
                 primary: "#fa5b0f",
+                'primary-text': '#c2410c',
+                'primary-text-dark': '#fb923c',
                 dark: "#111111", // Deep black for dark mode
                 light: "#f3f4f6", // Light gray for light mode
 
@@ -25,7 +27,7 @@ export default {
                 poppins: ["Poppins", "sans-serif"],
             },
             backgroundImage: {
-                'hero-pattern': "url('/images/hero-bg.png')",
+                'hero-pattern': "url('/images/hero-bg.webp')",
             }
         },
     },

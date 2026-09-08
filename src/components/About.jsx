@@ -1,82 +1,71 @@
-import React, { useEffect, useRef } from 'react';
-import Typed from 'typed.js';
-import { motion } from 'framer-motion';
-import { ABOUT_CONTENT, HERO_CONTENT } from '../constants';
+import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { FaDownload } from 'react-icons/fa';
+import { ABOUT_CONTENT } from '../constants';
+import { revealMotion } from '../constants/motion';
+import SectionHeading from './SectionHeading';
+import AnimatedStat from './AnimatedStat';
+import MagneticLink from './MagneticLink';
 
 const About = () => {
-    const el = useRef(null);
-
-    useEffect(() => {
-        const typed = new Typed(el.current, {
-            strings: HERO_CONTENT.roles,
-            typeSpeed: 100,
-            backSpeed: 60,
-            loop: true
-        });
-
-        return () => typed.destroy();
-    }, []);
+    const reduceMotion = useReducedMotion();
 
     return (
-        <section id="about" className="py-24 bg-bg-light dark:bg-bg-dark transition-colors duration-300 relative overflow-hidden">
-            {/* Background Schematic Image */}
-            <div 
-                className="absolute inset-0 opacity-20 dark:opacity-30 pointer-events-none bg-no-repeat bg-center bg-cover"
-                style={{ 
-                    backgroundImage: "url('/images/about-bg.png')",
-                }}
-            ></div>
+        <section id="about" className="relative overflow-hidden bg-bg-light py-16 transition-colors duration-300 dark:bg-bg-dark sm:py-20 lg:py-24">
+            <div
+                className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.05] dark:opacity-[0.08]"
+                style={{ backgroundImage: "url('/images/about-bg.webp')" }}
+                aria-hidden="true"
+            />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <motion.h2
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="text-4xl font-medium text-center mb-16 relative font-ubuntu text-text-light dark:text-text-dark"
-                >
-                    {ABOUT_CONTENT.title}
-                    <span className="block w-44 h-1 bg-primary absolute bottom-[-16px] left-1/2 -translate-x-1/2"></span>
-                    <span className="absolute bottom-[-24px] left-1/2 -translate-x-1/2 text-primary bg-bg-light dark:bg-bg-dark px-2 text-xl font-bold transition-colors duration-300">who i am</span>
-                </motion.h2>
+            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+                <SectionHeading title={ABOUT_CONTENT.title} eyebrow="Who I am" />
 
-                <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                    <motion.div
-                        initial={{ opacity: 0, x: -100 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        className="md:w-[45%]"
-                    >
-                        <img
-                            src={ABOUT_CONTENT.image}
-                            alt={ABOUT_CONTENT.name}
-                            className="w-[400px] h-[450px] object-cover rounded-lg shadow-xl shadow-primary/20 mx-auto md:mx-0 transition-transform duration-300 hover:scale-[1.02]"
-                        />
+                <div className="grid items-center gap-10 md:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+                    <motion.div {...revealMotion(reduceMotion, 0.05)}>
+                        <div className="relative mx-auto max-w-sm md:mx-0">
+                            <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-primary/25 to-transparent blur-xl" aria-hidden="true" />
+                            <img
+                                src={ABOUT_CONTENT.image}
+                                alt={`${ABOUT_CONTENT.name}, full stack web developer`}
+                                width="1000"
+                                height="1250"
+                                loading="lazy"
+                                decoding="async"
+                                className="relative aspect-[4/5] w-full rounded-2xl border border-orange-200/40 object-cover object-top shadow-2xl shadow-orange-950/15 dark:border-white/10"
+                            />
+                        </div>
                     </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: 100 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.4 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        className="md:w-[55%]"
-                    >
-                        <div className="text-2xl font-semibold mb-4 text-text-light dark:text-text-dark">
-                            I'm {ABOUT_CONTENT.name} and I'm a <span ref={el} className="text-primary font-bold"></span>
-                        </div>
-                        <p className="text-lg text-justify mb-8 leading-relaxed text-gray-600 dark:text-gray-300">
+                    <motion.div {...revealMotion(reduceMotion, 0.12)}>
+                        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-primary-text dark:text-primary-text-dark">
+                            Full Stack Developer
+                        </p>
+                        <h3 className="mb-5 font-ubuntu text-2xl font-bold leading-tight text-text-light dark:text-text-dark sm:text-3xl">
+                            I build fast, accessible web products that solve real business problems.
+                        </h3>
+                        <p className="mb-7 max-w-2xl text-base leading-8 text-gray-600 dark:text-gray-300 sm:text-lg">
                             {ABOUT_CONTENT.description}
                         </p>
-                        <motion.a
+
+                        <div className="mb-8 grid grid-cols-3 gap-3" aria-label="Professional highlights">
+                            {[
+                                { value: 30, suffix: '+', label: 'Components' },
+                                { value: 10, suffix: '+', label: 'Products' },
+                                { value: 40, suffix: '%', label: 'Code reuse' },
+                            ].map((stat) => (
+                                <AnimatedStat key={stat.label} {...stat} />
+                            ))}
+                        </div>
+
+                        <MagneticLink
                             href={ABOUT_CONTENT.resumeLink}
                             download
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="inline-block px-8 py-3 text-xl font-medium text-white bg-primary border-2 border-primary rounded-lg transition-all duration-300 hover:bg-transparent hover:text-primary hover:shadow-lg hover:shadow-primary/30"
+                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-primary bg-primary px-7 py-3 text-base font-bold text-slate-950 shadow-md transition-colors hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:text-lg"
                         >
+                            <FaDownload aria-hidden="true" />
                             {ABOUT_CONTENT.resumeButton}
-                        </motion.a>
+                        </MagneticLink>
                     </motion.div>
                 </div>
             </div>

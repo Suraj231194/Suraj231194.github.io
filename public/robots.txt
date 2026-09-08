@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suraj231194.github.io/sitemap.xml

@@ -1,7 +1,8 @@
 {
-  "homepage": "https://Suraj231194.github.io",
-  "name": "suraj2320.github.io",
+  "homepage": "https://suraj231194.github.io/",
+  "name": "suraj231194.github.io",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {

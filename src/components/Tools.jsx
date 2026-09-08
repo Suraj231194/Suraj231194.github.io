@@ -1,49 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TOOLS } from '../constants';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { FaPause, FaPlay } from 'react-icons/fa';
+import { revealMotion } from '../constants/motion';
+import SectionHeading from './SectionHeading';
+
+const ToolCard = ({ tool, fluid = false }) => (
+    <li className={`group flex min-h-32 shrink-0 flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-4 text-center shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-orange-300 hover:shadow-md dark:border-white/10 dark:bg-[#151515] dark:hover:border-orange-500/50 sm:min-h-36 ${fluid ? 'w-full' : 'w-40 sm:w-44'}`}>
+        <tool.icon className={`mb-3 text-4xl transition-transform duration-200 group-hover:scale-105 ${tool.color}`} aria-hidden="true" />
+        <span className="text-sm font-semibold text-text-light dark:text-text-dark sm:text-base">
+            {tool.name}
+        </span>
+    </li>
+);
 
 const Tools = () => {
+    const reduceMotion = useReducedMotion();
+    const [manualPaused, setManualPaused] = useState(false);
+    const [hoverPaused, setHoverPaused] = useState(false);
+    const paused = manualPaused || hoverPaused;
+
     return (
-        <section id="tools" className="py-24 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-poppins transition-colors duration-300 relative overflow-hidden">
-            {/* Background Schematic Image */}
-            <div 
-                className="absolute inset-0 opacity-20 dark:opacity-30 pointer-events-none bg-no-repeat bg-center bg-cover"
-                style={{ 
-                    backgroundImage: "url('/images/about-bg.png')",
-                }}
-            ></div>
+        <section id="tools" className="overflow-hidden bg-surface-light/60 py-16 text-text-light transition-colors duration-300 dark:bg-surface-dark/30 dark:text-text-dark sm:py-20 lg:py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6">
+                <SectionHeading title="Tools and Technologies" eyebrow="My technical toolkit" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <motion.h2
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="text-4xl font-medium text-center mb-16 relative font-ubuntu"
-                >
-                    Tools I Use
-                    <span className="block w-44 h-1 bg-primary absolute bottom-[-16px] left-1/2 -translate-x-1/2"></span>
-                    <span className="absolute bottom-[-24px] left-1/2 -translate-x-1/2 text-primary bg-bg-light dark:bg-bg-dark px-2 text-xl font-bold transition-colors duration-300">what i know</span>
-                </motion.h2>
+                {reduceMotion ? (
+                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5" aria-label="Technologies I use">
+                        {TOOLS.map((tool) => (
+                            <ToolCard key={tool.name} tool={tool} fluid />
+                        ))}
+                    </ul>
+                ) : (
+                    <motion.div {...revealMotion(false, 0.05, 16)}>
+                        <div className="mb-5 flex justify-end">
+                            <button
+                                type="button"
+                                onClick={() => setManualPaused((current) => !current)}
+                                aria-pressed={manualPaused}
+                                className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:border-orange-400 hover:text-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-white/15 dark:bg-[#151515] dark:text-gray-200 dark:hover:text-orange-300"
+                            >
+                                {manualPaused ? <FaPlay aria-hidden="true" /> : <FaPause aria-hidden="true" />}
+                                {manualPaused ? 'Play animation' : 'Pause animation'}
+                            </button>
+                        </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center">
-                    {TOOLS.map((tool, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.3, delay: index * 0.05 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10 }}
-                            className="flex flex-col items-center justify-center p-6 w-full bg-white dark:bg-[#111] rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-transparent hover:border-primary/30 group"
-                        >
-                            <div className={`text-6xl mb-4 transition-transform duration-300 group-hover:scale-110 ${tool.color}`}>
-                                <tool.icon />
+                        <div className="marquee-mask overflow-hidden py-2" onMouseEnter={() => setHoverPaused(true)} onMouseLeave={() => setHoverPaused(false)}>
+                            <div className={`tools-marquee-track flex w-max gap-4 ${paused ? 'marquee-paused' : ''}`}>
+                                <ul className="flex shrink-0 gap-4" aria-label="Technologies I use">
+                                    {TOOLS.map((tool) => (
+                                        <ToolCard key={tool.name} tool={tool} />
+                                    ))}
+                                </ul>
+                                <ul className="flex shrink-0 gap-4" aria-hidden="true">
+                                    {TOOLS.map((tool) => (
+                                        <ToolCard key={`duplicate-${tool.name}`} tool={tool} />
+                                    ))}
+                                </ul>
                             </div>
-                            <h1 className="text-xl font-bold text-text-light dark:text-text-dark group-hover:text-primary transition-colors">{tool.name}</h1>
-                        </motion.div>
-                    ))}
-                </div>
+                        </div>
+                    </motion.div>
+                )}
             </div>
         </section>
     );

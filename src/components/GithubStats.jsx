@@ -1,93 +1,96 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
+import { revealMotion } from '../constants/motion';
+import SectionHeading from './SectionHeading';
 
 const GithubStats = () => {
     const { theme } = useTheme();
-    const username = "Suraj231194";
+    const reduceMotion = useReducedMotion();
+    const [failedImages, setFailedImages] = useState([]);
+    const username = 'Suraj231194';
+    const profileUrl = `https://github.com/${username}`;
     const statsTheme = theme === 'dark' ? 'tokyonight' : 'default';
-    // Use a blueish color for dark mode (visible on dark bg) and standard green for light mode
-    const calendarColor = theme === 'dark' ? '00f2ea' : '196127';
+    const calendarColor = theme === 'dark' ? 'fb923c' : 'c2410c';
+
+    const markImageAsFailed = (imageName) => {
+        setFailedImages((images) => images.includes(imageName) ? images : [...images, imageName]);
+    };
 
     return (
-        <section id="github-stats" className="py-24 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-poppins transition-colors duration-300 relative overflow-hidden">
-            {/* Background Schematic Image */}
-            <div 
-                className="absolute inset-0 opacity-20 dark:opacity-30 pointer-events-none bg-no-repeat bg-center bg-cover"
-                style={{ 
-                    backgroundImage: "url('/images/about-bg.png')",
-                }}
-            ></div>
+        <section id="github-stats" className="bg-surface-light/60 py-16 text-text-light transition-colors duration-300 dark:bg-surface-dark/30 dark:text-text-dark sm:py-20 lg:py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6">
+                <SectionHeading title="GitHub Activity" eyebrow="How I keep building" />
 
-            <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-                <motion.h2
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="text-4xl font-medium text-center mb-16 relative font-ubuntu"
+                <motion.div
+                    {...revealMotion(reduceMotion, 0.05, 20)}
+                    className="mx-auto max-w-5xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151515] sm:p-6"
                 >
-                    Github Stats
-                    <span className="block w-44 h-1 bg-primary absolute bottom-[-10px] left-1/2 -translate-x-1/2"></span>
-                    <span className="absolute bottom-[-18px] left-1/2 -translate-x-1/2 text-primary bg-bg-light dark:bg-bg-dark px-2 text-xl font-bold transition-colors duration-300">my code life</span>
-                </motion.h2>
+                    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-xl text-white dark:bg-white dark:text-slate-950">
+                                <FaGithub aria-hidden="true" />
+                            </span>
+                            <div>
+                                <h3 className="font-ubuntu text-lg font-bold sm:text-xl">@{username}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Open-source work and coding activity</p>
+                            </div>
+                        </div>
+                        <a
+                            href={profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-bold text-gray-800 transition-colors hover:border-orange-400 hover:text-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-white/20 dark:text-white dark:hover:text-orange-400 dark:ring-offset-[#151515]"
+                        >
+                            View GitHub profile
+                            <FaExternalLinkAlt aria-hidden="true" />
+                        </a>
+                    </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-12 justify-items-center">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        viewport={{ once: true }}
-                        className="github-stat w-full max-w-lg hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
-                    >
-                        <img
-                            className="w-full"
-                            src={`https://readme-stats-murex-eight.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
-                            alt="Github Top Languages"
-                        />
-                    </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        viewport={{ once: true }}
-                        className="github-stat w-full max-w-lg hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
-                    >
-                        <img
-                            className="w-full"
-                            src={`https://readme-stats-murex-eight.vercel.app/api?username=${username}&show_icons=true&locale=en&theme=${statsTheme}&hide_border=true&bg_color=${theme === 'dark' ? '00000000' : 'ffffff'}`}
-                            alt="Github User Stats"
-                        />
-                    </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        viewport={{ once: true }}
-                        className="github-stat w-full max-w-lg lg:col-span-2 hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
-                    >
-                        <img
-                            className="w-full"
-                            src={`https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${statsTheme}&hide_border=true&background=${theme === 'dark' ? '171717' : 'f3f4f6'}`}
-                            alt="Github Streak"
-                        />
-                    </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.6 }}
-                        viewport={{ once: true }}
-                        className="github-stat w-full lg:col-span-2 mt-8 flex flex-col items-center justify-center p-4 bg-white dark:bg-[#1e1c1c] rounded-lg shadow-md border border-gray-200 dark:border-gray-800"
-                    >
-                        <h4 className="text-xl font-bold mb-6 text-text-light dark:text-text-dark">Suraj Santosh Pawar's contribution calendar</h4>
-                        {/* Fallback to ghchart image as it is more stable than react-github-calendar in this build setup */}
-                        <img
-                            src={`https://ghchart.rshah.org/${calendarColor}/${username}`}
-                            alt="Contribution Calendar"
-                            className="w-full h-auto rounded-lg"
-                        />
-                    </motion.div>
-                </div>
+                    <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+                        <div className="flex min-h-48 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
+                            {failedImages.includes('streak') ? (
+                                <p className="px-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    GitHub activity preview is temporarily unavailable. Visit the profile for current activity.
+                                </p>
+                            ) : (
+                                <img
+                                    src={`https://streak-stats.demolab.com/?user=${username}&theme=${statsTheme}&hide_border=true&background=00000000`}
+                                    alt={`${username}'s GitHub contribution streak`}
+                                    width="495"
+                                    height="195"
+                                    loading="lazy"
+                                    decoding="async"
+                                    onError={() => markImageAsFailed('streak')}
+                                    className="h-auto w-full"
+                                />
+                            )}
+                        </div>
+
+                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
+                            <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">Contribution calendar</h3>
+                            {failedImages.includes('calendar') ? (
+                                <p className="flex min-h-36 items-center justify-center px-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    Contribution calendar is temporarily unavailable. Visit the profile for current activity.
+                                </p>
+                            ) : (
+                                <div className="overflow-x-auto pb-2" tabIndex="0" aria-label="Scrollable GitHub contribution calendar">
+                                    <img
+                                        src={`https://ghchart.rshah.org/${calendarColor}/${username}`}
+                                        alt={`${username}'s GitHub contribution calendar`}
+                                        width="663"
+                                        height="104"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onError={() => markImageAsFailed('calendar')}
+                                        className="h-auto min-w-[650px] rounded-lg"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </section>
     );

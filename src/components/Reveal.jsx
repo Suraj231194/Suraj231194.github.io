@@ -1,14 +1,14 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { revealMotion } from '../constants/motion';
 
 const Reveal = ({ children, delay = 0 }) => {
+    const reduceMotion = useReducedMotion();
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 75 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 15, delay }}
-            viewport={{ once: true, amount: 0.2 }}
-            className="w-full h-full"
+            {...revealMotion(reduceMotion, delay)}
+            className="w-full"
         >
             {children}
         </motion.div>

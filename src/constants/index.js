@@ -34,14 +34,14 @@ import {
 export const NAV_LINKS = [
   { id: "home", title: "Home" },
   { id: "about", title: "About" },
-  { id: "experience", title: "Experience" },
   { id: "projects", title: "Projects" },
+  { id: "experience", title: "Experience" },
   { id: "tools", title: "Tools" },
   { id: "contact", title: "Contact" },
   {
     id: "resume",
     title: "Resume",
-    href: "Downloads/SURAJ_PAWAR_RESUME.pdf",
+    href: "/Suraj-Pawar-Resume.pdf",
     download: true
   }
 ];
@@ -54,8 +54,10 @@ export const HERO_CONTENT = {
   name: "Suraj Pawar",
   title: "And I'm a",
   roles: ["Full Stack Web Developer", "MERN Developer", "Frontend Specialist"],
-  buttonText: "Hire me",
-  link: "#contact"
+  buttonText: "View my work",
+  link: "#projects",
+  secondaryButtonText: "Contact me",
+  secondaryLink: "#contact"
 };
 
 /* =======================
@@ -63,13 +65,13 @@ export const HERO_CONTENT = {
 ======================= */
 export const ABOUT_CONTENT = {
   title: "About me",
-  image: "images/surapawar.jpeg",
+  image: "/images/surapawar.webp",
   name: "Suraj Pawar",
   role: "Full Stack Web Developer (MERN)",
   description:
     "Passionate Full Stack Web Developer with strong experience in MERN stack and modern frontend architectures. Skilled in building scalable, secure, and performance-driven web applications with real-world business logic.",
   resumeButton: "Download CV",
-  resumeLink: "Downloads/SURAJ_PAWAR_RESUME.pdf"
+  resumeLink: "/Suraj-Pawar-Resume.pdf"
 };
 
 /* =======================
@@ -77,10 +79,11 @@ export const ABOUT_CONTENT = {
 ======================= */
 export const PROJECTS = [
   {
-    title: "Nexaro – Full Stack E-Commerce Platform",
-    image: "images/surajhub.png",
+    title: "Nexaro - Full Stack E-Commerce Platform",
+    image: "/images/surajhub.webp",
     description:
-      "A production-grade e-commerce platform featuring authentication, product management, order lifecycle, and cloud deployment.",
+      "Supports the complete shopping journey with secure authentication, product management, order lifecycle workflows, and cloud deployment.",
+    category: ["Full Stack"],
     techStack: [
       "HTML",
       "CSS",
@@ -95,13 +98,14 @@ export const PROJECTS = [
       "AWS"
     ],
     liveLink: "https://suraj-ecommerce-gamma.vercel.app/",
-    sourceLink: "https://github.com/Suraj231194/surajEcommerce"
+    sourceLink: "https://github.com/Suraj231194/NexaroEcommerce"
   },
   {
-    title: "UrbanServices – Service Booking Platform",
-    image: "images/UrbanServices.png",
+    title: "UrbanServices - Service Booking Platform",
+    image: "/images/UrbanServices.webp",
     description:
-      "A service booking platform connecting users with verified service providers.",
+      "Makes it easy for customers to discover and book trusted home services from verified providers.",
+    category: ["Full Stack"],
     techStack: [
        "Next.js",
       "JavaScript",
@@ -115,9 +119,10 @@ export const PROJECTS = [
   },
   {
     title: "Appointment Booking Platform",
-    image: "images/appoinment.png",
+    image: "/images/appoinment.webp",
     description:
-      "A MERN-based appointment booking platform designed for real-world service workflows, featuring role-based access, slot-based scheduling, conflict prevention, and secure booking management for users and service providers.",
+      "Prevents scheduling conflicts through role-based access, slot availability, and secure booking management for customers and service providers.",
+    category: ["Full Stack", "MERN"],
     techStack: [
       "JavaScript",
       "React",
@@ -130,10 +135,11 @@ export const PROJECTS = [
     sourceLink: "https://github.com/Suraj231194/MERN-Appointment-Booking-app"
   },
   {
-    title: "ShareBox – Secure File Management System",
-    image: "images/ShareBox.png",
+    title: "ShareBox - Secure File Management System",
+    image: "/images/ShareBox.webp",
     description:
-      "A full-stack file sharing platform with secure uploads, access control, and AWS S3 integration.",
+      "Enables controlled file sharing through secure uploads, permission-aware access, and scalable AWS S3 storage.",
+    category: ["Full Stack", "MERN"],
     techStack: [
       "JavaScript",
       "React",
@@ -144,22 +150,24 @@ export const PROJECTS = [
       "AWS"
     ],
     liveLink: "https://share-box-orcin.vercel.app/",
-    sourceLink: "https://github.com/Suraj231194/ShareBox"
+    sourceLink: null
   },  
    {
-    title: "Revenue OS Next – SaaS Dashboard",
-    image: "images/Nexus.png",
+    title: "Revenue OS Next - SaaS Dashboard",
+    image: "/images/Nexus.webp",
     description:
-      "A modern SaaS dashboard built with Next.js focusing on performance, SEO, and enterprise-grade UI.",
+      "Turns revenue and customer data into a fast, searchable SaaS workspace with an enterprise-focused interface.",
+    category: ["Full Stack"],
     techStack: ["Next.js", "React", "Tailwind CSS", "Supabase", "Vercel"],
     liveLink: "https://nexus-crm-six.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/Nexus-CRM"
   }, 
   {
-    title: "MERN-secure-vault-password",
-    image: "images/securevault.png",
+    title: "MERN Secure Vault - Cloud Password Manager",
+    image: "/images/securevault.webp",
     description:
-      " It features a zero-knowledge architecture, ensuring that your sensitive data is encrypted before it leaves your device.",
+      "Keeps credentials available across devices with authenticated access, encryption, and secure cloud persistence.",
+    category: ["Full Stack", "MERN"],
     techStack: [
       "JavaScript",
       "React",
@@ -174,18 +182,20 @@ export const PROJECTS = [
   
   {
     title: "Real-Time Campaign Performance Dashboard",
-    image: "images/MixoAnalytics.png",
+    image: "/images/MixoAnalytics.webp",
     description:
-      "High-performance analytics dashboard featuring charts, filters, and campaign insights.",
+      "Turns campaign data into actionable insights through responsive charts, filters, and real-time performance views.",
+    category: ["Frontend"],
     techStack: ["React", "Next.js", "Vite", "Tailwind CSS"],
     liveLink: "https://mixo-analytics.vercel.app/",
     sourceLink: "https://github.com/Suraj231194/Mixo-Analytics"
   },
   {
-    title: "Secure Vault – Zero-Knowledge Password Manager",
-    image: "images/secure.png",
+    title: "Secure Vault - Browser-Only Password Manager",
+    image: "/images/secure.webp",
     description:
-      "A production-grade, client-side password manager demonstrating zero-knowledge security architecture. Secrets are encrypted and decrypted entirely in the browser using the Web Crypto API, with encrypted localStorage persistence and in-memory-only decryption.",
+      "Keeps secrets entirely on the user's device through browser-only Web Crypto encryption, protected local storage, and in-memory decryption.",
+    category: ["Frontend"],
     techStack: [
       "React",
       "JavaScript",
@@ -198,10 +208,11 @@ export const PROJECTS = [
   },
 
   {
-    title: "Aadrila Technologies – Modern AI Corporate Website",
-    image: "images/aadrila.png",
+    title: "Aadrila Technologies - Modern AI Corporate Website",
+    image: "/images/aadrila.webp",
     description:
-      "A pixel-perfect, high-performance corporate website featuring advanced animations, interactive 3D UI elements, and a modern responsive design built for a real-world AI company.",
+      "Presents an AI company with a responsive, high-performance corporate experience, purposeful motion, and interactive three-dimensional details.",
+    category: ["Frontend"],
     techStack: [
       "React",
       "Vite",
@@ -213,9 +224,10 @@ export const PROJECTS = [
   },
   {
     title: "AI Model Prototype",
-    image: "images/AIModelPrototype.png",
+    image: "/images/AIModelPrototype.webp",
     description:
-      "A frontend prototype of an AI chat interface built with TypeScript and modern UI practices.",
+      "Demonstrates a clear, responsive AI conversation workflow with TypeScript and modern interface patterns.",
+    category: ["Frontend"],
     techStack: [
       "HTML",
       "CSS",
@@ -263,7 +275,7 @@ export const EXPERIENCE = [
   {
     role: "Frontend Developer",
     company: "Care IO Infotech pvt ltd",
-    duration: "August 2022 – Present",
+    duration: "August 2022 - Present",
     location: "Nashik, Maharashtra",
     description: [
       "Developed modular user interfaces with React.js and Tailwind CSS for healthcare applications, enabling a 40% increase in code reuse and reducing development time by 25% across 10+ products within a 12-month period.",
@@ -276,9 +288,9 @@ export const EXPERIENCE = [
   },
   {
     role: "Full-stack Developer",
-    company: "suneko info · Freelance",
+    company: "Suneko Info - Freelance",
     duration: "Sep 2022 - May 2023",
-    location: "Pune, Maharashtra, India · Hybrid",
+    location: "Pune, Maharashtra, India - Hybrid",
     description: [
       "Frontend-focused Full-Stack Web Developer specializing in building scalable, responsive, and performance-optimized web interfaces, backed by reliable backend integration.",
       "Designed and developed responsive, interactive user interfaces using React.js, HTML, CSS, JavaScript, and Tailwind CSS.",
@@ -289,7 +301,7 @@ export const EXPERIENCE = [
   },
   {
     role: "Quality Assurance Quality Control",
-    company: "Mungi Engineers Pvt. Ltd. · Full-time",
+    company: "Mungi Engineers Pvt. Ltd. - Full-time",
     duration: "Feb 2017 - Dec 2021",
     location: "Nashik, Maharashtra, India",
     description: [
@@ -306,20 +318,20 @@ export const EDUCATION = [
   {
     title: "Masai School",
     subtitle: "Full-Stack Web Development",
-    date: "Feb 2022 – Nov 2022",
+    date: "Feb 2022 - Nov 2022",
     image:
       "https://aniportalimages.s3.amazonaws.com/media/details/Capture2021092207014520210922071739.jpg"
   },
   {
     title: "LOGMIEER",
     subtitle: "Bachelor of Engineering",
-    date: "Jun 2017 – Aug 2021",
+    date: "Jun 2017 - Aug 2021",
     image: "images/logmieer.jpg"
   },
   {
     title: "K.S.K.W College, Nashik",
     subtitle: "Higher Secondary Education",
-    date: "Jun 2010 – Nov 2012",
+    date: "Jun 2010 - Nov 2012",
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkDRx5kY24YcCN_t6PgzyOu-syifZd7iG2cw&usqp=CAU"
   }
@@ -337,4 +349,4 @@ export const SOCIAL_LINKS = {
 /* =======================
    FOOTER
 ======================= */
-export const FOOTER_TEXT = `Created By Suraj | ${new Date().getFullYear()} All rights reserved.`;
+export const FOOTER_TEXT = `Designed and built by Suraj Pawar - ${new Date().getFullYear()}`;

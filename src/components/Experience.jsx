@@ -1,98 +1,85 @@
 import React from 'react';
 import { EXPERIENCE } from '../constants';
-import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt, FaGlobe, FaTasks, FaBootstrap } from 'react-icons/fa';
+import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt, FaGlobe, FaTasks, FaBootstrap, FaMapMarkerAlt } from 'react-icons/fa';
 import { SiNextdotjs, SiTailwindcss, SiTypescript } from 'react-icons/si';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { revealMotion } from '../constants/motion';
+import SectionHeading from './SectionHeading';
 
 const Experience = () => {
+    const reduceMotion = useReducedMotion();
+
     const getTechIcon = (tech) => {
-        const normalizedTech = tech.toLowerCase().replace('.', '').replace(' ', '');
+        const normalizedTech = tech.toLowerCase().replaceAll('.', '').replaceAll(' ', '');
         switch (normalizedTech) {
-            case 'reactjs': return <FaReact className="text-cyan-400" />;
-            case 'nextjs': return <SiNextdotjs className="text-black dark:text-white" />;
-            case 'html': return <FaHtml5 className="text-orange-500" />;
-            case 'css': return <FaCss3Alt className="text-blue-500" />;
-            case 'javascript': return <FaJs className="text-yellow-400" />;
-            case 'tailwindcss': return <SiTailwindcss className="text-cyan-400" />;
-            case 'bootstrap': return <FaBootstrap className="text-purple-600" />;
-            case 'agile': return <FaTasks className="text-blue-400" />;
-            case 'restapis': return <FaGlobe className="text-green-500" />;
-            case 'git': return <FaGitAlt className="text-red-500" />;
-            case 'nodejs': return <FaNodeJs className="text-green-500" />;
-            case 'typescript': return <SiTypescript className="text-blue-600" />;
+            case 'reactjs': return <FaReact className="text-cyan-500" aria-hidden="true" />;
+            case 'nextjs': return <SiNextdotjs aria-hidden="true" />;
+            case 'html': return <FaHtml5 className="text-orange-600" aria-hidden="true" />;
+            case 'css': return <FaCss3Alt className="text-blue-600" aria-hidden="true" />;
+            case 'javascript': return <FaJs className="text-yellow-500" aria-hidden="true" />;
+            case 'tailwindcss': return <SiTailwindcss className="text-cyan-500" aria-hidden="true" />;
+            case 'bootstrap': return <FaBootstrap className="text-purple-600" aria-hidden="true" />;
+            case 'agile': return <FaTasks className="text-blue-500" aria-hidden="true" />;
+            case 'restapis': return <FaGlobe className="text-green-600" aria-hidden="true" />;
+            case 'git': return <FaGitAlt className="text-red-500" aria-hidden="true" />;
+            case 'nodejs': return <FaNodeJs className="text-green-600" aria-hidden="true" />;
+            case 'typescript': return <SiTypescript className="text-blue-600" aria-hidden="true" />;
             default: return null;
         }
     };
 
     return (
-        <section id="experience" className="py-24 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-poppins transition-colors duration-300 relative overflow-hidden">
-            {/* Background Schematic Image */}
-            <div
-                className="absolute inset-0 opacity-20 dark:opacity-30 pointer-events-none bg-no-repeat bg-center bg-cover"
-                style={{
-                    backgroundImage: "url('/images/about-bg.png')",
-                }}
-            ></div>
+        <section id="experience" className="bg-bg-light py-16 text-text-light transition-colors duration-300 dark:bg-bg-dark dark:text-text-dark sm:py-20 lg:py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6">
+                <SectionHeading title="Professional Experience" eyebrow="Where I have worked" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <motion.h2
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="text-4xl font-medium text-center mb-16 relative font-ubuntu"
-                >
-                    My Experience
-                    <span className="block w-48 h-1 bg-primary absolute bottom-[-16px] left-1/2 -translate-x-1/2"></span>
-                    <span className="absolute bottom-[-24px] left-1/2 -translate-x-1/2 text-primary bg-bg-light dark:bg-bg-dark px-2 text-xl font-bold transition-colors duration-300">where I have worked</span>
-                </motion.h2>
-
-                <div className="flex flex-col gap-8 py-4 items-center">
-                    {EXPERIENCE.map((exp, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ type: "spring", stiffness: 100, damping: 15, delay: index * 0.1 }}
-                            viewport={{ once: true, amount: 0.2 }}
-                            whileHover={{ scale: 1.01 }}
-                            className="w-full max-w-4xl bg-white dark:bg-[#1e1c1c] rounded-lg p-8 transition-all duration-300 hover:shadow-xl group border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row gap-6 relative overflow-hidden"
+                <div className="mx-auto flex max-w-5xl flex-col gap-6">
+                    {EXPERIENCE.map((experience, index) => (
+                        <motion.article
+                            key={`${experience.company}-${experience.duration}`}
+                            {...revealMotion(reduceMotion, Math.min(index * 0.08, 0.16), 20)}
+                            whileHover={reduceMotion ? undefined : { y: -3 }}
+                            className="relative grid overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-orange-300 hover:shadow-lg dark:border-white/10 dark:bg-[#151515] dark:hover:border-orange-500/50 sm:p-7 md:grid-cols-[0.75fr_1.25fr] md:gap-8"
                         >
-                            <div className="absolute top-0 left-0 w-1 h-full bg-primary transform origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300"></div>
+                            <span className="absolute inset-y-0 left-0 w-1 bg-primary" aria-hidden="true" />
 
-                            <div className="md:w-1/3 flex flex-col justify-center">
-                                <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{exp.role}</h3>
-                                <p className="text-xl text-primary font-medium mt-1">{exp.company}</p>
-                                <p className="text-md text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2">
-                                    <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>
-                                    {exp.duration}
+                            <header className="mb-5 md:mb-0">
+                                <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-primary-text dark:text-primary-text-dark">
+                                    {experience.duration}
                                 </p>
-                            </div>
-
-                            <div className="md:w-2/3 flex flex-col justify-center">
-                                {Array.isArray(exp.description) ? (
-                                    <ul className="list-disc list-outside ml-5 space-y-2 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        {exp.description.map((desc, i) => (
-                                            <li key={i}>{desc}</li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        {exp.description}
+                                <h3 className="font-ubuntu text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    {experience.role}
+                                </h3>
+                                <p className="mt-2 text-lg font-semibold text-gray-700 dark:text-gray-200">
+                                    {experience.company}
+                                </p>
+                                {experience.location && (
+                                    <p className="mt-3 flex items-start gap-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                                        <FaMapMarkerAlt className="mt-1 shrink-0 text-orange-600 dark:text-orange-400" aria-hidden="true" />
+                                        {experience.location}
                                     </p>
                                 )}
-                                {exp.technologies && (
-                                    <div className="flex flex-wrap gap-2 mt-4">
-                                        {exp.technologies.map((tech, i) => (
-                                            <span key={i} className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-sm transition-all hover:border-primary/50 group-hover:bg-white dark:group-hover:bg-gray-700">
+                            </header>
+
+                            <div>
+                                <ul className="ml-5 list-disc space-y-2 text-sm leading-6 text-gray-600 marker:text-orange-600 dark:text-gray-300 sm:text-base sm:leading-7">
+                                    {experience.description.map((description) => (
+                                        <li key={description}>{description}</li>
+                                    ))}
+                                </ul>
+
+                                {experience.technologies.length > 0 && (
+                                    <ul className="mt-5 flex flex-wrap gap-2" aria-label={`Technologies used at ${experience.company}`}>
+                                        {experience.technologies.map((tech) => (
+                                            <li key={tech} className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-gray-200">
                                                 {getTechIcon(tech)}
-                                                    {tech}
-                                                </span>
+                                                {tech}
+                                            </li>
                                         ))}
-                                            </div>
-                                        )}
-                                    </div>
-                        </motion.div>
+                                    </ul>
+                                )}
+                            </div>
+                        </motion.article>
                     ))}
                 </div>
             </div>

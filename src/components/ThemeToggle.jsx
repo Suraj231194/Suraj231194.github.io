@@ -1,25 +1,40 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { flushSync } from 'react-dom';
 
 const ThemeToggle = () => {
     const { theme, toggleTheme } = useTheme();
+    const reduceMotion = useReducedMotion();
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+
+    const handleThemeChange = (event) => {
+        if (reduceMotion || !document.startViewTransition) {
+            toggleTheme();
+            return;
+        }
+
+        const rect = event.currentTarget.getBoundingClientRect();
+        document.documentElement.style.setProperty('--theme-transition-x', `${rect.left + rect.width / 2}px`);
+        document.documentElement.style.setProperty('--theme-transition-y', `${rect.top + rect.height / 2}px`);
+        document.startViewTransition(() => flushSync(toggleTheme));
+    };
 
     return (
         <motion.button
-            onClick={toggleTheme}
-            className={`fixed bottom-6 left-6 z-50 p-3 rounded-full shadow-lg transition-all duration-300 ${theme === 'dark'
-                    ? 'bg-white text-orange-500 hover:bg-gray-100'
-                    : 'bg-slate-900 text-yellow-400 hover:bg-slate-800'
+            type="button"
+            onClick={handleThemeChange}
+            aria-label={`Switch to ${nextTheme} theme`}
+            title={`Switch to ${nextTheme} theme`}
+            className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${theme === 'dark'
+                    ? 'border-white/15 bg-white/10 text-orange-300 hover:bg-white/20'
+                    : 'border-slate-300 bg-white/90 text-slate-800 hover:bg-white'
                 }`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
+            whileHover={reduceMotion ? undefined : { scale: 1.05, rotate: 8 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.95 }}
         >
-            {theme === 'dark' ? <FaSun size={24} /> : <FaMoon size={24} />}
+            {theme === 'dark' ? <FaSun size={19} aria-hidden="true" /> : <FaMoon size={18} aria-hidden="true" />}
         </motion.button>
     );
 };
