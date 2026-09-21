@@ -320,20 +320,20 @@ export const EDUCATION = [
     subtitle: "Full-Stack Web Development",
     date: "Feb 2022 - Nov 2022",
     image:
-      "https://aniportalimages.s3.amazonaws.com/media/details/Capture2021092207014520210922071739.jpg"
+      "/images/masai.jpg"
   },
   {
     title: "LOGMIEER",
     subtitle: "Bachelor of Engineering",
     date: "Jun 2017 - Aug 2021",
-    image: "images/logmieer.jpg"
+    image: "/images/logmieer-badge.svg"
   },
   {
     title: "K.S.K.W College, Nashik",
     subtitle: "Higher Secondary Education",
     date: "Jun 2010 - Nov 2012",
     image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkDRx5kY24YcCN_t6PgzyOu-syifZd7iG2cw&usqp=CAU"
+      "/images/kskw-badge.svg"
   }
 ];
 

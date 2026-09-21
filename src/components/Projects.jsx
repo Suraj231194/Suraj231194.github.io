@@ -5,6 +5,7 @@ import { SiNextdotjs, SiVite, SiPrisma, SiTailwindcss, SiPostgresql, SiRedux, Si
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 import { CARD_VARIANTS, EASE, GRID_VARIANTS, VIEWPORT } from '../constants/motion';
 import SectionHeading from './SectionHeading';
+import Scroll3D from './Scroll3D';
 
 const FILTERS = ['All', 'Full Stack', 'Frontend', 'MERN'];
 
@@ -55,9 +56,24 @@ const TechList = ({ project, expanded = false }) => (
     </ul>
 );
 
+// Resting pose of the device mock-up: slightly turned, like a product shot, so it reads as 3D before any hover.
+const DEVICE_REST_X = 5;
+const DEVICE_REST_Y = -8;
+
+const getHostname = (url) => {
+    try {
+        return new URL(url).hostname;
+    } catch {
+        return '';
+    }
+};
+
 const ProjectCard = ({ project, featured, lead, onOpen, reduceMotion }) => {
     const rotateX = useSpring(useMotionValue(0), { stiffness: 220, damping: 24 });
     const rotateY = useSpring(useMotionValue(0), { stiffness: 220, damping: 24 });
+    const deviceX = useSpring(useMotionValue(DEVICE_REST_X), { stiffness: 180, damping: 22 });
+    const deviceY = useSpring(useMotionValue(DEVICE_REST_Y), { stiffness: 180, damping: 22 });
+    const hostname = getHostname(project.liveLink);
 
     const handlePointerMove = (event) => {
         if (reduceMotion || event.pointerType === 'touch' || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -66,15 +82,26 @@ const ProjectCard = ({ project, featured, lead, onOpen, reduceMotion }) => {
         const rect = card.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        rotateX.set(((rect.height / 2 - y) / rect.height) * 3);
-        rotateY.set(((x - rect.width / 2) / rect.width) * 3);
+        const px = x / rect.width;
+        const py = y / rect.height;
+        rotateX.set((0.5 - py) * 8);
+        rotateY.set((px - 0.5) * 8);
+        // The device inside the card turns further than the card itself, so the screen leads the motion.
+        deviceX.set((0.5 - py) * 18);
+        deviceY.set((px - 0.5) * 22);
         card.style.setProperty('--spotlight-x', `${x}px`);
         card.style.setProperty('--spotlight-y', `${y}px`);
+        card.style.setProperty('--px', px.toFixed(3));
+        card.style.setProperty('--py', py.toFixed(3));
     };
 
-    const resetTilt = () => {
+    const resetTilt = (event) => {
         rotateX.set(0);
         rotateY.set(0);
+        deviceX.set(DEVICE_REST_X);
+        deviceY.set(DEVICE_REST_Y);
+        event.currentTarget.style.setProperty('--px', '0.5');
+        event.currentTarget.style.setProperty('--py', '0.5');
     };
 
     return (
@@ -99,24 +126,37 @@ const ProjectCard = ({ project, featured, lead, onOpen, reduceMotion }) => {
                 type="button"
                 onClick={(event) => onOpen(project, event.currentTarget)}
                 aria-label={`View details for ${project.title}`}
-                className={`relative z-10 block w-full overflow-hidden bg-gray-100 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary dark:bg-black/50 ${lead ? 'aspect-video lg:aspect-auto lg:min-h-[360px]' : 'aspect-video'}`}
+                className={`device-stage relative z-10 block w-full overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary ${lead ? 'aspect-video lg:aspect-auto lg:min-h-[360px]' : 'aspect-video'}`}
             >
-                <motion.img
-                    layoutId={`image-${project.title}`}
-                    src={project.image}
-                    alt={`${project.title} interface preview`}
-                    width="1600"
-                    height="900"
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                />
+                <span className="device-shadow" aria-hidden="true" />
+
+                {/* The screenshot sits on a browser-window slab that turns toward the cursor in real perspective. */}
+                <motion.span className="device" style={{ rotateX: deviceX, rotateY: deviceY }}>
+                    <span className="device-bar" aria-hidden="true">
+                        <i /><i /><i />
+                        {hostname && <span className="device-url">{hostname}</span>}
+                    </span>
+                    <span className="device-screen">
+                        <motion.img
+                            layoutId={`image-${project.title}`}
+                            src={project.image}
+                            alt={`${project.title} interface preview`}
+                            width="1600"
+                            height="900"
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full object-cover object-top"
+                        />
+                        <span className="device-glare" aria-hidden="true" />
+                    </span>
+                </motion.span>
+
                 {featured && (
-                    <span className="absolute left-3 top-3 rounded-full bg-black/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+                    <span className="absolute left-3 top-3 z-[3] rounded-full bg-black/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
                         Featured
                     </span>
                 )}
-                <span className="absolute inset-x-3 bottom-3 translate-y-2 rounded-lg bg-black/75 px-3 py-2 text-center text-sm font-semibold text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+                <span className="absolute inset-x-3 bottom-3 z-[3] translate-y-2 rounded-lg bg-black/75 px-3 py-2 text-center text-sm font-semibold text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-hover:translate-y-0 group-hover:opacity-100">
                     View project details
                 </span>
             </button>
@@ -320,27 +360,30 @@ const Projects = () => {
     };
 
     const renderGrid = (projects, featured = false) => (
-        <motion.div
-            // Keyed on filter only: keying on showAll remounted the grid at opacity 0 while it
-            // was scrolled out of view, so whileInView never re-fired and the cards stayed hidden.
-            key={`${activeFilter}-${featured ? 'featured' : 'regular'}`}
-            variants={GRID_VARIANTS}
-            initial={reduceMotion ? false : 'hidden'}
-            whileInView="show"
-            viewport={VIEWPORT}
-            className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 ${featured ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}
-        >
-            {projects.map((project, index) => (
-                <ProjectCard
-                    key={project.title}
-                    project={project}
-                    featured={featured}
-                    lead={featured && index === 0}
-                    onOpen={openProject}
-                    reduceMotion={reduceMotion}
-                />
-            ))}
-        </motion.div>
+        // The whole grid lies back in 3D and stands up as it scrolls in; the cards then stagger inside it.
+        <Scroll3D angle={10} distance={40} end={0.74}>
+            <motion.div
+                // Keyed on filter only: keying on showAll remounted the grid at opacity 0 while it
+                // was scrolled out of view, so whileInView never re-fired and the cards stayed hidden.
+                key={`${activeFilter}-${featured ? 'featured' : 'regular'}`}
+                variants={GRID_VARIANTS}
+                initial={reduceMotion ? false : 'hidden'}
+                whileInView="show"
+                viewport={VIEWPORT}
+                className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 ${featured ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}
+            >
+                {projects.map((project, index) => (
+                    <ProjectCard
+                        key={project.title}
+                        project={project}
+                        featured={featured}
+                        lead={featured && index === 0}
+                        onOpen={openProject}
+                        reduceMotion={reduceMotion}
+                    />
+                ))}
+            </motion.div>
+        </Scroll3D>
     );
 
     return (
@@ -349,7 +392,7 @@ const Projects = () => {
                 <SectionHeading title="Selected Projects" eyebrow="What I have built" />
 
                 <div className="mb-8 flex flex-col items-center gap-4">
-                    <div className="flex max-w-full gap-2 overflow-x-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-sm dark:border-white/10 dark:bg-[#151515]" role="group" aria-label="Filter projects">
+                    <div className="flex max-w-full flex-wrap justify-center gap-2 rounded-xl border border-gray-200 bg-white p-1.5 shadow-sm dark:border-white/10 dark:bg-[#151515]" role="group" aria-label="Filter projects">
                         {FILTERS.map((filter) => (
                             <button
                                 key={filter}

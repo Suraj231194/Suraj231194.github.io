@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,10 +10,18 @@ import GithubStats from './components/GithubStats';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollUpBtn from './components/ScrollUpBtn';
+import CursorGlow from './components/CursorGlow';
 import { ThemeProvider } from './context/ThemeContext';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
+import useWebGLSupport from './hooks/useWebGLSupport';
+
+// Fixed 3D field behind every section; loaded on demand so it never delays first paint.
+const ScrollWorld = lazy(() => import('./components/three/ScrollWorld'));
 
 function App() {
+    const reduceMotion = useReducedMotion();
+    const webgl = useWebGLSupport();
+    const showWorld = webgl && !reduceMotion;
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -50,9 +58,15 @@ function App() {
                 >
                     Skip to main content
                 </a>
+                {showWorld && (
+                    <Suspense fallback={null}>
+                        <ScrollWorld />
+                    </Suspense>
+                )}
+                <CursorGlow />
                 <ScrollUpBtn />
                 <Navbar />
-                <main id="main-content">
+                <main id="main-content" className="relative z-[1]">
                     <Hero />
                     <About />
                     <Projects />

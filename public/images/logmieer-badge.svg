@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="LOGMIEER">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" rx="48" fill="url(#bg)"/>
+  <rect x="10" y="10" width="220" height="220" rx="40" fill="none" stroke="#fa5b0f" stroke-opacity="0.55" stroke-width="2"/>
+  <text x="120" y="112" text-anchor="middle" font-family="Ubuntu, 'Segoe UI', Arial, sans-serif" font-size="46" font-weight="700" fill="#f8fafc" letter-spacing="2">LOG</text>
+  <text x="120" y="160" text-anchor="middle" font-family="Ubuntu, 'Segoe UI', Arial, sans-serif" font-size="40" font-weight="700" fill="#fb923c" letter-spacing="1">MIEER</text>
+  <rect x="84" y="178" width="72" height="4" rx="2" fill="#fa5b0f"/>
+  <text x="120" y="204" text-anchor="middle" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#94a3b8" letter-spacing="3">ENGINEERING</text>
+</svg>

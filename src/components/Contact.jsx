@@ -1,24 +1,44 @@
-import React from 'react';
+import React, { Suspense, lazy, useRef } from 'react';
 import { SOCIAL_LINKS } from '../constants';
 import { FaUser, FaEnvelope, FaCommentAlt, FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
-import { motion, useReducedMotion } from 'framer-motion';
-import { revealMotion } from '../constants/motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import SectionHeading from './SectionHeading';
+import Scroll3D from './Scroll3D';
+import useWebGLSupport from '../hooks/useWebGLSupport';
+
+const ContactOrb = lazy(() => import('./three/ContactOrb'));
 
 const Contact = () => {
     const reduceMotion = useReducedMotion();
+    const webgl = useWebGLSupport();
+    const orbWrapper = useRef(null);
+    const orbInView = useInView(orbWrapper, { amount: 0.2 });
+    const showOrb = webgl && !reduceMotion;
     const fieldClassName = 'h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-text-light shadow-sm transition-colors placeholder:text-gray-400 hover:border-gray-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:border-white/15 dark:bg-white/5 dark:text-text-dark dark:hover:border-white/30';
 
     return (
-        <section id="contact" className="bg-bg-light py-16 text-text-light transition-colors duration-300 dark:bg-bg-dark dark:text-text-dark sm:py-20 lg:py-24">
+        <section id="contact" className="bg-bg-light/75 py-16 text-text-light transition-colors duration-300 dark:bg-bg-dark/70 dark:text-text-dark sm:py-20 lg:py-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6">
                 <SectionHeading title="Let's Work Together" eyebrow="Get in touch" />
 
                 <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
-                    <motion.aside
-                        {...revealMotion(reduceMotion, 0.05, 20)}
-                        className="rounded-2xl bg-slate-950 p-6 text-white shadow-xl sm:p-8"
+                    <Scroll3D
+                        as="aside"
+                        from="left"
+                        angle={16}
+                        distance={48}
+                        end={0.68}
+                        className="relative overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl sm:p-8"
                     >
+                        {showOrb && (
+                            <div ref={orbWrapper} className="relative -mx-6 -mt-6 mb-2 h-44 sm:-mx-8 sm:-mt-8 sm:h-48" aria-hidden="true">
+                                <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_45%,rgba(250,91,15,0.18),transparent_70%)]" />
+                                <Suspense fallback={null}>
+                                    <ContactOrb active={orbInView} />
+                                </Suspense>
+                            </div>
+                        )}
+
                         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-sm font-semibold text-emerald-300">
                             <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
                             Available for opportunities
@@ -63,10 +83,13 @@ const Contact = () => {
                                 </a>
                             </li>
                         </ul>
-                    </motion.aside>
+                    </Scroll3D>
 
-                    <motion.div
-                        {...revealMotion(reduceMotion, 0.12, 20)}
+                    <Scroll3D
+                        from="right"
+                        angle={12}
+                        distance={48}
+                        end={0.66}
                         className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#151515] sm:p-8"
                     >
                         <h3 className="mb-6 font-ubuntu text-2xl font-bold">Send me a message</h3>
@@ -112,7 +135,7 @@ const Contact = () => {
                                 <FaPaperPlane aria-hidden="true" />
                             </motion.button>
                         </form>
-                    </motion.div>
+                    </Scroll3D>
                 </div>
             </div>
         </section>

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
-import { revealMotion } from '../constants/motion';
 import SectionHeading from './SectionHeading';
+import Scroll3D from './Scroll3D';
 
 const GithubStats = () => {
     const { theme } = useTheme();
-    const reduceMotion = useReducedMotion();
     const [failedImages, setFailedImages] = useState([]);
     const username = 'Suraj231194';
     const profileUrl = `https://github.com/${username}`;
@@ -23,8 +21,10 @@ const GithubStats = () => {
             <div className="mx-auto max-w-7xl px-4 sm:px-6">
                 <SectionHeading title="GitHub Activity" eyebrow="How I keep building" />
 
-                <motion.div
-                    {...revealMotion(reduceMotion, 0.05, 20)}
+                <Scroll3D
+                    angle={14}
+                    distance={44}
+                    end={0.7}
                     className="mx-auto max-w-5xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151515] sm:p-6"
                 >
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -48,8 +48,9 @@ const GithubStats = () => {
                         </a>
                     </div>
 
-                    <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-                        <div className="flex min-h-48 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
+                    {/* minmax(0, …) tracks stop the 650px calendar from forcing the grid wider than a phone screen. */}
+                    <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                        <div className="flex min-h-48 min-w-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
                             {failedImages.includes('streak') ? (
                                 <p className="px-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                     GitHub activity preview is temporarily unavailable. Visit the profile for current activity.
@@ -68,7 +69,7 @@ const GithubStats = () => {
                             )}
                         </div>
 
-                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
+                        <div className="min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
                             <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">Contribution calendar</h3>
                             {failedImages.includes('calendar') ? (
                                 <p className="flex min-h-36 items-center justify-center px-4 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -90,7 +91,7 @@ const GithubStats = () => {
                             )}
                         </div>
                     </div>
-                </motion.div>
+                </Scroll3D>
             </div>
         </section>
     );
