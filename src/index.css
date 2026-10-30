@@ -1,47 +1,803 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ---------- Design tokens ----------
+   Midnight navy, electric blue and cyan, on cool slate neutrals. Light theme: ice-white paper
+   with navy ink. Dark theme, and every `.night` band in either theme: midnight paper with
+   white ink. Values are RGB triplets so Tailwind can add alpha. */
+:root {
+    --paper: 246 248 252;
+    --sheet: 255 255 255;
+    --ink: 10 17 36;
+    --pencil: 71 84 108;
+    --rule: 222 228 239;
+    --grid: 234 239 247;
+    --accent: 30 102 245;
+    --accent-strong: 21 82 214;
+    --accent-ink: 20 84 220;
+    --accent-2: 2 132 199;
+    --glow: 6 182 212;
+    --on-accent: 255 255 255;
+    /* The main call to action: aqua, apart from the blues around it. */
+    --cta-from: 14 196 226;
+    --cta-to: 20 184 166;
+    --on-cta: 4 18 31;
+}
+
+.dark,
+.night {
+    --paper: 4 8 20;
+    --sheet: 11 19 38;
+    --ink: 238 243 252;
+    --pencil: 148 162 189;
+    --rule: 29 41 66;
+    --grid: 14 22 42;
+    --accent: 64 132 255;
+    --accent-strong: 120 168 255;
+    --accent-ink: 125 175 255;
+    --accent-2: 34 211 238;
+    --glow: 103 232 249;
+    --on-accent: 255 255 255;
+    --cta-from: 34 211 238;
+    --cta-to: 45 212 191;
+    --on-cta: 4 18 31;
+}
+
+/* A band drawn on midnight whatever the theme: the hero, Skills, Contact and the footer. */
+.night {
+    color: rgb(var(--ink));
+    color-scheme: dark;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply min-h-screen bg-paper font-sans text-[1rem] leading-[1.65] text-ink antialiased md:text-[1.0625rem];
+    }
+
+    h1,
+    h2,
+    h3 {
+        @apply font-display;
+        text-wrap: balance;
+    }
+
+    p,
+    li {
+        text-wrap: pretty;
+    }
+
+    /* Anchor jumps land below the fixed navigation bar. */
+    section[id] {
+        scroll-margin-top: 4.5rem;
+    }
+
+    :focus-visible {
+        outline: 2px solid rgb(var(--accent));
+        outline-offset: 3px;
+        border-radius: 2px;
+    }
+
+    ::selection {
+        background: rgb(var(--accent) / 0.25);
+    }
+}
+
+/* Lucide interface icons size with the text beside them, as the brand marks do, and share one
+   stroke. Outside @layer, because Tailwind drops layered rules for classes it does not see in the
+   source (Lucide adds this one at runtime); :where() keeps it weaker than any size utility. */
+:where(.lucide) {
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
+    stroke-width: 1.85;
+}
+
 ::-webkit-scrollbar {
-    width: 9px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgb(var(--paper));
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #c2410c;
-    border: 2px solid #f1f1f1;
+    background: rgb(var(--pencil) / 0.55);
+    border: 3px solid rgb(var(--paper));
     border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #9a3412;
+    background: rgb(var(--accent));
 }
 
-.dark ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+/* ---------- Surfaces ---------- */
+
+/* Midnight bands: soft blue and cyan light pooling in opposite corners. */
+.band-night {
+    background:
+        radial-gradient(70% 60% at 88% 0%, rgb(37 99 235 / 0.22), transparent 62%),
+        radial-gradient(60% 55% at 0% 100%, rgb(6 182 212 / 0.12), transparent 62%),
+        rgb(var(--paper));
 }
 
-.dark ::-webkit-scrollbar-thumb {
-    border-color: #0a0a0a;
+/* A full-screen section: at least as tall as the screen below the navigation bar (where an
+   in-page link leaves the section's top), with its content in the middle. */
+.screen {
+    display: flex;
+    min-height: calc(100svh - 4.5rem);
+    flex-direction: column;
+    justify-content: center;
 }
 
-html {
-    scroll-behavior: smooth;
+/* Light sections: a faint wash of blue and cyan so no section is flat white or grey. */
+.wash {
+    background:
+        radial-gradient(55% 45% at 0% 0%, rgb(var(--accent-2) / 0.07), transparent 70%),
+        radial-gradient(50% 40% at 100% 35%, rgb(var(--accent) / 0.06), transparent 70%);
 }
 
-/* Offset anchor jumps so the fixed navbar doesn't cover section headings */
-section[id] {
-    scroll-margin-top: 7rem;
+/* The brand gradient: electric blue into cyan (a deeper cyan on light paper, so it stays legible). */
+.text-gradient {
+    background-image: linear-gradient(100deg, rgb(var(--accent)), rgb(var(--accent-2)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-:focus-visible {
-    outline: 2px solid theme('colors.primary');
-    outline-offset: 2px;
+/* A fine grid: 24px squares inside 120px major squares (screenshot placeholders, the phone view). */
+.drafting-grid {
+    background-image:
+        linear-gradient(to right, rgb(var(--rule) / 0.6) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(var(--rule) / 0.6) 1px, transparent 1px),
+        linear-gradient(to right, rgb(var(--grid)) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(var(--grid)) 1px, transparent 1px);
+    background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    background-position: -1px -1px;
+}
+
+/* Corner marks around a figure. */
+.crop-marks {
+    --mark: 14px;
+    --mark-color: rgb(var(--accent) / 0.55);
+    background:
+        linear-gradient(var(--mark-color), var(--mark-color)) top left / var(--mark) 1px no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) top left / 1px var(--mark) no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) top right / var(--mark) 1px no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) top right / 1px var(--mark) no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) bottom left / var(--mark) 1px no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) bottom left / 1px var(--mark) no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) bottom right / var(--mark) 1px no-repeat,
+        linear-gradient(var(--mark-color), var(--mark-color)) bottom right / 1px var(--mark) no-repeat;
+}
+
+/* Soft light that follows the pointer across a tilting figure (the figure sets --px / --py, 0..1). */
+.pointer-glare {
+    background: radial-gradient(
+        circle at calc(var(--px, 0.5) * 100%) calc(var(--py, 0.5) * 100%),
+        rgb(255 255 255 / 0.22),
+        rgb(255 255 255 / 0.04) 35%,
+        transparent 60%
+    );
+    mix-blend-mode: soft-light;
+}
+
+/* Spotlight: on a panel, light gathers on the edge nearest the pointer, with a faint glow inside.
+   useSpotlight (App.jsx) sets --spot-x / --spot-y on the panel under a mouse or pen. */
+.spotlight {
+    position: relative;
+}
+
+.spotlight::before,
+.spotlight::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.35s;
+    pointer-events: none;
+}
+
+/* The lit edge: a gradient shown only in the 1px ring over the border. */
+.spotlight::before {
+    inset: -1px;
+    z-index: 2;
+    padding: 1px;
+    background: radial-gradient(
+        260px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        rgb(var(--glow) / 0.9),
+        rgb(var(--accent) / 0.45) 45%,
+        transparent 75%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.spotlight::after {
+    inset: 0;
+    background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgb(var(--accent) / 0.07), transparent 65%);
+}
+
+.spotlight:hover::before,
+.spotlight:hover::after {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .spotlight::before,
+    .spotlight::after {
+        display: none;
+    }
+}
+
+/* A band of light that sweeps across a button on hover. */
+@keyframes sheen {
+    from {
+        transform: translateX(-120%) skewX(-20deg);
+    }
+
+    to {
+        transform: translateX(320%) skewX(-20deg);
+    }
+}
+
+.sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    pointer-events: none;
+}
+
+.sheen:hover::before,
+.sheen:focus-visible::before {
+    animation: sheen 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.safe-bottom {
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+    .safe-bottom {
+        bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    }
+}
+
+/* ---------- Hero ---------- */
+
+/* Layered light behind the hero, in each theme: a base wash, blue light behind the 3D scene,
+   deeper blue behind the name, a touch of cyan low on the right, and a grid only around the
+   scene. Light: ice-white. Dark: midnight. */
+.hero-backdrop {
+    background:
+        radial-gradient(42% 52% at 74% 44%, rgb(30 102 245 / 0.13), transparent 70%),
+        radial-gradient(38% 46% at 14% 20%, rgb(56 189 248 / 0.1), transparent 70%),
+        radial-gradient(30% 30% at 92% 92%, rgb(6 182 212 / 0.1), transparent 70%),
+        linear-gradient(180deg, #f9fbfe 0%, #eef3fb 62%, #f6f8fc 100%);
+}
+
+.dark .hero-backdrop {
+    background:
+        radial-gradient(42% 52% at 74% 44%, rgb(37 99 235 / 0.3), transparent 70%),
+        radial-gradient(38% 46% at 14% 20%, rgb(29 78 216 / 0.2), transparent 70%),
+        radial-gradient(30% 30% at 92% 92%, rgb(6 182 212 / 0.13), transparent 70%),
+        linear-gradient(180deg, #040814 0%, #071026 58%, #0a1430 100%);
+}
+
+.hero-grid {
+    --line: rgb(30 70 160 / 0.08);
+    background-image:
+        linear-gradient(to right, var(--line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(40% 52% at 72% 46%, #000 0%, transparent 100%);
+}
+
+.dark .hero-grid {
+    --line: rgb(160 190 255 / 0.06);
+}
+
+/* Film grain over the hero: a faint fixed noise that takes the digital flatness off the light. */
+.grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+}
+
+.dark .grain {
+    opacity: 0.07;
+}
+
+/* The 3D scene: four glass layers of a web product stacked in perspective, a ring of technology
+   chips orbiting them and code glyphs circling the other way. The figure's custom properties
+   drive it:
+   --tilt / --spin    the rig's rotation, plus --sway (idle), --twist (drag) and --mx / --my (pointer);
+   --open / --breathe the distance between layers (joined by scrolling; breathing when idle);
+   --orbit            the rings' rotation; --spread how far out the rings sit; --size the layer size. */
+.scene {
+    --tilt: 54deg;
+    --spin: -42deg;
+    --sway: 0deg;
+    --twist: 0deg;
+    --mx: 0;
+    --my: 0;
+    --open: 1;
+    --breathe: 1;
+    --orbit: 0deg;
+    --spread: 1;
+    /* The layer size follows the figure: room for the orbit around it, and low enough for its height. */
+    --size: min(21rem, 42cqw, 50cqh);
+    --gap: calc(var(--size) * 0.28 * var(--open) * var(--breathe));
+    --thick: calc(var(--size) * 0.03);
+    --rx: calc(var(--tilt) - var(--my) * 7deg);
+    --rz: calc(var(--spin) + var(--sway) + var(--twist) + var(--mx) * 9deg);
+
+    /* Light theme: frosted white glass on ice. */
+    --face-fill: rgb(255 255 255 / 0.74);
+    --face-sheen: rgb(255 255 255 / 0.95);
+    --face-line: rgb(30 102 245 / 0.2);
+    --face-shadow: 0 34px 60px -24px rgb(15 40 110 / 0.34);
+    --chip-fill: rgb(255 255 255 / 0.92);
+    --chip-line: rgb(30 102 245 / 0.16);
+    --chip-shadow: rgb(15 40 110 / 0.28);
+    --ring-line: rgb(30 102 245 / 0.3);
+    --floor: rgb(30 102 245 / 0.18);
+
+    position: relative;
+    perspective: 2000px;
+    perspective-origin: 50% 32%;
+    touch-action: pan-y;
+}
+
+.dark .scene {
+    --face-fill: rgb(9 18 40 / 0.82);
+    --face-sheen: rgb(255 255 255 / 0.16);
+    --face-line: rgb(160 190 255 / 0.24);
+    --face-shadow: 0 34px 60px -18px rgb(1 4 14 / 0.85);
+    --chip-fill: rgb(12 22 46 / 0.9);
+    --chip-line: rgb(255 255 255 / 0.16);
+    --chip-shadow: rgb(1 4 14 / 0.9);
+    --ring-line: rgb(64 132 255 / 0.42);
+    --floor: rgb(37 99 235 / 0.4);
+}
+
+.scene-rig {
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    width: var(--size);
+    height: var(--size);
+    margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateZ(var(--rz));
+}
+
+/* Each layer sits at its height in the stack, plus --drop while it falls in on load and --lift
+   while it is the one being shown. */
+.scene-layer {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: translateZ(calc((var(--i) - 1.5) * var(--gap) + var(--drop, 0px) + var(--lift, 0) * var(--size)));
+}
+
+.scene-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    border: 1px solid var(--face-line);
+    background:
+        linear-gradient(150deg, var(--face-sheen), rgb(255 255 255 / 0.03) 46%, rgb(var(--tint) / 0.16)),
+        var(--face-fill);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.22),
+        inset 0 0 40px rgb(var(--tint) / 0.12),
+        var(--face-shadow);
+    transition: border-color 0.5s, box-shadow 0.5s;
+}
+
+/* The code editor is dark in both themes, as editors are. */
+.scene-face--code {
+    --face-fill: rgb(9 18 40 / 0.9);
+    --face-sheen: rgb(255 255 255 / 0.14);
+    --face-line: rgb(160 190 255 / 0.3);
+}
+
+/* The layer being shown glows in its own colour. */
+.scene-layer[data-active] .scene-face {
+    border-color: rgb(var(--tint) / 0.85);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.3),
+        inset 0 0 50px rgb(var(--tint) / 0.25),
+        0 0 46px rgb(var(--tint) / 0.4),
+        var(--face-shadow);
+}
+
+/* Specular light on the glass, sliding with the pointer. */
+.scene-face::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        60% 60% at calc(30% + var(--mx) * 30%) calc(20% + var(--my) * 30%),
+        rgb(255 255 255 / 0.22),
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+/* The layer's thickness: its two edges that face the viewer, lit like the rim of glass. */
+.scene-edge {
+    position: absolute;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(180deg, rgb(var(--tint) / 0.75), rgb(30 102 245 / 0.25));
+}
+
+.scene-edge--front {
+    left: 1rem;
+    right: 0.6rem;
+    top: calc(100% - 1px);
+    height: var(--thick);
+    transform-origin: top;
+    transform: rotateX(-90deg);
+}
+
+.scene-edge--side {
+    top: 1rem;
+    bottom: 0.6rem;
+    right: calc(100% - 1px);
+    width: var(--thick);
+    transform-origin: right;
+    transform: rotateY(-90deg);
+    background: linear-gradient(270deg, rgb(var(--tint) / 0.6), rgb(30 102 245 / 0.2));
+}
+
+/* A pool of light under the stack, on the same plane, with a faint grid. */
+.scene-floor {
+    position: absolute;
+    inset: -55%;
+    transform: translateZ(calc(var(--gap) * -1.5 - var(--size) * 0.24));
+    background:
+        radial-gradient(closest-side, var(--floor), rgb(6 182 212 / 0.1) 55%, transparent),
+        repeating-linear-gradient(0deg, transparent 0 27px, rgb(110 140 200 / 0.08) 27px 28px),
+        repeating-linear-gradient(90deg, transparent 0 27px, rgb(110 140 200 / 0.08) 27px 28px);
+    mask-image: radial-gradient(closest-side, #000 30%, transparent);
+    border-radius: 50%;
+}
+
+/* Light beams between the layers, with data pulsing up from the database to the interface. */
+.scene-beam {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 2px;
+    height: calc(var(--gap) * 3 * var(--grow, 1));
+    transform-origin: top;
+    transform: translateZ(calc(var(--gap) * 1.5)) rotateX(-90deg);
+    background: linear-gradient(180deg, rgb(96 165 250 / 0.85), rgb(34 211 238 / 0.7) 50%, rgb(30 102 245 / 0.55));
+    box-shadow: 0 0 10px rgb(34 211 238 / 0.6);
+}
+
+.scene-pulse {
+    position: absolute;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+    border-radius: 50%;
+    background: #e8fbff;
+    box-shadow: 0 0 10px 3px rgb(34 211 238 / 0.85);
+    animation: pulse-up 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes pulse-up {
+    from {
+        top: 100%;
+        opacity: 0;
+    }
+
+    15%,
+    85% {
+        opacity: 1;
+    }
+
+    to {
+        top: 0%;
+        opacity: 0;
+    }
+}
+
+/* Orbit rings, flat on the rig's plane at the middle of the stack: the outer one carries the
+   technology chips, the dashed inner one the code glyphs. */
+.scene-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--r) * 2);
+    height: calc(var(--r) * 2);
+    margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
+    border-radius: 50%;
+    border: 1px solid var(--ring-line);
+    box-shadow: 0 0 26px rgb(30 102 245 / 0.18), inset 0 0 26px rgb(6 182 212 / 0.12);
+    pointer-events: none;
+}
+
+.scene-ring--inner {
+    border-style: dashed;
+    box-shadow: none;
+    opacity: 0.8;
+}
+
+/* Something on an orbit: placed on its ring at --orbit (times --rate) plus its own --phase, at
+   the ring's height, and turned back to face the viewer. Further round the back it is smaller by
+   perspective, and also softer and dimmer. */
+.scene-orbiter {
+    --angle: calc(var(--orbit) * var(--rate, 1) + var(--phase));
+    --depth: max(0, sin(var(--angle) + var(--rz)) * -1);
+    position: absolute;
+    left: calc(50% + cos(var(--angle)) * var(--r));
+    top: calc(50% + sin(var(--angle)) * var(--r));
+    width: 0;
+    height: 0;
+    transform: translateZ(calc(var(--lift, 0) * var(--size))) rotateZ(calc(var(--rz) * -1)) rotateX(calc(var(--rx) * -1));
+    opacity: calc(1 - var(--depth) * 0.45);
+    filter: blur(calc(var(--depth) * 1.6px));
+}
+
+.scene-chip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    width: var(--chip, 3.25rem);
+    height: var(--chip, 3.25rem);
+    place-items: center;
+    transform: translate(-50%, -50%);
+    border-radius: 28%;
+    border: 1px solid var(--chip-line);
+    background:
+        linear-gradient(150deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.04) 55%),
+        var(--chip-fill);
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.3),
+        0 18px 30px -12px var(--chip-shadow),
+        0 0 26px -6px var(--brand);
+    color: var(--brand);
+    font-size: calc(var(--chip, 3.25rem) * 0.5);
+}
+
+.scene-glyph {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    padding: 0.2em 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid var(--chip-line);
+    background: var(--chip-fill);
+    color: rgb(var(--accent-ink));
+    font: 600 calc(var(--size) * 0.055) / 1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: nowrap;
+    box-shadow: 0 10px 22px -12px var(--chip-shadow), 0 0 18px -6px rgb(var(--accent) / 0.6);
+}
+
+.scene-spin {
+    animation: spin 14s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        rotate: 360deg;
+    }
+}
+
+/* Off screen, the scene's loops stop. */
+.scene[data-paused] *,
+.scene[data-paused] *::before,
+.scene[data-paused] *::after {
+    animation-play-state: paused !important;
+}
+
+/* The scroll cue: a dot running down a track. */
+@keyframes cue {
+    0% {
+        transform: translateY(-4px);
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+}
+
+.scroll-cue-dot {
+    animation: cue 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Phones held sideways: tighten the hero so the name, summary and buttons fit in one view. */
+@media (max-height: 520px) and (orientation: landscape) {
+    #home {
+        min-height: auto;
+        padding-top: 5rem;
+    }
+
+    #home h1 {
+        font-size: 3.25rem;
+    }
+}
+
+/* ---------- Project wall ----------
+   Every live site as a tile on one tilted wall (ProjectWall.jsx). The tiles sit in rows from the
+   middle of the wall: --wc / --wr on tablets and up, --nc / --nr on phones, in tile steps. A tile
+   is sized by the stage's width and, on wide screens, by the screen's height, so the pinned wall
+   fits on one screen. The scroll tweens each tile's transform and the plane's --wall-* tilt. */
+.wall-stage {
+    container-type: inline-size;
+    width: 100%;
+    max-width: 92rem;
+    margin-inline: auto;
+    padding: 2.5rem 1.25rem 1.5rem;
+    perspective: 1600px;
+    perspective-origin: 50% 40%;
+}
+
+.wall-plane {
+    --gap: clamp(0.6rem, 1.5cqw, 1.4rem);
+    --cols: 3;
+    --rows: 5;
+    --tile: min(15.5rem, calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols)));
+    /* A browser bar on top of a 16:10 screenshot. */
+    --tile-h: calc(var(--tile) * 0.695);
+    position: relative;
+    height: calc(var(--rows) * var(--tile-h) + (var(--rows) - 1) * var(--gap));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--wall-rx, 12deg)) rotateY(var(--wall-ry, -8deg)) rotateZ(var(--wall-rz, 1.5deg));
+}
+
+@media (min-width: 768px) {
+    .wall-plane {
+        --cols: 5;
+        --rows: 3;
+        /* 88% of the width: the wall's tilt brings its right side nearer, and larger. */
+        --tile: min(15.5rem, calc((88cqw - 4 * var(--gap)) / 5), calc((100svh - 11rem - 2 * var(--gap)) / 2.085));
+    }
+}
+
+.wall-tile {
+    --c: var(--nc);
+    --r: var(--nr);
+    position: absolute;
+    left: calc(50% + var(--c) * (var(--tile) + var(--gap)) - var(--tile) / 2);
+    top: calc(50% + var(--r) * (var(--tile-h) + var(--gap)) - var(--tile-h) / 2);
+    width: var(--tile);
+    height: var(--tile-h);
+    transform-style: preserve-3d;
+}
+
+@media (min-width: 768px) {
+    .wall-tile {
+        --c: var(--wc);
+        --r: var(--wr);
+    }
+}
+
+/* The tile itself: a small browser window that comes forward on hover and focus. */
+.wall-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: calc(var(--tile) * 0.05);
+    border: 1px solid rgb(var(--ink) / 0.12);
+    background: rgb(var(--sheet));
+    box-shadow: 0 24px 40px -26px rgb(15 40 110 / 0.5);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s, box-shadow 0.4s;
+}
+
+.wall-card:hover,
+.wall-card:focus-visible {
+    transform: translateZ(calc(var(--tile) * 0.16));
+    border-color: rgb(var(--glow) / 0.75);
+    box-shadow: 0 0 0 1px rgb(var(--glow) / 0.35), 0 30px 60px -22px rgb(var(--accent) / 0.65);
+}
+
+.wall-bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: calc(var(--tile) * 0.018);
+    height: calc(var(--tile) * 0.07);
+    padding-inline: calc(var(--tile) * 0.04);
+    border-bottom: 1px solid rgb(var(--ink) / 0.08);
+    background: rgb(var(--ink) / 0.04);
+}
+
+.wall-bar i {
+    width: calc(var(--tile) * 0.022);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgb(var(--ink) / 0.22);
+}
+
+.wall-card img {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    flex: 1;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* The site's name, shown on hover and focus where the tiles are big enough to carry it. */
+.wall-label {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 1.4rem 0.7rem 0.5rem;
+    background: linear-gradient(transparent, rgb(4 8 20 / 0.86));
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.25;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+@media (min-width: 768px) {
+    .wall-card:hover .wall-label,
+    .wall-card:focus-visible .wall-label {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (min-width: 768px) and (hover: none) {
+    .wall-label {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ---------- Theme switch: the new theme spreads out from the toggle ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+    animation: theme-reveal 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes theme-reveal {
+    from {
+        clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+    }
+
+    to {
+        clip-path: circle(150vmax at var(--theme-transition-x) var(--theme-transition-y));
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -56,243 +812,9 @@ section[id] {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-}
 
-body {
-    @apply min-h-screen bg-bg-light font-poppins text-text-light antialiased transition-colors duration-300;
-}
-
-.dark body {
-    @apply bg-bg-dark text-text-dark;
-}
-
-::selection {
-    background: rgba(250, 91, 15, 0.28);
-}
-
-.typed-cursor {
-    color: #fb923c;
-}
-
-/* Glassmorphism Utilities */
-.glass {
-    @apply border-b border-black/10 bg-white/90 shadow-[0_10px_30px_rgb(15,23,42,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0a0a0a]/90 dark:shadow-[0_10px_30px_rgb(0,0,0,0.35)];
-}
-
-/* Short landscape screens (phones held sideways): tighten the hero so headline, role and both buttons fit in one view */
-@media (max-height: 520px) and (orientation: landscape) {
-    #home {
-        padding-top: 4.5rem;
-        padding-bottom: 2rem;
-    }
-
-    #home .hero-greeting {
-        margin-bottom: 0.25rem;
-        font-size: 1.125rem;
-    }
-
-    #home h1 {
-        font-size: 2.75rem;
-    }
-
-    #home .hero-role {
-        margin-bottom: 1.25rem;
-        font-size: 1.5rem;
-    }
-
-    #home .hero-scroll-hint {
+    .scene-pulse {
         display: none;
-    }
-}
-
-/* Fine film grain over the WebGL hero so the render reads as a finished image, not a raw canvas */
-.hero-grain {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    opacity: 0.07;
-    mix-blend-mode: overlay;
-}
-
-/* Wrapper drei creates for each icon chip on the tools globe */
-.tools-globe-chip {
-    pointer-events: none;
-}
-
-/* ---------- 3D project previews ----------
-   The card sets --px / --py (0..1 pointer position) and the device, glare and shadow all read them. */
-.device-stage {
-    --px: 0.5;
-    --py: 0.5;
-    display: grid;
-    place-items: center;
-    padding: 7% 7% 9%;
-    perspective: 1100px;
-    container-type: size;
-    background:
-        radial-gradient(120% 80% at 50% 115%, rgba(250, 91, 15, 0.32), transparent 60%),
-        linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
-}
-
-.dark .device-stage {
-    background:
-        radial-gradient(120% 80% at 50% 115%, rgba(250, 91, 15, 0.3), transparent 60%),
-        linear-gradient(180deg, #1f2937 0%, #0b1020 100%);
-}
-
-.device {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    height: min(100%, calc(100cqw / 1.6));
-    aspect-ratio: 16 / 10;
-    max-width: 100%;
-    border-radius: 12px;
-    background: #1c1c1f;
-    transform-style: preserve-3d;
-    will-change: transform;
-    box-shadow:
-        0 1px 0 #3a3a40,
-        0 2px 0 #2c2c31,
-        0 3px 0 #1f1f24,
-        0 22px 40px -18px rgba(0, 0, 0, 0.7),
-        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-}
-
-.device-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: 24px;
-    flex: none;
-    padding: 0 10px;
-    border-radius: 12px 12px 0 0;
-    background: linear-gradient(180deg, #34343a, #27272c);
-}
-
-.device-bar i {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
-    background: #ff5f57;
-    opacity: 0.85;
-}
-
-.device-bar i:nth-child(2) { background: #febc2e; }
-.device-bar i:nth-child(3) { background: #28c840; }
-
-.device-url {
-    margin: 0 auto;
-    max-width: 68%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 999px;
-    background: #18181b;
-    padding: 2px 10px;
-    font-size: 10px;
-    line-height: 14px;
-    font-weight: 500;
-    color: #a1a1aa;
-    letter-spacing: 0.01em;
-}
-
-.device-screen {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    border-radius: 0 0 12px 12px;
-    background: #000;
-}
-
-.device-glare {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    background: radial-gradient(
-        circle at calc(var(--px) * 100%) calc(var(--py) * 100%),
-        rgba(255, 255, 255, 0.24),
-        rgba(255, 255, 255, 0.05) 32%,
-        transparent 58%
-    );
-}
-
-.device-shadow {
-    position: absolute;
-    left: 14%;
-    right: 14%;
-    bottom: 3%;
-    height: 12%;
-    border-radius: 50%;
-    background: rgba(2, 6, 23, 0.6);
-    filter: blur(14px);
-    transform: translateX(calc((0.5 - var(--px)) * 28px)) scaleX(calc(1 - (var(--py) - 0.5) * 0.25));
-    transition: transform 0.15s linear;
-}
-
-@media (max-width: 640px) {
-    .device-bar { height: 20px; }
-    .device-url { font-size: 9px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .device { will-change: auto; }
-}
-
-.safe-bottom {
-    bottom: calc(1rem + env(safe-area-inset-bottom));
-}
-
-@media (min-width: 640px) {
-    .safe-bottom {
-        bottom: calc(1.5rem + env(safe-area-inset-bottom));
-    }
-}
-
-@keyframes tools-marquee {
-    to {
-        transform: translateX(calc(-50% - 0.5rem));
-    }
-}
-
-.tools-marquee-track {
-    animation: tools-marquee 42s linear infinite;
-    will-change: transform;
-}
-
-.tools-marquee-track.marquee-paused {
-    animation-play-state: paused;
-}
-
-.marquee-mask {
-    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
-}
-
-::view-transition-new(root) {
-    animation: theme-reveal 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes theme-reveal {
-    from {
-        clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
-    }
-    to {
-        clip-path: circle(150vmax at var(--theme-transition-x) var(--theme-transition-y));
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .tools-marquee-track {
-        animation: none;
     }
 
     ::view-transition-old(root),

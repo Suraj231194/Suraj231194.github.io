@@ -1,14 +1,20 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { motion, useReducedMotion } from 'framer-motion';
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { Moon, Sun } from 'lucide-react';
 import { flushSync } from 'react-dom';
+import { DARK_FROM, LIGHT_FROM, formatHour } from '../constants/theme';
+
+// The tooltip says how the theme is chosen: by the clock, or by the toggle for this visit.
+const SCHEDULE = `dark from ${formatHour(DARK_FROM)} to ${formatHour(LIGHT_FROM)}`;
 
 const ThemeToggle = () => {
-    const { theme, toggleTheme } = useTheme();
+    const { theme, toggleTheme, followsClock } = useTheme();
     const reduceMotion = useReducedMotion();
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    const hint = followsClock ? `The theme follows the time of day: ${SCHEDULE}.` : 'Your choice lasts for this visit.';
 
+    // The new theme spreads out in a circle from the button (View Transitions API where supported).
     const handleThemeChange = (event) => {
         if (reduceMotion || !document.startViewTransition) {
             toggleTheme();
@@ -26,15 +32,11 @@ const ThemeToggle = () => {
             type="button"
             onClick={handleThemeChange}
             aria-label={`Switch to ${nextTheme} theme`}
-            title={`Switch to ${nextTheme} theme`}
-            className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${theme === 'dark'
-                    ? 'border-white/15 bg-white/10 text-orange-300 hover:bg-white/20'
-                    : 'border-slate-300 bg-white/90 text-slate-800 hover:bg-white'
-                }`}
-            whileHover={reduceMotion ? undefined : { scale: 1.05, rotate: 8 }}
-            whileTap={reduceMotion ? undefined : { scale: 0.95 }}
+            title={`Switch to ${nextTheme} theme. ${hint}`}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rule bg-sheet/60 text-ink transition-[color,border-color,box-shadow] duration-200 hover:border-accent/60 hover:shadow-[0_0_18px_-6px_rgb(var(--accent)/0.8)]"
+            whileTap={reduceMotion ? undefined : { scale: 0.94 }}
         >
-            {theme === 'dark' ? <FaSun size={19} aria-hidden="true" /> : <FaMoon size={18} aria-hidden="true" />}
+            {theme === 'dark' ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
         </motion.button>
     );
 };

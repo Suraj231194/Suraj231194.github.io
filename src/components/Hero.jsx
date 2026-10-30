@@ -1,167 +1,280 @@
-import React, { Suspense, lazy, useEffect, useRef } from 'react';
-import Typed from 'typed.js';
-import { motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { FaArrowRight, FaEnvelope } from 'react-icons/fa';
-import { HERO_CONTENT } from '../constants';
-import { EASE, enterMotion } from '../constants/motion';
+import React, { useRef } from 'react';
+import { ArrowRight, BriefcaseBusiness, CalendarClock, Download, Handshake, Mail, MapPin } from 'lucide-react';
+import { SplitText } from 'gsap/SplitText';
+import { HERO_CONTENT, SOCIAL_LINKS } from '../constants';
+import Container from './ui/Container';
+import { buttonClasses } from './ui/buttonStyles';
+import { Github, Linkedin } from './ui/BrandIcons';
 import MagneticLink from './MagneticLink';
-import useWebGLSupport from '../hooks/useWebGLSupport';
+import HeroVisual from './hero/HeroVisual';
+import HeroParticles from './hero/HeroParticles';
+import { MOTION_OK, SCRUB, gsap, useScrollMotion } from './motion/scroll';
 
-// Loaded on demand so Three.js never blocks the first paint of the page.
-const HeroScene = lazy(() => import('./three/HeroScene'));
+gsap.registerPlugin(SplitText);
+
+const SOCIALS = [
+    { label: 'GitHub', href: SOCIAL_LINKS.github, icon: Github, external: true },
+    { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin, icon: Linkedin, external: true },
+    { label: 'Email', href: `mailto:${SOCIAL_LINKS.email}`, icon: Mail, external: false },
+];
+
+const FACT_ICONS = { Role: BriefcaseBusiness, Experience: CalendarClock, 'Based in': MapPin, 'Open to': Handshake };
+
+// Dividers in the facts strip: two columns on phones, four in a row on wide screens.
+const FACT_DIVIDERS = [
+    '',
+    'before:inset-y-4 before:left-0 before:w-px before:bg-gradient-to-b',
+    'after:inset-x-4 after:top-0 after:h-px after:bg-gradient-to-r lg:after:hidden lg:before:inset-y-4 lg:before:left-0 lg:before:w-px lg:before:bg-gradient-to-b',
+    'before:inset-y-4 before:left-0 before:w-px before:bg-gradient-to-b after:inset-x-4 after:top-0 after:h-px after:bg-gradient-to-r lg:after:hidden',
+];
+
+/*
+ * The opening, once on load: the name rises letter by letter out of its line, the role and
+ * summary resolve word by word, then the buttons and the strip settle while the 3D scene
+ * assembles, layers dropping in from the bottom up and the orbits arriving. Split text is put back afterwards, so what
+ * remains is plain text.
+ */
+const useHeroOpening = (sectionRef) =>
+    useScrollMotion(sectionRef, () => {
+        const q = gsap.utils.selector(sectionRef.current);
+        const name = SplitText.create(q('[data-hero-name]'), { type: 'chars', mask: 'chars' });
+        const summary = SplitText.create(q('[data-hero-summary]'), { type: 'words' });
+
+        // Each step names its end state and clears its inline styles when done: some of these
+        // elements have CSS transitions and hover transforms of their own, which must win afterwards.
+        const rise = (distance, extra = {}) => [
+            { y: distance, opacity: 0, ...extra.from },
+            { y: 0, opacity: 1, clearProps: 'transform,opacity,filter', ...extra.to },
+        ];
+        const timeline = gsap.timeline({
+            defaults: { ease: 'expo.out' },
+            onComplete: () => {
+                name.revert();
+                summary.revert();
+            },
+        });
+        timeline
+            .fromTo(q('[data-intro="status"]'), ...rise(14, { to: { duration: 0.8 } }), 0.1)
+            .fromTo(name.chars, { yPercent: 115 }, { yPercent: 0, duration: 1.1, stagger: 0.035 }, 0.15)
+            .fromTo(q('[data-intro="role"]'), ...rise(18, { from: { filter: 'blur(8px)' }, to: { filter: 'blur(0px)', duration: 1 } }), 0.55)
+            .fromTo(summary.words, ...rise(12, { from: { filter: 'blur(6px)' }, to: { filter: 'blur(0px)', duration: 0.8, stagger: 0.014 } }), 0.65)
+            .fromTo(q('[data-intro="actions"] > *'), ...rise(18, { to: { duration: 0.8, stagger: 0.08 } }), 0.85)
+            .fromTo(q('[data-intro="socials"] > *, [data-intro="cue"]'), ...rise(12, { to: { duration: 0.6, stagger: 0.06 } }), 1)
+            .fromTo(q('[data-intro="strip"]'), ...rise(26, { to: { duration: 1 } }), 1.05)
+            // The scene: lights up, then the layers drop in from the bottom up, the beams grow
+            // between them, and the chips and labels arrive.
+            .fromTo(q('[data-scene]'), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 1.4, clearProps: 'transform,opacity' }, 0.2)
+            .fromTo(q('[data-layer]'), { '--drop': '160px' }, { '--drop': '0px', duration: 1.2, stagger: 0.12, ease: 'power4.out' }, 0.35)
+            // Fade each layer's faces, not the layer: opacity on a 3D layer would flatten its edges.
+            .fromTo(
+                q('[data-layer] > *'),
+                { opacity: 0 },
+                { opacity: 1, duration: 0.8, stagger: (index) => Math.floor(index / 3) * 0.12, clearProps: 'opacity' },
+                0.35
+            )
+            .fromTo(q('[data-beam]'), { '--grow': 0 }, { '--grow': 1, duration: 0.9, stagger: 0.1, ease: 'power2.out' }, 1)
+            .fromTo(q('[data-chip]'), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, stagger: 0.07, ease: 'back.out(1.8)', clearProps: 'transform,opacity' }, 1.05)
+            .fromTo(q('[data-caption]'), ...rise(14, { to: { duration: 0.8 } }), 1.35);
+
+        return () => {
+            name.revert();
+            summary.revert();
+        };
+    });
+
+/*
+ * Scrolling on joins the scene's layers into one stack (and scrolling back takes them apart).
+ * On wide screens the hero is pinned while that happens: it holds still for 70% of a screen of
+ * scrolling while the orbits widen and fade, the caption goes, and the grid and the copy move at
+ * different depths. Then, as it scrolls away, the sheet sinks back and fades under the projects
+ * coming up. On narrower screens nothing is pinned: the layers join as the scene scrolls away.
+ */
+const useHeroScroll = (sectionRef) =>
+    useScrollMotion(
+        sectionRef,
+        ({ wide }) => {
+            const section = sectionRef.current;
+            const q = gsap.utils.selector(section);
+            const scene = q('[data-scene]')[0];
+            // Every step names both ends, and none touches what the opening animates, so neither
+            // can pick up the other's values.
+            const join = (timeline) =>
+                timeline
+                    .fromTo(scene, { '--open': 1, '--spin': '-42deg', '--spread': 1 }, { '--open': 0.24, '--spin': '-30deg', '--spread': 1.5, duration: 1 }, 0)
+                    .fromTo(q('[data-orbit-fade], [data-rings]'), { opacity: 1 }, { opacity: 0, duration: 0.7 }, 0.15)
+                    .fromTo(q('[data-caption-fade]'), { opacity: 1 }, { opacity: 0, duration: 0.45 }, 0);
+
+            if (!wide) {
+                join(
+                    gsap.timeline({
+                        defaults: { ease: 'none' },
+                        // The scene sits first on phones, so the join runs as it scrolls up and away.
+                        scrollTrigger: { trigger: scene, start: 'top 8%', end: 'bottom 15%', scrub: SCRUB },
+                    })
+                );
+                return;
+            }
+
+            const pinned = join(
+                gsap.timeline({
+                    defaults: { ease: 'none' },
+                    // Pinned once its bottom edge is on screen, so a hero taller than the window is seen whole first.
+                    scrollTrigger: { trigger: section, start: 'bottom bottom', end: '+=70%', pin: true, scrub: SCRUB },
+                })
+            )
+                .fromTo(q('[data-depth="grid"]'), { yPercent: 0 }, { yPercent: -5, duration: 1 }, 0)
+                .fromTo(q('[data-depth="copy"]'), { y: 0 }, { y: -32, duration: 1 }, 0);
+
+            gsap.fromTo(
+                q('[data-depth="sheet"]'),
+                { scale: 1, opacity: 1 },
+                {
+                    scale: 0.95,
+                    opacity: 0.35,
+                    ease: 'none',
+                    transformOrigin: '50% 100%',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: () => pinned.scrollTrigger.end,
+                        end: () => pinned.scrollTrigger.end + section.offsetHeight,
+                        scrub: SCRUB,
+                        invalidateOnRefresh: true,
+                    },
+                }
+            );
+        },
+        { motion: MOTION_OK, wide: '(min-width: 1024px)' }
+    );
 
 const Hero = () => {
-    const roleElement = useRef(null);
-    const heroSection = useRef(null);
-    const reduceMotion = useReducedMotion();
-    const webgl = useWebGLSupport();
-    const show3D = webgl && !reduceMotion;
-    const heroInView = useInView(heroSection, { amount: 0.05 });
-    const { scrollYProgress } = useScroll({
-        target: heroSection,
-        offset: ['start start', 'end start'],
-    });
-    const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
-    const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-    // Depth parallax: the headline block drifts and tilts a few degrees against the pointer,
-    // opposite to the 3D object behind it, so the two read as separate planes.
-    const pointerX = useSpring(useMotionValue(0), { stiffness: 60, damping: 18, mass: 0.8 });
-    const pointerY = useSpring(useMotionValue(0), { stiffness: 60, damping: 18, mass: 0.8 });
-    const copyRotateX = useTransform(pointerY, [-10, 10], [2, -2]);
-    const copyRotateY = useTransform(pointerX, [-14, 14], [-2.5, 2.5]);
-
-    useEffect(() => {
-        if (reduceMotion || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
-
-        const handleMove = (event) => {
-            pointerX.set(-(event.clientX / window.innerWidth - 0.5) * 28);
-            pointerY.set(-(event.clientY / window.innerHeight - 0.5) * 20);
-        };
-
-        window.addEventListener('pointermove', handleMove, { passive: true });
-        return () => window.removeEventListener('pointermove', handleMove);
-    }, [reduceMotion, pointerX, pointerY]);
-
-    useEffect(() => {
-        if (!roleElement.current) return undefined;
-
-        if (reduceMotion) {
-            roleElement.current.textContent = HERO_CONTENT.roles[0];
-            return undefined;
-        }
-
-        const typed = new Typed(roleElement.current, {
-            strings: HERO_CONTENT.roles,
-            typeSpeed: 55,
-            backSpeed: 35,
-            backDelay: 1800,
-            loop: true,
-            cursorChar: '|',
-            autoInsertCss: true,
-        });
-
-        return () => typed.destroy();
-    }, [reduceMotion]);
+    const sectionRef = useRef(null);
+    useHeroOpening(sectionRef);
+    useHeroScroll(sectionRef);
+    const [firstName, ...lastName] = HERO_CONTENT.name.split(' ');
 
     return (
         <section
-            ref={heroSection}
+            ref={sectionRef}
             id="home"
-            className="relative flex min-h-[100svh] items-center overflow-hidden bg-black pb-16 pt-24 font-ubuntu"
+            aria-labelledby="hero-title"
+            className="relative isolate flex flex-col overflow-hidden pt-20 sm:pt-24 lg:min-h-[100svh] lg:pt-[5.75rem] short:pt-20"
         >
-            <motion.div
-                className={`absolute -inset-[8%] bg-hero-pattern bg-cover bg-center bg-no-repeat transition-opacity duration-700 ${show3D ? 'opacity-30' : ''}`}
-                style={{ y: reduceMotion ? 0 : backgroundY }}
-                aria-hidden="true"
-            />
+            {/* Layered light, a grid only around the scene, drifting points of light and fine grain.
+                (The fluid the pointer stirs lies over the whole page: FluidLayer in App.jsx.) */}
+            <div className="hero-backdrop absolute inset-0 -z-10" aria-hidden="true" />
+            <div data-depth="grid" className="hero-grid absolute inset-0 -z-10" aria-hidden="true" />
+            <HeroParticles className="absolute inset-0 -z-10 h-full w-full" />
+            <div className="grain pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
 
-            {show3D && (
-                <div className="absolute inset-0 z-[1] opacity-80 sm:opacity-100" aria-hidden="true">
-                    <Suspense fallback={null}>
-                        <HeroScene active={heroInView} />
-                    </Suspense>
-                </div>
-            )}
-
-            <div
-                className={`absolute inset-0 z-[2] bg-gradient-to-r ${show3D ? 'from-black/80 via-black/40 to-black/10' : 'from-black/85 via-black/55 to-black/25'}`}
-                aria-hidden="true"
-            />
-            <div className="hero-grain pointer-events-none absolute inset-0 z-[3]" aria-hidden="true" />
-
-            <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6">
-                <motion.div
-                    className={`max-w-4xl text-white ${show3D ? 'lg:max-w-3xl' : ''}`}
-                    style={
-                        reduceMotion
-                            ? { opacity: 1 }
-                            : { opacity: contentOpacity, x: pointerX, y: pointerY, rotateX: copyRotateX, rotateY: copyRotateY, transformPerspective: 1200 }
-                    }
-                >
-                    <motion.p
-                        {...enterMotion(reduceMotion)}
-                        className="hero-greeting mb-3 text-lg font-medium text-white/85 sm:text-2xl md:text-3xl"
-                    >
-                        {HERO_CONTENT.greeting}
-                    </motion.p>
-
-                    <div className="mb-4 overflow-hidden pb-1">
-                        <motion.h1
-                            initial={reduceMotion ? false : { y: '110%' }}
-                            animate={{ y: 0 }}
-                            transition={{ duration: reduceMotion ? 0 : 0.6, delay: reduceMotion ? 0 : 0.08, ease: EASE }}
-                            className="text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl"
+            <div data-depth="sheet" className="relative flex flex-1 flex-col">
+                <Container className="relative grid flex-1 items-center gap-4 pb-8 lg:grid-cols-12 lg:gap-4 lg:pb-5">
+                    <div data-depth="copy" className="relative z-[1] lg:col-span-6 xl:col-span-5">
+                        <p
+                            data-intro="status"
+                            className="inline-flex items-center gap-2.5 rounded-full border border-ink/10 bg-sheet/60 py-1.5 pl-3 pr-4 text-sm font-medium text-accent-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-sm"
                         >
-                            {HERO_CONTENT.name}
-                        </motion.h1>
+                            <span className="relative flex size-2.5" aria-hidden="true">
+                                <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
+                                <span className="relative size-2.5 rounded-full bg-emerald-400" />
+                            </span>
+                            {HERO_CONTENT.status}
+                        </p>
+
+                        <h1
+                            id="hero-title"
+                            data-hero-name
+                            className="mt-5 font-display text-[clamp(3.6rem,1.9rem+7vw,8.25rem)] font-bold leading-[0.9] tracking-[-0.04em] text-ink lg:text-[min(1.9rem+7vw,8.25rem,13.5svh)] short:mt-3 short:text-[min(1.9rem+7vw,8.25rem,12.5svh)] dark:[text-shadow:0_0_70px_rgb(37_99_235/0.4)]"
+                        >
+                            <span className="block">{firstName}</span>{' '}
+                            <span className="block">{lastName.join(' ')}</span>
+                        </h1>
+
+                        <p data-intro="role" className="text-gradient mt-5 short:mt-3 font-display text-[clamp(1.3rem,1.05rem+0.9vw,1.75rem)] font-semibold leading-tight">
+                            {HERO_CONTENT.role}
+                        </p>
+                        <p data-hero-summary className="mt-3 max-w-[33rem] text-lg leading-relaxed text-pencil sm:text-[1.1875rem] lg:text-[1.0625rem] xl:text-[1.125rem]">
+                            {HERO_CONTENT.summary}
+                        </p>
+
+                        <div data-intro="actions" className="mt-7 short:mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                            <MagneticLink href={HERO_CONTENT.primaryCta.href} className={buttonClasses({ size: 'lg', className: 'group' })}>
+                                {HERO_CONTENT.primaryCta.label}
+                                <ArrowRight className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                            </MagneticLink>
+                            <a href={HERO_CONTENT.secondaryCta.href} download className={buttonClasses({ variant: 'secondary', size: 'lg' })}>
+                                <Download aria-hidden="true" />
+                                {HERO_CONTENT.secondaryCta.label}
+                            </a>
+                        </div>
+
+                        <div className="mt-6 flex items-center gap-6 short:mt-4">
+                            <ul data-intro="socials" className="flex items-center gap-2.5" aria-label="Find me online">
+                                {SOCIALS.map((social) => (
+                                    <li key={social.label}>
+                                        <a
+                                            href={social.href}
+                                            {...(social.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                                            aria-label={social.external ? `${social.label} (opens in a new tab)` : `${social.label} ${SOCIAL_LINKS.email}`}
+                                            className="inline-flex size-11 items-center justify-center rounded-xl border border-ink/10 bg-sheet/60 text-[1.15rem] text-pencil backdrop-blur-sm transition-[color,border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:text-ink hover:shadow-[0_0_22px_-4px_rgb(var(--accent)/0.7)]"
+                                        >
+                                            <social.icon aria-hidden="true" />
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* Scroll cue: a dot running down a track, beside the links on wide screens. */}
+                            <a
+                                href="#projects"
+                                data-intro="cue"
+                                className="group hidden items-center gap-3 border-l border-ink/10 pl-6 text-sm font-medium text-pencil transition-colors hover:text-ink lg:inline-flex"
+                            >
+                                <span className="flex h-9 w-6 justify-center rounded-full border border-ink/25 pt-1.5 transition-colors group-hover:border-accent/70" aria-hidden="true">
+                                    <span className="scroll-cue-dot h-1.5 w-1.5 rounded-full bg-glow shadow-[0_0_8px_rgb(var(--glow))]" />
+                                </span>
+                                Scroll to explore
+                            </a>
+                        </div>
                     </div>
 
-                    <motion.p
-                        {...enterMotion(reduceMotion, 0.2)}
-                        className="hero-role mb-9 min-h-[4rem] text-xl font-medium leading-snug sm:min-h-0 sm:text-3xl md:text-5xl"
-                    >
-                        {HERO_CONTENT.title}{' '}
-                        <span className="block text-orange-400 sm:inline" aria-hidden="true">
-                            <span ref={roleElement} />
-                        </span>
-                        <span className="sr-only">{HERO_CONTENT.roles[0]}</span>
-                    </motion.p>
+                    <HeroVisual
+                        layers={HERO_CONTENT.layers}
+                        className="-mx-5 order-first h-[19rem] sm:mx-0 sm:h-[28rem] lg:order-none lg:col-span-6 lg:h-[clamp(28rem,calc(100svh-15rem),44rem)] xl:col-span-7"
+                    />
+                </Container>
 
-                    <motion.div
-                        {...enterMotion(reduceMotion, 0.3)}
-                        className="flex flex-col gap-3 sm:flex-row sm:items-center"
-                    >
-                        <MagneticLink
-                            href={HERO_CONTENT.link}
-                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-primary bg-primary px-7 py-3 text-lg font-bold text-slate-950 shadow-lg shadow-orange-950/20 transition-colors hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
-                        >
-                            {HERO_CONTENT.buttonText}
-                            <FaArrowRight aria-hidden="true" />
-                        </MagneticLink>
-                        <MagneticLink
-                            href={HERO_CONTENT.secondaryLink}
-                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/40 bg-white/10 px-7 py-3 text-lg font-semibold text-white backdrop-blur-sm transition-colors hover:border-white/70 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:w-auto"
-                        >
-                            <FaEnvelope aria-hidden="true" />
-                            {HERO_CONTENT.secondaryButtonText}
-                        </MagneticLink>
-                    </motion.div>
-                </motion.div>
+                {/* The facts strip: who, how long, where, and what for. */}
+                <div data-intro="strip" className="relative">
+                    <Container className="pb-6 short:pb-4">
+                        <dl className="grid grid-cols-2 overflow-hidden rounded-2xl border border-ink/10 bg-sheet/55 shadow-[inset_0_1px_0_rgb(255_255_255/0.1),0_30px_60px_-34px_rgb(var(--accent)/0.55)] backdrop-blur-md lg:grid-cols-4">
+                            {HERO_CONTENT.facts.map((fact, index) => {
+                                const Icon = FACT_ICONS[fact.label];
+                                return (
+                                    <div
+                                        key={fact.label}
+                                        className={`relative flex items-start gap-3 px-4 py-4 before:absolute before:from-transparent before:via-ink/15 before:to-transparent after:absolute after:from-transparent after:via-ink/15 after:to-transparent sm:gap-3.5 sm:px-6 sm:py-5 lg:py-4 ${FACT_DIVIDERS[index]}`}
+                                    >
+                                        {Icon && (
+                                            <span
+                                                className="mt-0.5 hidden size-10 shrink-0 place-items-center rounded-xl bg-[linear-gradient(135deg,rgb(var(--accent)/0.16),rgb(var(--glow)/0.14))] text-accent-ink ring-1 ring-inset ring-ink/10 sm:grid"
+                                                aria-hidden="true"
+                                            >
+                                                <Icon className="size-[1.15rem]" />
+                                            </span>
+                                        )}
+                                        <div className="min-w-0">
+                                            <dt className="text-[0.8125rem] text-pencil">{fact.label}</dt>
+                                            <dd className="mt-0.5 font-display text-[1.02rem] font-semibold leading-snug text-ink sm:text-[1.0625rem]">{fact.value}</dd>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </dl>
+                    </Container>
+                </div>
             </div>
-
-            {!reduceMotion && (
-                <motion.a
-                    href="#about"
-                    aria-label="Scroll to About section"
-                    className="hero-scroll-hint absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 sm:flex"
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                    Scroll
-                    <span className="h-8 w-px bg-gradient-to-b from-orange-400 to-transparent" aria-hidden="true" />
-                </motion.a>
-            )}
+            {/* A hairline of light where the hero meets the next section. */}
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" aria-hidden="true" />
         </section>
     );
 };

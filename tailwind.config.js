@@ -1,4 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+
+// Every colour is a CSS variable (see src/index.css), so one class serves both themes and the
+// midnight bands: midnight navy and cool slate, with electric blue and cyan as accents.
+const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
     content: [
         "./index.html",
@@ -8,27 +13,30 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: "#fa5b0f",
-                'primary-text': '#c2410c',
-                'primary-text-dark': '#fb923c',
-                dark: "#111111", // Deep black for dark mode
-                light: "#f3f4f6", // Light gray for light mode
-
-                // Semantic Colors
-                'bg-dark': '#0a0a0a',
-                'bg-light': '#ffffff',
-                'surface-dark': '#171717',
-                'surface-light': '#f3f4f6',
-                'text-dark': '#f3f4f6',
-                'text-light': '#1f2937',
+                paper: token('paper'),
+                sheet: token('sheet'),
+                ink: token('ink'),
+                pencil: token('pencil'),
+                rule: token('rule'),
+                grid: token('grid'),
+                accent: token('accent'),
+                'accent-strong': token('accent-strong'),
+                'accent-ink': token('accent-ink'),
+                'accent-2': token('accent-2'),
+                glow: token('glow'),
+                'on-accent': token('on-accent'),
+                'on-cta': token('on-cta'),
             },
             fontFamily: {
-                ubuntu: ["Ubuntu", "sans-serif"],
-                poppins: ["Poppins", "sans-serif"],
+                sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
+                display: ['"Bricolage Grotesque"', '"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+                mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
             },
-            backgroundImage: {
-                'hero-pattern': "url('/images/hero-bg.webp')",
-            }
+            screens: {
+                // Laptops with short screens (1366x768, 1280x800): the first screen tightens up so
+                // the facts strip still fits above the fold.
+                short: { raw: '(min-width: 1024px) and (max-height: 860px)' },
+            },
         },
     },
     plugins: [],

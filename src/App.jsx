@@ -1,34 +1,42 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { MOTION_OK, gsap, useRefreshOnLayoutChange } from './components/motion/scroll';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import About from './components/About';
+import ProjectWall from './components/ProjectWall';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Tools from './components/Tools';
+import About from './components/About';
 import Education from './components/Education';
 import GithubStats from './components/GithubStats';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollUpBtn from './components/ScrollUpBtn';
-import CursorGlow from './components/CursorGlow';
+import FluidLayer from './components/FluidLayer';
+import useSpotlight from './hooks/useSpotlight';
 import { ThemeProvider } from './context/ThemeContext';
-import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
-import useWebGLSupport from './hooks/useWebGLSupport';
-
-// Fixed 3D field behind every section; loaded on demand so it never delays first paint.
-const ScrollWorld = lazy(() => import('./components/three/ScrollWorld'));
 
 function App() {
-    const reduceMotion = useReducedMotion();
-    const webgl = useWebGLSupport();
-    const showWorld = webgl && !reduceMotion;
-    const { scrollYProgress } = useScroll();
-    const scaleX = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
-    });
+    const progressRef = useRef(null);
+    useRefreshOnLayoutChange();
+    useSpotlight();
 
+    // Reading progress: the bar along the top fills from the page's top to its end. It is
+    // information rather than decoration, so it also runs with reduced motion, unsmoothed.
+    useLayoutEffect(() => {
+        const smooth = window.matchMedia(MOTION_OK).matches;
+        const tween = gsap.fromTo(
+            progressRef.current,
+            { scaleX: 0 },
+            { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: smooth ? 0.3 : true } }
+        );
+        return () => {
+            tween.scrollTrigger.kill();
+            tween.kill();
+        };
+    }, []);
+
+    // Opening the page at /#section lands on that section once it has rendered.
     useEffect(() => {
         const scrollToHash = () => {
             const sectionId = decodeURIComponent(window.location.hash.slice(1));
@@ -46,32 +54,25 @@ function App() {
 
     return (
         <ThemeProvider>
-            <div className="App transition-colors duration-300 bg-white dark:bg-[#111] overflow-x-hidden">
-                <motion.div
-                    className="fixed top-0 left-0 right-0 h-1 bg-primary z-[100] origin-left"
-                    style={{ scaleX }}
-                    aria-hidden="true"
-                />
+            <div className="App overflow-x-clip bg-paper text-ink transition-colors duration-300">
+                <div ref={progressRef} className="fixed inset-x-0 top-0 z-[100] h-0.5 origin-left scale-x-0 bg-accent" aria-hidden="true" />
+                {/* Under the navigation bar, over everything else. */}
+                <FluidLayer className="fixed inset-0 z-[45]" />
                 <a
                     href="#main-content"
-                    className="sr-only fixed left-4 top-4 z-[110] rounded-lg bg-white px-4 py-3 font-semibold text-slate-900 shadow-xl focus:not-sr-only"
+                    className="sr-only fixed left-4 top-4 z-[110] rounded-md bg-sheet px-4 py-3 font-semibold text-ink shadow-xl focus:not-sr-only"
                 >
                     Skip to main content
                 </a>
-                {showWorld && (
-                    <Suspense fallback={null}>
-                        <ScrollWorld />
-                    </Suspense>
-                )}
-                <CursorGlow />
                 <ScrollUpBtn />
                 <Navbar />
-                <main id="main-content" className="relative z-[1]">
+                <main id="main-content" tabIndex="-1" className="relative z-[1] focus:outline-none">
                     <Hero />
-                    <About />
+                    <ProjectWall />
                     <Projects />
                     <Experience />
                     <Tools />
+                    <About />
                     <Education />
                     <GithubStats />
                     <Contact />

@@ -1,143 +1,150 @@
-import React, { Suspense, lazy, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Check, Copy, Mail, MessageSquare, Send, User } from 'lucide-react';
 import { SOCIAL_LINKS } from '../constants';
-import { FaUser, FaEnvelope, FaCommentAlt, FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
 import SectionHeading from './SectionHeading';
-import Scroll3D from './Scroll3D';
-import useWebGLSupport from '../hooks/useWebGLSupport';
+import Assemble from './motion/Assemble';
+import Container from './ui/Container';
+import { buttonClasses } from './ui/buttonStyles';
 
-const ContactOrb = lazy(() => import('./three/ContactOrb'));
+const FIELD =
+    'h-12 w-full rounded-md border border-rule bg-paper px-4 text-ink transition-colors placeholder:text-pencil/70 hover:border-ink/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 focus-visible:outline-none';
+
+const CHANNELS = [
+    { label: 'LinkedIn', value: 'linkedin.com/in/surajpawar2311', href: SOCIAL_LINKS.linkedin },
+    { label: 'GitHub', value: 'github.com/Suraj231194', href: SOCIAL_LINKS.github },
+];
 
 const Contact = () => {
-    const reduceMotion = useReducedMotion();
-    const webgl = useWebGLSupport();
-    const orbWrapper = useRef(null);
-    const orbInView = useInView(orbWrapper, { amount: 0.2 });
-    const showOrb = webgl && !reduceMotion;
-    const fieldClassName = 'h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-text-light shadow-sm transition-colors placeholder:text-gray-400 hover:border-gray-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:border-white/15 dark:bg-white/5 dark:text-text-dark dark:hover:border-white/30';
+    const [copyState, setCopyState] = useState('idle');
+    const resetTimer = useRef(null);
+
+    useEffect(() => () => window.clearTimeout(resetTimer.current), []);
+
+    const copyEmail = async () => {
+        try {
+            await navigator.clipboard.writeText(SOCIAL_LINKS.email);
+            setCopyState('copied');
+        } catch {
+            setCopyState('failed');
+        }
+        window.clearTimeout(resetTimer.current);
+        resetTimer.current = window.setTimeout(() => setCopyState('idle'), 2500);
+    };
 
     return (
-        <section id="contact" className="bg-bg-light/75 py-16 text-text-light transition-colors duration-300 dark:bg-bg-dark/70 dark:text-text-dark sm:py-20 lg:py-24">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6">
-                <SectionHeading title="Let's Work Together" eyebrow="Get in touch" />
+        <section id="contact" aria-labelledby="contact-title" className="screen night band-night py-16 sm:py-20 lg:py-24">
+            <Container>
+                <SectionHeading
+                    id="contact-title"
+                    title="Let's work together"
+                    lead="I am available for full-time roles and selected freelance work. Send a message and I will get back to you as soon as possible."
+                />
 
-                <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
-                    <Scroll3D
-                        as="aside"
-                        from="left"
-                        angle={16}
-                        distance={48}
-                        end={0.68}
-                        className="relative overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl sm:p-8"
-                    >
-                        {showOrb && (
-                            <div ref={orbWrapper} className="relative -mx-6 -mt-6 mb-2 h-44 sm:-mx-8 sm:-mt-8 sm:h-48" aria-hidden="true">
-                                <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_45%,rgba(250,91,15,0.18),transparent_70%)]" />
-                                <Suspense fallback={null}>
-                                    <ContactOrb active={orbInView} />
-                                </Suspense>
-                            </div>
-                        )}
-
-                        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-sm font-semibold text-emerald-300">
-                            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
+                <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+                    <Assemble from="left" className="lg:col-span-5">
+                        <p className="inline-flex items-center gap-2 text-sm font-medium text-ink">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
                             Available for opportunities
-                        </span>
-                        <h3 className="font-ubuntu text-2xl font-bold sm:text-3xl">Have a project in mind?</h3>
-                        <p className="mt-4 leading-7 text-slate-300">
-                            I am available for full-time roles and selected freelance work. Send a message and I will get back to you as soon as possible.
                         </p>
 
-                        <ul className="mt-8 space-y-5">
-                            <li>
-                                <a className="group flex items-center gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400" target="_blank" rel="noopener noreferrer" href={SOCIAL_LINKS.github}>
-                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-orange-400 transition-colors group-hover:bg-white/15">
-                                        <FaGithub aria-hidden="true" />
-                                    </span>
-                                    <span>
-                                        <span className="block text-sm text-slate-400">GitHub</span>
-                                        <span className="font-semibold group-hover:text-orange-300">github.com/Suraj231194</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="group flex items-center gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400" target="_blank" rel="noopener noreferrer" href={SOCIAL_LINKS.linkedin}>
-                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-orange-400 transition-colors group-hover:bg-white/15">
-                                        <FaLinkedin aria-hidden="true" />
-                                    </span>
-                                    <span>
-                                        <span className="block text-sm text-slate-400">LinkedIn</span>
-                                        <span className="font-semibold group-hover:text-orange-300">linkedin.com/in/surajpawar2311</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="group flex items-center gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400" href={`mailto:${SOCIAL_LINKS.email}`}>
-                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 text-orange-400 transition-colors group-hover:bg-white/15">
-                                        <FaEnvelope aria-hidden="true" />
-                                    </span>
-                                    <span className="min-w-0">
-                                        <span className="block text-sm text-slate-400">Email</span>
-                                        <span className="break-all font-semibold group-hover:text-orange-300">{SOCIAL_LINKS.email}</span>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </Scroll3D>
+                        <dl className="mt-6 border-t border-rule">
+                            <div className="border-b border-rule py-4">
+                                <dt className="text-sm text-pencil">Email</dt>
+                                <dd className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                                    <a
+                                        href={`mailto:${SOCIAL_LINKS.email}`}
+                                        className="min-w-0 break-all font-medium text-ink underline decoration-rule decoration-2 underline-offset-4 transition-colors hover:decoration-accent"
+                                    >
+                                        {SOCIAL_LINKS.email}
+                                    </a>
+                                    <button type="button" onClick={copyEmail} className={buttonClasses({ variant: 'secondary', size: 'sm' })}>
+                                        {copyState === 'copied' ? <Check className="text-emerald-600" aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                                        {copyState === 'copied' ? 'Copied' : 'Copy email'}
+                                    </button>
+                                </dd>
+                            </div>
+                            {CHANNELS.map((channel) => (
+                                <div key={channel.label} className="border-b border-rule py-4">
+                                    <dt className="text-sm text-pencil">{channel.label}</dt>
+                                    <dd>
+                                        <a
+                                            href={channel.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={`${channel.label}: ${channel.value} (opens in a new tab)`}
+                                            className="font-medium text-ink underline decoration-rule decoration-2 underline-offset-4 transition-colors hover:decoration-accent"
+                                        >
+                                            {channel.value}
+                                        </a>
+                                    </dd>
+                                </div>
+                            ))}
+                            <div className="border-b border-rule py-4">
+                                <dt className="text-sm text-pencil">Based in</dt>
+                                <dd className="font-medium text-ink">Nashik, Maharashtra, India</dd>
+                            </div>
+                        </dl>
+                        <p className="sr-only" role="status" aria-live="polite">
+                            {copyState === 'copied' && 'Email address copied.'}
+                            {copyState === 'failed' && `Copying did not work. The address is ${SOCIAL_LINKS.email}.`}
+                        </p>
+                        {copyState === 'failed' && (
+                            <p className="mt-3 text-sm text-pencil" aria-hidden="true">
+                                Copying did not work here. Select the address above instead.
+                            </p>
+                        )}
+                    </Assemble>
 
-                    <Scroll3D
-                        from="right"
-                        angle={12}
-                        distance={48}
-                        end={0.66}
-                        className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#151515] sm:p-8"
-                    >
-                        <h3 className="mb-6 font-ubuntu text-2xl font-bold">Send me a message</h3>
-                        <form action="https://formsubmit.co/el/yinuze" method="POST" className="space-y-5">
+                    <Assemble from="right" className="lg:col-span-7">
+                        <form action="https://formsubmit.co/el/yinuze" method="POST" className="spotlight rounded-lg border border-rule bg-sheet p-5 sm:p-8">
                             <input type="hidden" name="_subject" value="New portfolio enquiry" />
-                            <div className="grid gap-5 sm:grid-cols-2">
+                            <h3 className="font-display text-2xl font-semibold text-ink">Send a message</h3>
+
+                            <div className="mt-6 grid gap-5 sm:grid-cols-2">
                                 <div>
-                                    <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold">Name</label>
+                                    <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-ink">Name</label>
                                     <div className="relative">
-                                        <FaUser className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-                                        <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="Your name" required className={`${fieldClassName} pl-11`} />
+                                        <User className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-pencil" aria-hidden="true" />
+                                        <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="Your name" required className={`${FIELD} pl-10`} />
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold">Email</label>
+                                    <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-ink">Email</label>
                                     <div className="relative">
-                                        <FaEnvelope className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-                                        <input id="contact-email" name="email" type="email" autoComplete="email" inputMode="email" placeholder="you@example.com" required className={`${fieldClassName} pl-11`} />
+                                        <Mail className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-pencil" aria-hidden="true" />
+                                        <input id="contact-email" name="email" type="email" autoComplete="email" inputMode="email" placeholder="you@example.com" required className={`${FIELD} pl-10`} />
                                     </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <label htmlFor="contact-subject" className="mb-2 block text-sm font-semibold">Subject</label>
-                                <input id="contact-subject" name="subject" type="text" placeholder="How can I help?" required className={fieldClassName} />
+                            <div className="mt-5">
+                                <label htmlFor="contact-subject" className="mb-2 block text-sm font-medium text-ink">Subject</label>
+                                <input id="contact-subject" name="subject" type="text" placeholder="How can I help?" required className={FIELD} />
                             </div>
 
-                            <div>
-                                <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold">Message</label>
+                            <div className="mt-5">
+                                <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-ink">Message</label>
                                 <div className="relative">
-                                    <FaCommentAlt className="pointer-events-none absolute left-4 top-4 text-gray-400" aria-hidden="true" />
-                                    <textarea id="contact-message" name="message" rows="6" placeholder="Tell me about your project or opportunity..." required className={`${fieldClassName} h-auto resize-y py-3 pl-11`} />
+                                    <MessageSquare className="pointer-events-none absolute left-4 top-4 text-sm text-pencil" aria-hidden="true" />
+                                    <textarea
+                                        id="contact-message"
+                                        name="message"
+                                        rows="6"
+                                        placeholder="Tell me about your project or opportunity..."
+                                        required
+                                        className={`${FIELD} h-auto resize-y py-3 pl-10`}
+                                    />
                                 </div>
                             </div>
 
-                            <motion.button
-                                type="submit"
-                                whileHover={reduceMotion ? undefined : { y: -2 }}
-                                whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border-2 border-primary bg-primary px-7 py-3 text-base font-bold text-slate-950 shadow-md transition-colors hover:bg-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:w-auto"
-                            >
+                            <button type="submit" className={buttonClasses({ size: 'lg', className: 'mt-7 w-full sm:w-auto' })}>
+                                <Send className="text-sm" aria-hidden="true" />
                                 Send message
-                                <FaPaperPlane aria-hidden="true" />
-                            </motion.button>
+                            </button>
                         </form>
-                    </Scroll3D>
+                    </Assemble>
                 </div>
-            </div>
+            </Container>
         </section>
     );
 };

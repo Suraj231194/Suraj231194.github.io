@@ -1,59 +1,59 @@
 import React, { useState } from 'react';
-import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
+import { ArrowUpRight } from 'lucide-react';
+import { Github } from './ui/BrandIcons';
 import { useTheme } from '../context/ThemeContext';
+import { SOCIAL_LINKS } from '../constants';
 import SectionHeading from './SectionHeading';
-import Scroll3D from './Scroll3D';
+import Assemble from './motion/Assemble';
+import Container from './ui/Container';
+import { buttonClasses } from './ui/buttonStyles';
 
 const GithubStats = () => {
     const { theme } = useTheme();
     const [failedImages, setFailedImages] = useState([]);
     const username = 'Suraj231194';
-    const profileUrl = `https://github.com/${username}`;
+    const profileUrl = SOCIAL_LINKS.github;
     const statsTheme = theme === 'dark' ? 'tokyonight' : 'default';
-    const calendarColor = theme === 'dark' ? 'fb923c' : 'c2410c';
+    const calendarColor = theme === 'dark' ? '4084ff' : '1e66f5';
 
     const markImageAsFailed = (imageName) => {
-        setFailedImages((images) => images.includes(imageName) ? images : [...images, imageName]);
+        setFailedImages((images) => (images.includes(imageName) ? images : [...images, imageName]));
     };
 
     return (
-        <section id="github-stats" className="bg-surface-light/60 py-16 text-text-light transition-colors duration-300 dark:bg-surface-dark/30 dark:text-text-dark sm:py-20 lg:py-24">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6">
-                <SectionHeading title="GitHub Activity" eyebrow="How I keep building" />
+        <section id="github-stats" aria-labelledby="github-title" className="screen py-16 sm:py-20 lg:py-24">
+            <Container>
+                <SectionHeading id="github-title" title="GitHub activity" lead="My contribution streak and calendar, loaded live from GitHub." />
 
-                <Scroll3D
-                    angle={14}
-                    distance={44}
-                    end={0.7}
-                    className="mx-auto max-w-5xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#151515] sm:p-6"
-                >
+                <Assemble from="near" className="spotlight rounded-lg border border-rule bg-sheet p-4 sm:p-6">
                     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-3">
-                            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-xl text-white dark:bg-white dark:text-slate-950">
-                                <FaGithub aria-hidden="true" />
+                            <span className="flex h-11 w-11 items-center justify-center rounded-md bg-ink text-xl text-paper">
+                                <Github aria-hidden="true" />
                             </span>
                             <div>
-                                <h3 className="font-ubuntu text-lg font-bold sm:text-xl">@{username}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Open-source work and coding activity</p>
+                                <h3 className="font-display text-lg font-semibold text-ink sm:text-xl">@{username}</h3>
+                                <p className="text-sm text-pencil">Open-source work and coding activity</p>
                             </div>
                         </div>
                         <a
                             href={profileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-bold text-gray-800 transition-colors hover:border-orange-400 hover:text-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-white/20 dark:text-white dark:hover:text-orange-400 dark:ring-offset-[#151515]"
+                            aria-label="View my GitHub profile (opens in a new tab)"
+                            className={buttonClasses({ variant: 'secondary' })}
                         >
                             View GitHub profile
-                            <FaExternalLinkAlt aria-hidden="true" />
+                            <ArrowUpRight className="text-xs" aria-hidden="true" />
                         </a>
                     </div>
 
-                    {/* minmax(0, …) tracks stop the 650px calendar from forcing the grid wider than a phone screen. */}
+                    {/* minmax(0, ...) tracks stop the 650px calendar from forcing the grid wider than a phone screen. */}
                     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-                        <div className="flex min-h-48 min-w-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
+                        <div className="flex min-h-48 min-w-0 items-center justify-center overflow-hidden rounded-md border border-rule bg-paper p-3">
                             {failedImages.includes('streak') ? (
-                                <p className="px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    GitHub activity preview is temporarily unavailable. Visit the profile for current activity.
+                                <p className="px-4 text-center text-sm text-pencil">
+                                    The streak preview did not load. The profile shows current activity.
                                 </p>
                             ) : (
                                 <img
@@ -69,11 +69,11 @@ const GithubStats = () => {
                             )}
                         </div>
 
-                        <div className="min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-white/10 dark:bg-black/20">
-                            <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">Contribution calendar</h3>
+                        <div className="min-w-0 rounded-md border border-rule bg-paper p-3">
+                            <h4 className="mb-3 text-sm font-medium text-ink">Contribution calendar</h4>
                             {failedImages.includes('calendar') ? (
-                                <p className="flex min-h-36 items-center justify-center px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    Contribution calendar is temporarily unavailable. Visit the profile for current activity.
+                                <p className="flex min-h-36 items-center justify-center px-4 text-center text-sm text-pencil">
+                                    The contribution calendar did not load. The profile shows current activity.
                                 </p>
                             ) : (
                                 <div className="overflow-x-auto pb-2" tabIndex="0" aria-label="Scrollable GitHub contribution calendar">
@@ -85,14 +85,14 @@ const GithubStats = () => {
                                         loading="lazy"
                                         decoding="async"
                                         onError={() => markImageAsFailed('calendar')}
-                                        className="h-auto min-w-[650px] rounded-lg"
+                                        className="h-auto min-w-[650px] rounded"
                                     />
                                 </div>
                             )}
                         </div>
                     </div>
-                </Scroll3D>
-            </div>
+                </Assemble>
+            </Container>
         </section>
     );
 };

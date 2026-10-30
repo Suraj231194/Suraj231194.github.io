@@ -6,7 +6,16 @@ export default defineConfig({
     plugins: [react()],
     base: '/', // Base '/' for User Pages (username.github.io)
     build: {
-        // Three.js is loaded lazily in its own chunk, so a large chunk here is expected.
-        chunkSizeWarningLimit: 1500,
+        rollupOptions: {
+            output: {
+                // The libraries change far less often than the site, so they load in parallel and stay cached between deploys.
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) return undefined;
+                    if (/[\\/]node_modules[\\/](gsap|framer-motion|motion-dom|motion-utils)[\\/]/.test(id)) return 'motion';
+                    if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'react';
+                    return undefined;
+                },
+            },
+        },
     },
 })

@@ -1,99 +1,78 @@
-import React, { Suspense, lazy, useRef, useState } from 'react';
-import { TOOLS } from '../constants';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { FaPause, FaPlay } from 'react-icons/fa';
-import { revealMotion } from '../constants/motion';
+import React from 'react';
+import { SKILL_GROUPS, TOOLS } from '../constants';
 import SectionHeading from './SectionHeading';
-import Scroll3D from './Scroll3D';
-import useWebGLSupport from '../hooks/useWebGLSupport';
-import useTilt from '../hooks/useTilt';
+import Container from './ui/Container';
+import Assemble from './motion/Assemble';
 
-const ToolsGlobe = lazy(() => import('./three/ToolsGlobe'));
+const DIRECTIONS = ['left', 'up', 'up', 'right'];
 
-const ToolCard = ({ tool, fluid = false }) => {
-    const tilt = useTilt({ max: 12, perspective: 600 });
+// Borders between the four columns: one column on phones, two on tablets, four on wide screens.
+const columnBorders = (index) =>
+    `${index > 0 ? 'border-t' : ''} ${index === 1 ? 'sm:border-l sm:border-t-0' : ''} ${index === 3 ? 'sm:border-l' : ''} ${
+        index > 1 ? 'lg:border-l lg:border-t-0' : ''
+    }`;
 
-    return (
-        <motion.li
-            {...tilt}
-            whileHover={{ y: -4 }}
-            className={`group flex min-h-32 shrink-0 flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-4 text-center shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-orange-300 hover:shadow-md dark:border-white/10 dark:bg-[#151515] dark:hover:border-orange-500/50 sm:min-h-36 ${fluid ? 'w-full' : 'w-40 sm:w-44'}`}
-        >
-            {/* The icon sits on its own plane in front of the card, so the tilt reads as depth rather than a flat skew. */}
-            <span className="mb-3 block" style={{ transform: 'translateZ(28px)' }}>
-                <tool.icon className={`text-4xl transition-transform duration-200 group-hover:scale-110 ${tool.color}`} aria-hidden="true" />
-            </span>
-            <span className="text-sm font-semibold text-text-light dark:text-text-dark sm:text-base">
-                {tool.name}
-            </span>
-        </motion.li>
-    );
-};
+// A wide group (the AI tools) is a row across the bottom: its heading beside its tools on wide screens.
+const WIDE = 'border-t bg-gradient-to-r from-accent/[0.07] to-transparent sm:col-span-2 lg:col-span-4 lg:flex lg:items-center lg:gap-10';
 
+/**
+ * Skills as a parts list: four columns from interface to delivery, and the AI tools in a row
+ * underneath. Icons stay grey until the pointer reaches their row; on touch screens they are
+ * always in colour.
+ */
 const Tools = () => {
-    const reduceMotion = useReducedMotion();
-    const webgl = useWebGLSupport();
-    const globeWrapper = useRef(null);
-    const globeInView = useInView(globeWrapper, { amount: 0.1 });
-    const [manualPaused, setManualPaused] = useState(false);
-    const [hoverPaused, setHoverPaused] = useState(false);
-    const paused = manualPaused || hoverPaused;
-
     return (
-        <section id="tools" className="overflow-hidden bg-surface-light/60 py-16 text-text-light transition-colors duration-300 dark:bg-surface-dark/30 dark:text-text-dark sm:py-20 lg:py-24">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6">
-                <SectionHeading title="Tools and Technologies" eyebrow="My technical toolkit" />
+        <section id="tools" aria-labelledby="tools-title" className="screen night band-night py-16 sm:py-20 lg:py-24">
+            <Container>
+                <SectionHeading
+                    id="tools-title"
+                    title="Skills"
+                    lead="The languages, frameworks, services and AI tools I use to ship, from the interface to hosting."
+                />
 
-                {reduceMotion ? (
-                    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5" aria-label="Technologies I use">
-                        {TOOLS.map((tool) => (
-                            <ToolCard key={tool.name} tool={tool} fluid />
-                        ))}
-                    </ul>
-                ) : (
-                    <motion.div {...revealMotion(false, 0.05, 16)}>
-                        {webgl && (
-                            <div ref={globeWrapper} className="-mt-6 mb-6 sm:-mt-8">
-                                <Suspense fallback={<div className="h-[340px] sm:h-[420px] lg:h-[480px]" aria-hidden="true" />}>
-                                    <ToolsGlobe tools={TOOLS} active={globeInView && !manualPaused} />
-                                </Suspense>
-                                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-                                    Move your cursor over the globe to tilt it
-                                </p>
-                            </div>
-                        )}
-
-                        <div className="mb-5 flex justify-end">
-                            <button
-                                type="button"
-                                onClick={() => setManualPaused((current) => !current)}
-                                aria-pressed={manualPaused}
-                                className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:border-orange-400 hover:text-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-white/15 dark:bg-[#151515] dark:text-gray-200 dark:hover:text-orange-300"
+                <div className="spotlight grid rounded-lg border border-rule bg-sheet sm:grid-cols-2 lg:grid-cols-4">
+                    {SKILL_GROUPS.map((group, index) => {
+                        const tools = TOOLS.filter((tool) => tool.group === group.id);
+                        return (
+                            <Assemble
+                                as="section"
+                                key={group.id}
+                                from={group.wide ? 'up' : DIRECTIONS[index % DIRECTIONS.length]}
+                                distance={0.8}
+                                aria-labelledby={`skills-${group.id}`}
+                                className={`border-rule p-5 sm:p-6 ${group.wide ? WIDE : columnBorders(index)}`}
                             >
-                                {manualPaused ? <FaPlay aria-hidden="true" /> : <FaPause aria-hidden="true" />}
-                                {manualPaused ? 'Play animation' : 'Pause animation'}
-                            </button>
-                        </div>
-
-                        <Scroll3D angle={20} distance={40} end={0.78}>
-                            <div className="marquee-mask overflow-hidden py-2" onMouseEnter={() => setHoverPaused(true)} onMouseLeave={() => setHoverPaused(false)}>
-                                <div className={`tools-marquee-track flex w-max gap-4 ${paused ? 'marquee-paused' : ''}`}>
-                                    <ul className="flex shrink-0 gap-4" aria-label="Technologies I use">
-                                        {TOOLS.map((tool) => (
-                                            <ToolCard key={tool.name} tool={tool} />
-                                        ))}
-                                    </ul>
-                                    <ul className="flex shrink-0 gap-4" aria-hidden="true">
-                                        {TOOLS.map((tool) => (
-                                            <ToolCard key={`duplicate-${tool.name}`} tool={tool} />
-                                        ))}
-                                    </ul>
+                                <div className={group.wide ? 'lg:w-72 lg:shrink-0' : undefined}>
+                                    <div className="flex items-baseline justify-between gap-3">
+                                        <h3 id={`skills-${group.id}`} className="font-display text-xl font-semibold text-ink">
+                                            {group.title}
+                                        </h3>
+                                        <span className="text-sm tabular-nums text-pencil" aria-label={`${tools.length} tools`}>
+                                            {tools.length}
+                                        </span>
+                                    </div>
+                                    <p className="mt-1 text-sm text-pencil">{group.description}</p>
                                 </div>
-                            </div>
-                        </Scroll3D>
-                    </motion.div>
-                )}
-            </div>
+
+                                <ul className={`mt-5 grid gap-x-3 ${group.wide ? 'grid-cols-2 sm:grid-cols-4 lg:mt-0 lg:flex-1' : 'grid-cols-2 sm:grid-cols-1'}`}>
+                                    {tools.map((tool) => (
+                                        <li
+                                            key={tool.name}
+                                            className="group/skill -mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition-colors duration-200 hover:bg-paper"
+                                        >
+                                            <tool.icon
+                                                className={`shrink-0 text-xl transition-[filter,opacity] duration-300 [&.lucide]:size-[1em] ${tool.color} opacity-60 grayscale group-hover/skill:opacity-100 group-hover/skill:grayscale-0 [@media(hover:none)]:opacity-100 [@media(hover:none)]:grayscale-0`}
+                                                aria-hidden="true"
+                                            />
+                                            <span className="text-[0.95rem] text-ink">{tool.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Assemble>
+                        );
+                    })}
+                </div>
+            </Container>
         </section>
     );
 };
