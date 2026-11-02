@@ -20,8 +20,9 @@ const GithubStats = () => {
         setFailedImages((images) => (images.includes(imageName) ? images : [...images, imageName]));
     };
 
+    // Natural height, not a full screen, so no empty band sits above and below the card.
     return (
-        <section id="github-stats" aria-labelledby="github-title" className="screen py-16 sm:py-20 lg:py-24">
+        <section id="github-stats" aria-labelledby="github-title" className="py-14 sm:py-16 lg:py-20">
             <Container>
                 <SectionHeading id="github-title" title="GitHub activity" lead="My contribution streak and calendar, loaded live from GitHub." />
 
@@ -85,7 +86,10 @@ const GithubStats = () => {
                                         loading="lazy"
                                         decoding="async"
                                         onError={() => markImageAsFailed('calendar')}
-                                        className="h-auto min-w-[650px] rounded"
+                                        // The chart draws empty days light grey in either theme. In the dark
+                                        // theme inverting it and turning the hue back makes those days dark,
+                                        // keeps the blue, and makes busier days brighter, as GitHub's dark theme does.
+                                        className="h-auto min-w-[650px] rounded dark:hue-rotate-180 dark:invert"
                                     />
                                 </div>
                             )}

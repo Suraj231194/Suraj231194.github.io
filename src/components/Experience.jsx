@@ -16,7 +16,7 @@ const Experience = () => (
             <SectionHeading
                 id="experience-title"
                 title="Experience"
-                lead="Front-end work since 2022, after nearly five years in manufacturing quality control."
+                lead="Building healthcare front ends since 2022, after nearly five years in manufacturing quality control."
             />
 
             <ol className="border-b border-rule">
@@ -46,11 +46,14 @@ const Experience = () => (
                                 {experience.role}
                             </h3>
                             <p className="mt-1 text-lg text-pencil">{experience.company}</p>
-                            <BulletList items={experience.description} className="mt-5 max-w-[46rem] space-y-2.5" />
+                            {experience.summary && (
+                                <p className="mt-4 max-w-[46rem] text-[1.0625rem] leading-relaxed text-ink">{experience.summary}</p>
+                            )}
+                            <BulletList items={experience.description} className="mt-4 max-w-[46rem] space-y-2.5" />
                             {experience.technologies.length > 0 && (
                                 <TechList
                                     items={experience.technologies}
-                                    label={`Technologies used at ${experience.company}`}
+                                    label={`Skills and tools used at ${experience.company}`}
                                     className="mt-6"
                                 />
                             )}

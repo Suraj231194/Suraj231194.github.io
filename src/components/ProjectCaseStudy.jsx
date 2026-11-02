@@ -171,12 +171,12 @@ const Gallery = ({ project }) => {
                             }`}
                         >
                             {thumb.phone ? (
-                                <span className="flex aspect-[16/10] w-full items-center justify-center gap-1 text-xs font-medium text-pencil">
+                                <span className="flex aspect-[16/10] min-h-7 w-full items-center justify-center gap-1 text-xs font-medium text-pencil">
                                     <Smartphone aria-hidden="true" />
                                     <span className="hidden sm:inline">Phone</span>
                                 </span>
                             ) : (
-                                <img src={thumb.small} alt="" width="720" height="450" loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover object-top" />
+                                <img src={thumb.small} alt="" width="720" height="450" loading="lazy" decoding="async" className="block aspect-[16/10] min-h-7 w-full object-cover object-top" />
                             )}
                         </button>
                     </li>

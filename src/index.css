@@ -126,13 +126,12 @@
         rgb(var(--paper));
 }
 
-/* A full-screen section: at least as tall as the screen below the navigation bar (where an
-   in-page link leaves the section's top), with its content in the middle. */
+/* A main section: its content stacked in a column, at its natural height. No full-screen minimum:
+   on a tall screen (a tablet held upright, a large monitor) that left bands of empty space above
+   and below the content. */
 .screen {
     display: flex;
-    min-height: calc(100svh - 4.5rem);
     flex-direction: column;
-    justify-content: center;
 }
 
 /* Light sections: a faint wash of blue and cyan so no section is flat white or grey. */
@@ -273,6 +272,49 @@
 }
 
 /* ---------- Hero ---------- */
+
+/* The facts strip on small phones (Hero.jsx): one fact per row, the label on the left and the
+   value on the right, with a line between rows. Two columns there are too narrow for
+   "Frontend developer, Care IO", which broke over three lines. */
+@media (max-width: 419px) {
+    .facts-strip {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .facts-strip > div {
+        padding-block: 0.8rem;
+    }
+
+    .facts-strip > div::before {
+        display: none;
+    }
+
+    .facts-strip > div + div::after {
+        content: '';
+        position: absolute;
+        inset: 0 1rem auto;
+        height: 1px;
+        background-image: linear-gradient(to right, transparent, rgb(var(--ink) / 0.15), transparent);
+    }
+
+    .facts-strip .fact-text {
+        display: flex;
+        flex: 1;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .facts-strip dt {
+        flex-shrink: 0;
+    }
+
+    .facts-strip dd {
+        margin-top: 0;
+        text-align: right;
+        text-wrap: balance;
+    }
+}
 
 /* Layered light behind the hero, in each theme: a base wash, blue light behind the 3D scene,
    deeper blue behind the name, a touch of cyan low on the right, and a grid only around the
@@ -640,6 +682,63 @@
     #home h1 {
         font-size: 3.25rem;
     }
+}
+
+/* ---------- Featured projects arc ----------
+   The home page's project cards (FeaturedProjects.jsx). Without motion they are a row that scrolls
+   sideways. With motion the section gets .is-arc: every card is stacked in the middle of the stage
+   and the scroll sets its place on the arc. A card is as wide as the screen's height allows, so the
+   pinned section fits on one screen; on large monitors it grows to 30% of the width. */
+.arc-section {
+    --arc-w: clamp(15rem, min(max(30rem, 30vw), 80vw, (100svh - 34rem) * 1.6), 48rem);
+}
+
+/* Full height only while pinned, so nothing from the next section shows under the stage. The
+   plain row takes its natural height. */
+.arc-section.is-arc {
+    min-height: 100svh;
+}
+
+.arc-track {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0.75rem 1.25rem 1.5rem;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.arc-card {
+    flex: 0 0 var(--arc-w);
+    scroll-snap-align: center;
+}
+
+.arc-hud {
+    display: none;
+}
+
+.is-arc .arc-hud {
+    display: flex;
+}
+
+.is-arc .arc-stage {
+    min-height: calc(var(--arc-w) * 0.625 + 15rem);
+}
+
+.is-arc .arc-track {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+    padding: 0;
+}
+
+.is-arc .arc-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--arc-w);
+    will-change: transform;
 }
 
 /* ---------- Project wall ----------

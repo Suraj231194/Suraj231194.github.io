@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Menu, X } from 'lucide-react';
-import { NAV_LINKS, RESUME_LINK } from '../constants';
+import { NAV_LINKS, PROJECTS_PAGE, RESUME_LINK } from '../constants';
 import ThemeToggle from './ThemeToggle';
 import Container from './ui/Container';
 import { buttonClasses } from './ui/buttonStyles';
@@ -10,10 +10,19 @@ import Logo from './ui/Logo';
 
 const SECTION_IDS = ['home', ...NAV_LINKS.map((link) => link.id)];
 
-const Navbar = () => {
+// On the home page the links scroll to their sections. On the other pages (projects, not found)
+// they lead back to the home page's sections, and Projects is the projects page.
+const linkFor = (page, id) => {
+    if (page === 'home') return `#${id}`;
+    return id === 'projects' ? PROJECTS_PAGE : `/#${id}`;
+};
+
+const Navbar = ({ page = 'home' }) => {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState('home');
+    // Projects is marked as the current page on the projects page; on the not-found page no link is.
+    const [activeSection, setActiveSection] = useState(page === 'projects' ? 'projects' : 'home');
+    const currentFor = (active) => (active ? (page === 'home' ? 'location' : 'page') : undefined);
     const navRef = useRef(null);
     const menuButtonRef = useRef(null);
     const firstMenuLinkRef = useRef(null);
@@ -28,6 +37,7 @@ const Navbar = () => {
 
     // The section crossing the middle band of the screen is the current one.
     useEffect(() => {
+        if (page !== 'home') return undefined;
         const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
         const observer = new IntersectionObserver(
             (entries) => {
@@ -39,7 +49,7 @@ const Navbar = () => {
 
         sections.forEach((section) => observer.observe(section));
         return () => observer.disconnect();
-    }, []);
+    }, [page]);
 
     const closeMenu = useCallback((returnFocus = true) => {
         setMenuOpen(false);
@@ -74,7 +84,7 @@ const Navbar = () => {
                 }`}
             >
                 <Container className="flex h-16 items-center justify-between gap-6 sm:h-[4.5rem]">
-                    <a href="#home" aria-label="Suraj Pawar, back to the top" className="group flex items-center gap-3 text-ink">
+                    <a href={page === 'home' ? '#home' : '/'} aria-label={page === 'home' ? 'Suraj Pawar, back to the top' : 'Suraj Pawar, home page'} className="group flex items-center gap-3 text-ink">
                         <Logo className="size-9 shrink-0 drop-shadow-[0_6px_16px_rgb(30_102_245/0.45)] transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105" />
                         <span className="font-display text-[1.15rem] font-semibold tracking-[-0.01em]">Suraj Pawar</span>
                     </a>
@@ -86,8 +96,8 @@ const Navbar = () => {
                                 return (
                                     <li key={link.id}>
                                         <a
-                                            href={`#${link.id}`}
-                                            aria-current={active ? 'location' : undefined}
+                                            href={linkFor(page, link.id)}
+                                            aria-current={currentFor(active)}
                                             className={`group relative block py-2 text-[0.9375rem] font-medium transition-colors duration-200 ${
                                                 active ? 'text-ink' : 'text-pencil hover:text-ink'
                                             }`}
@@ -163,9 +173,9 @@ const Navbar = () => {
                                 <li key={link.id}>
                                     <a
                                         ref={index === 0 ? firstMenuLinkRef : undefined}
-                                        href={`#${link.id}`}
+                                        href={linkFor(page, link.id)}
                                         tabIndex={menuOpen ? 0 : -1}
-                                        aria-current={active ? 'location' : undefined}
+                                        aria-current={currentFor(active)}
                                         onClick={() => closeMenu(false)}
                                         className="flex items-center justify-between py-4 font-display text-[1.75rem] font-semibold text-ink"
                                     >

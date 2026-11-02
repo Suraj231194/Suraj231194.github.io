@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Check, Copy, Mail, MessageSquare, Send, User } from 'lucide-react';
+import { Check, Copy, Mail, MessageSquare, User } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { SOCIAL_LINKS } from '../constants';
 import SectionHeading from './SectionHeading';
 import Assemble from './motion/Assemble';
@@ -9,14 +10,47 @@ import { buttonClasses } from './ui/buttonStyles';
 const FIELD =
     'h-12 w-full rounded-md border border-rule bg-paper px-4 text-ink transition-colors placeholder:text-pencil/70 hover:border-ink/35 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 focus-visible:outline-none';
 
+const WHATSAPP_URL = `https://wa.me/${SOCIAL_LINKS.whatsapp}`;
+
 const CHANNELS = [
+    { label: 'WhatsApp', value: '+91 88063 05038', href: WHATSAPP_URL },
     { label: 'LinkedIn', value: 'linkedin.com/in/surajpawar2311', href: SOCIAL_LINKS.linkedin },
     { label: 'GitHub', value: 'github.com/Suraj231194', href: SOCIAL_LINKS.github },
 ];
 
+/** The form's fields as a ready-to-send WhatsApp message (*text* is bold in WhatsApp). */
+const whatsappMessage = ({ name, email, subject, message }) =>
+    [
+        'Hello Suraj,',
+        '',
+        `I'm ${name} and I came across your portfolio.`,
+        '',
+        `*Subject:* ${subject}`,
+        '',
+        message,
+        '',
+        `*Email:* ${email}`,
+        '_Sent from suraj231194.github.io_',
+    ].join('\n');
+
 const Contact = () => {
     const [copyState, setCopyState] = useState('idle');
+    const [sent, setSent] = useState(false);
     const resetTimer = useRef(null);
+
+    // The browser checks the required fields first; then WhatsApp opens in a new tab (the app on
+    // phones) with the message filled in, ready to send. A blocked pop-up falls back to this tab.
+    const sendOnWhatsApp = (event) => {
+        event.preventDefault();
+        const fields = Object.fromEntries(
+            [...new FormData(event.currentTarget)].map(([key, value]) => [key, String(value).trim()])
+        );
+        const url = `${WHATSAPP_URL}?text=${encodeURIComponent(whatsappMessage(fields))}`;
+        const opened = window.open(url, '_blank');
+        if (opened) opened.opener = null;
+        else window.location.href = url;
+        setSent(true);
+    };
 
     useEffect(() => () => window.clearTimeout(resetTimer.current), []);
 
@@ -81,7 +115,7 @@ const Contact = () => {
                             ))}
                             <div className="border-b border-rule py-4">
                                 <dt className="text-sm text-pencil">Based in</dt>
-                                <dd className="font-medium text-ink">Nashik, Maharashtra, India</dd>
+                                <dd className="font-medium text-ink">Pune, Maharashtra, India</dd>
                             </div>
                         </dl>
                         <p className="sr-only" role="status" aria-live="polite">
@@ -96,9 +130,9 @@ const Contact = () => {
                     </Assemble>
 
                     <Assemble from="right" className="lg:col-span-7">
-                        <form action="https://formsubmit.co/el/yinuze" method="POST" className="spotlight rounded-lg border border-rule bg-sheet p-5 sm:p-8">
-                            <input type="hidden" name="_subject" value="New portfolio enquiry" />
+                        <form onSubmit={sendOnWhatsApp} className="spotlight rounded-lg border border-rule bg-sheet p-5 sm:p-8">
                             <h3 className="font-display text-2xl font-semibold text-ink">Send a message</h3>
+                            <p className="mt-1.5 text-sm text-pencil">Your message opens in WhatsApp, ready to send.</p>
 
                             <div className="mt-6 grid gap-5 sm:grid-cols-2">
                                 <div>
@@ -138,9 +172,12 @@ const Contact = () => {
                             </div>
 
                             <button type="submit" className={buttonClasses({ size: 'lg', className: 'mt-7 w-full sm:w-auto' })}>
-                                <Send className="text-sm" aria-hidden="true" />
+                                <FaWhatsapp className="text-lg" aria-hidden="true" />
                                 Send message
                             </button>
+                            <p className="mt-3 min-h-5 text-sm text-pencil" role="status" aria-live="polite">
+                                {sent && 'WhatsApp is open with your message. Press send there to deliver it.'}
+                            </p>
                         </form>
                     </Assemble>
                 </div>

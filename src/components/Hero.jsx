@@ -20,7 +20,8 @@ const SOCIALS = [
 
 const FACT_ICONS = { Role: BriefcaseBusiness, Experience: CalendarClock, 'Based in': MapPin, 'Open to': Handshake };
 
-// Dividers in the facts strip: two columns on phones, four in a row on wide screens.
+// Dividers in the facts strip: two columns on phones, four in a row on wide screens. (Below 420px
+// it is one fact per row, with its own dividers: .facts-strip in index.css.)
 const FACT_DIVIDERS = [
     '',
     'before:inset-y-4 before:left-0 before:w-px before:bg-gradient-to-b',
@@ -189,8 +190,15 @@ const Hero = () => {
                             <span className="block">{lastName.join(' ')}</span>
                         </h1>
 
+                        {/* Each part of the role stays on one line, so a narrow screen breaks it at the dot
+                            ("React & Next.js" together) rather than after "React". */}
                         <p data-intro="role" className="text-gradient mt-5 short:mt-3 font-display text-[clamp(1.3rem,1.05rem+0.9vw,1.75rem)] font-semibold leading-tight">
-                            {HERO_CONTENT.role}
+                            {HERO_CONTENT.role.split(' · ').map((part, index) => (
+                                <React.Fragment key={part}>
+                                    {index > 0 && ' · '}
+                                    <span className="whitespace-nowrap">{part}</span>
+                                </React.Fragment>
+                            ))}
                         </p>
                         <p data-hero-summary className="mt-3 max-w-[33rem] text-lg leading-relaxed text-pencil sm:text-[1.1875rem] lg:text-[1.0625rem] xl:text-[1.125rem]">
                             {HERO_CONTENT.summary}
@@ -246,7 +254,7 @@ const Hero = () => {
                 {/* The facts strip: who, how long, where, and what for. */}
                 <div data-intro="strip" className="relative">
                     <Container className="pb-6 short:pb-4">
-                        <dl className="grid grid-cols-2 overflow-hidden rounded-2xl border border-ink/10 bg-sheet/55 shadow-[inset_0_1px_0_rgb(255_255_255/0.1),0_30px_60px_-34px_rgb(var(--accent)/0.55)] backdrop-blur-md lg:grid-cols-4">
+                        <dl className="facts-strip grid grid-cols-2 overflow-hidden rounded-2xl border border-ink/10 bg-sheet/55 shadow-[inset_0_1px_0_rgb(255_255_255/0.1),0_30px_60px_-34px_rgb(var(--accent)/0.55)] backdrop-blur-md lg:grid-cols-4">
                             {HERO_CONTENT.facts.map((fact, index) => {
                                 const Icon = FACT_ICONS[fact.label];
                                 return (
@@ -262,7 +270,7 @@ const Hero = () => {
                                                 <Icon className="size-[1.15rem]" />
                                             </span>
                                         )}
-                                        <div className="min-w-0">
+                                        <div className="fact-text min-w-0">
                                             <dt className="text-[0.8125rem] text-pencil">{fact.label}</dt>
                                             <dd className="mt-0.5 font-display text-[1.02rem] font-semibold leading-snug text-ink sm:text-[1.0625rem]">{fact.value}</dd>
                                         </div>

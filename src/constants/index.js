@@ -15,6 +15,8 @@ import {
   SiRedux,
   SiChakraui,
   SiExpress,
+  SiPhp,
+  SiLaravel,
   SiNextdotjs,
   SiSupabase,
   SiTypescript,
@@ -33,6 +35,8 @@ import {
 import { MousePointer2 } from "lucide-react";
 
 export const RESUME_LINK = "/Suraj-Pawar-Resume.pdf";
+// The page with every case study (projects/index.html).
+export const PROJECTS_PAGE = "/projects/";
 
 /* =======================
    NAVIGATION
@@ -52,16 +56,16 @@ export const NAV_LINKS = [
 export const HERO_CONTENT = {
   name: "Suraj Pawar",
   status: "Available for opportunities",
-  role: "Front-end focused full stack developer",
+  role: "Front-end developer · React & Next.js",
   summary:
-    "I build fast, accessible React and Next.js interfaces, from healthcare apps at Care IO to sites with motion and 3D, using AI tools like Claude Code and Copilot.",
+    "4+ years building fast, accessible React and Next.js applications for healthcare at Care IO. I turn complex clinical workflows into clear, reliable interfaces and ship full-stack products end to end.",
   primaryCta: { label: "See my projects", href: "#projects" },
   secondaryCta: { label: "Download résumé", href: RESUME_LINK },
   // The strip along the bottom of the first screen.
   facts: [
     { label: "Role", value: "Frontend developer, Care IO" },
     { label: "Experience", value: "Since August 2022" },
-    { label: "Based in", value: "Nashik, Maharashtra" },
+    { label: "Based in", value: "Pune, Maharashtra" },
     { label: "Open to", value: "Full-time roles and freelance work" }
   ],
   // The layers of the 3D scene in the hero, top layer first.
@@ -81,11 +85,11 @@ export const ABOUT_CONTENT = {
   lead: "I came to software from quality control in manufacturing.",
   image: "/images/surapawar.webp",
   name: "Suraj Pawar",
-  role: "Full Stack Web Developer (MERN)",
+  role: "Front-end developer, React & Next.js",
   story:
     "I spent nearly five years in quality assurance and quality control in automobile manufacturing at Mungi Engineers in Nashik. In 2022 I trained in full stack web development at Masai School, and since August 2022 I have built front ends for healthcare applications at Care IO.",
   description:
-    "Passionate Full Stack Web Developer with strong experience in MERN stack and modern frontend architectures. Skilled in building scalable, secure, and performance-driven web applications with real-world business logic.",
+    "Quality control taught me to check the details before they reach the customer, and I bring the same habit to code. At work I focus on reusable component systems, responsive interfaces and clean REST API integration. On my own projects I own the whole stack, from the database and API to deployment on Vercel and AWS.",
   resumeButton: "Download CV",
   resumeLink: RESUME_LINK
 };
@@ -108,12 +112,14 @@ const NEW_PROJECTS = [
     category: ["Frontend"],
     name: "Chirag & Co.",
     kind: "Concept storefront for an Indian sweets shop",
+    // One line for its card on the home page.
+    teaser: "An online mithai shop that sells through scroll-driven motion, with a complete order flow.",
     summary:
       "An online mithai shop that sells through motion. Sweets land on a brass thali as you scroll, a gift box unties itself, and the whole order flow works, from the shop shelf to order history.",
     year: "2026",
     liveLink: "https://sweety-sepia.vercel.app/",
     sourceLink: null,
-    sourceNote: "Source code is private",
+    sourceNote: "Source code is not public",
     facts: [
       { label: "Type", value: "Concept storefront with a fictional brand" },
       { label: "Pages", value: "10 routes, from home to order history" },
@@ -170,6 +176,8 @@ const NEW_PROJECTS = [
     category: ["Frontend"],
     name: "Raghav Buildcon",
     kind: "Website for a civil-construction company in Nashik",
+    // One line for its card on the home page.
+    teaser: "A construction company site that explains its work with 3D models that build themselves.",
     summary:
       "A website for a new road, bridge and building contractor that explains the work with 3D models. Each model assembles itself stage by stage, from the first survey peg to handover.",
     year: "2026",
@@ -230,11 +238,87 @@ const projectShots = (id, views) =>
 const projectPhone = (id, name) => ({ src: `/images/projects/${id}-phone-480.webp`, alt: `${name} home page on a phone` });
 
 const EARLIER_PROJECTS = [
+  // Third on the page. Its source is not public, so everything here comes from the live site:
+  // its five pages, its contact form and its build (Next.js App Router, Tailwind CSS, on Vercel).
+  {
+    id: "cortex",
+    category: ["Frontend"],
+    name: "Cortex Analytics",
+    kind: "Website for a software development studio",
+    // One line for its card on the home page.
+    teaser: "A software studio's website: services, case studies and a drag-to-rotate 3D tech sphere.",
+    summary:
+      "The website of a technology studio that builds ERP systems, e-commerce platforms, AI solutions and Flutter apps. It presents the studio's services, case studies and technology stack, and turns visitors into enquiries.",
+    year: "2026",
+    liveLink: "https://www.cortexanalytics.in/",
+    sourceLink: null,
+    sourceNote: "Source code is not public",
+    facts: [
+      { label: "Type", value: "Company website" },
+      { label: "Pages", value: "Home, About, Services, Projects and Contact" },
+      { label: "Hosting", value: "Vercel" }
+    ],
+    features: [
+      "A home page with animated counters, featured case studies and client testimonials in a carousel.",
+      "An interactive 3D \"technology universe\": a sphere of technology logos that visitors drag to rotate.",
+      "A services page covering AI, ERP, Flutter, web, cloud, API, automation and data analytics work.",
+      "A projects page of case studies, including the AutoIVD pharmaceutical ERP and the Biogenix platform.",
+      "A contact form that asks for name, email, company, the service needed and a message."
+    ],
+    contributions: [],
+    stack: ["Next.js", "React", "Tailwind CSS", "Vercel"],
+    screenshots: projectShots("cortex", [
+      ["Home: engineering the systems behind ambitious businesses", "Cortex Analytics home page with the headline 'Engineering the Systems Behind Ambitious Businesses' above counters for projects delivered, technologies, client satisfaction and years of experience"],
+      ["Featured projects", "Three case study cards under 'Featured Projects': AutoIVD pharmaceutical ERP, Biogenix and an apparel e-commerce store"],
+      ["The technology universe: drag to rotate", "A dark section headed 'Built with the right technology for every challenge' with a 3D sphere of technology logos"],
+      ["Client stories", "A client testimonial carousel under 'Featured Client Stories' above the site footer"],
+      ["Services", "The services page with cards for AI development, ERP development, Flutter apps and web applications"]
+    ]),
+    phone: projectPhone("cortex", "Cortex Analytics")
+  },
+  // Fourth on the page. Its source is not public, so everything here comes from the live site:
+  // its pages, its forms and the headers it sends (PHP, Laravel, Vite build).
+  {
+    id: "biogenix",
+    category: ["Full Stack"],
+    name: "Biogenix",
+    kind: "Diagnostics product catalogue and ordering portal",
+    // One line for its card on the home page.
+    teaser: "A diagnostics company's product catalogue and B2B and B2C ordering portal, with quotations.",
+    summary:
+      "The website and ordering portal of an Indian diagnostics company. Labs, hospitals and distributors browse its test kits, reagents and analyzers, build quotations and order through B2B and B2C accounts.",
+    year: null,
+    liveLink: "https://biogenix.in/",
+    sourceLink: null,
+    sourceNote: "Source code is not public",
+    facts: [
+      { label: "Type", value: "B2B and B2C ordering portal" },
+      { label: "Hosting", value: "Hostinger" }
+    ],
+    features: [
+      "A product catalogue searchable by SKU, name, application or brand, with category and sub-category filters that show counts, sorting, pack sizes and a cart.",
+      "A quotation builder: choose products and quantities, see each one's MRP and quantity rules, and download a branded quotation PDF.",
+      "Separate B2B and B2C sign-in, a two-step B2B sign-up that verifies the email with an OTP, and proforma invoice requests and meeting bookings for signed-in users.",
+      "A home page with a hero slider, company figures, institutional partner logos and a carousel of product categories."
+    ],
+    contributions: [],
+    stack: ["PHP", "Laravel", "JavaScript", "Tailwind CSS", "Vite"],
+    screenshots: projectShots("biogenix", [
+      ["Home: a hero slider for the product range", "Biogenix home page with the headline 'Precision Diagnostics. Built on Experience.' over a photo of a gloved hand and test cassettes, and an Explore Our Products button"],
+      ["Company figures and institutional partners", "Six company figures, such as 10,000+ laboratories and hospitals served, above the Institutional Network section and a strip of partner logos"],
+      ["Core product categories in a carousel", "Product category cards for chemistry reagents, ELISA test kits and rapid diagnostic test kits, each with an Explore button"],
+      ["Ordering steps for B2B and B2C buyers", "Two panels under 'Become a Channel Partner' showing the B2B and B2C ordering steps, with login and sign-up buttons"],
+      ["The nationwide distribution network", "The 'Nationwide Presence. Trusted Distribution Network.' section beside a map of India with partner locations"]
+    ]),
+    phone: projectPhone("biogenix", "Biogenix")
+  },
   {
     id: "nexaro",
     category: ["Full Stack"],
     name: "Nexaro",
     kind: "Full stack e-commerce platform",
+    // One line for its card on the home page.
+    teaser: "A full stack store with search, cart, checkout and admin dashboards, deployed on AWS.",
     summary:
       "Supports the complete shopping journey with secure authentication, product management, order lifecycle workflows, and cloud deployment.",
     year: "2025",
@@ -266,45 +350,13 @@ const EARLIER_PROJECTS = [
     ]),
     phone: projectPhone("nexaro", "Nexaro")
   },
-  // Fourth on the page, after the first three. Its source is not public, so everything here comes
-  // from the live site: its pages, its forms and the headers it sends (PHP, Laravel, Vite build).
-  {
-    id: "biogenix",
-    category: ["Full Stack"],
-    name: "Biogenix",
-    kind: "Diagnostics product catalogue and ordering portal",
-    summary:
-      "The website and ordering portal of an Indian diagnostics company. Labs, hospitals and distributors browse its test kits, reagents and analyzers, build quotations and order through B2B and B2C accounts.",
-    year: null,
-    liveLink: "https://biogenix.in/",
-    sourceLink: null,
-    sourceNote: "Source code is not public",
-    facts: [
-      { label: "Type", value: "B2B and B2C ordering portal" },
-      { label: "Hosting", value: "Hostinger" }
-    ],
-    features: [
-      "A product catalogue searchable by SKU, name, application or brand, with category and sub-category filters that show counts, sorting, pack sizes and a cart.",
-      "A quotation builder: choose products and quantities, see each one's MRP and quantity rules, and download a branded quotation PDF.",
-      "Separate B2B and B2C sign-in, a two-step B2B sign-up that verifies the email with an OTP, and proforma invoice requests and meeting bookings for signed-in users.",
-      "A home page with a hero slider, company figures, institutional partner logos and a carousel of product categories."
-    ],
-    contributions: [],
-    stack: ["PHP", "Laravel", "JavaScript", "Tailwind CSS", "Vite"],
-    screenshots: projectShots("biogenix", [
-      ["Home: a hero slider for the product range", "Biogenix home page with the headline 'Precision Diagnostics. Built on Experience.' over a photo of a gloved hand and test cassettes, and an Explore Our Products button"],
-      ["Company figures and institutional partners", "Six company figures, such as 10,000+ laboratories and hospitals served, above the Institutional Network section and a strip of partner logos"],
-      ["Core product categories in a carousel", "Product category cards for chemistry reagents, ELISA test kits and rapid diagnostic test kits, each with an Explore button"],
-      ["Ordering steps for B2B and B2C buyers", "Two panels under 'Become a Channel Partner' showing the B2B and B2C ordering steps, with login and sign-up buttons"],
-      ["The nationwide distribution network", "The 'Nationwide Presence. Trusted Distribution Network.' section beside a map of India with partner locations"]
-    ]),
-    phone: projectPhone("biogenix", "Biogenix")
-  },
   {
     id: "urban",
     category: ["Full Stack"],
     name: "UrbanServices",
     kind: "Service booking platform",
+    // One line for its card on the home page.
+    teaser: "Book trusted home services from verified providers, with Supabase sign-in and PostgreSQL.",
     summary:
       "Makes it easy for customers to discover and book trusted home services from verified providers.",
     year: "2025",
@@ -601,6 +653,9 @@ export const PROJECTS = [...NEW_PROJECTS, ...EARLIER_PROJECTS];
    the Care and Build case studies. The AI tools are the ones Suraj builds with, as Suraj listed
    them; that group runs the full width under the others. Cursor has no brand mark in react-icons, so it
    takes a plain pointer.
+   Each icon is in its brand's colour on the midnight Skills band, at 4:1 contrast or more: CSS,
+   Redux, Bootstrap and PostgreSQL in a lighter shade of their own colour, Prisma in its indigo
+   (its navy would vanish), and the black-and-white brands in white.
 ======================= */
 export const SKILL_GROUPS = [
   { id: "interface", title: "Interface", description: "Markup, components and styling" },
@@ -611,76 +666,96 @@ export const SKILL_GROUPS = [
 ];
 
 export const TOOLS = [
-  { name: "HTML", icon: FaHtml5, color: "text-orange-500", group: "interface" },
-  { name: "CSS", icon: FaCss3Alt, color: "text-blue-500", group: "interface" },
-  { name: "JavaScript", icon: FaJs, color: "text-yellow-500", group: "interface" },
-  { name: "TypeScript", icon: SiTypescript, color: "text-blue-600", group: "interface" },
-  { name: "React", icon: FaReact, color: "text-cyan-500", group: "interface" },
+  { name: "HTML", icon: FaHtml5, color: "text-[#E34F26]", group: "interface" },
+  { name: "CSS", icon: FaCss3Alt, color: "text-[#2A7DE1]", group: "interface" },
+  { name: "JavaScript", icon: FaJs, color: "text-[#F7DF1E]", group: "interface" },
+  { name: "TypeScript", icon: SiTypescript, color: "text-[#3178C6]", group: "interface" },
+  { name: "React", icon: FaReact, color: "text-[#61DAFB]", group: "interface" },
   { name: "Next.js", icon: SiNextdotjs, color: "text-ink", group: "interface" },
-  { name: "Redux", icon: SiRedux, color: "text-purple-500", group: "interface" },
-  { name: "Tailwind CSS", icon: SiTailwindcss, color: "text-sky-500", group: "interface" },
-  { name: "Bootstrap", icon: FaBootstrap, color: "text-purple-600", group: "interface" },
-  { name: "Chakra UI", icon: SiChakraui, color: "text-teal-500", group: "interface" },
-  { name: "Framer Motion", icon: SiFramer, color: "text-pink-500", group: "motion" },
-  { name: "GSAP", icon: SiGreensock, color: "text-lime-600", group: "motion" },
+  { name: "Redux", icon: SiRedux, color: "text-[#9469D9]", group: "interface" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "text-[#38BDF8]", group: "interface" },
+  { name: "Bootstrap", icon: FaBootstrap, color: "text-[#8B5CF6]", group: "interface" },
+  { name: "Chakra UI", icon: SiChakraui, color: "text-[#319795]", group: "interface" },
+  { name: "Framer Motion", icon: SiFramer, color: "text-[#FF4D9E]", group: "motion" },
+  { name: "GSAP", icon: SiGreensock, color: "text-[#88CE02]", group: "motion" },
   { name: "Three.js", icon: SiThreedotjs, color: "text-ink", group: "motion" },
-  { name: "Node.js", icon: FaNodeJs, color: "text-green-600", group: "server" },
+  { name: "Node.js", icon: FaNodeJs, color: "text-[#5FA04E]", group: "server" },
   { name: "Express", icon: SiExpress, color: "text-ink", group: "server" },
-  { name: "MongoDB", icon: SiMongodb, color: "text-green-600", group: "server" },
-  { name: "PostgreSQL", icon: SiPostgresql, color: "text-blue-600", group: "server" },
-  { name: "Prisma", icon: SiPrisma, color: "text-indigo-500", group: "server" },
-  { name: "Supabase", icon: SiSupabase, color: "text-emerald-500", group: "server" },
-  { name: "Git", icon: FaGitAlt, color: "text-red-500", group: "delivery" },
-  { name: "Vite", icon: SiVite, color: "text-purple-500", group: "delivery" },
-  { name: "Docker", icon: FaDocker, color: "text-blue-500", group: "delivery" },
-  { name: "AWS", icon: FaAws, color: "text-orange-500", group: "delivery" },
+  { name: "PHP", icon: SiPhp, color: "text-[#777BB4]", group: "server" },
+  { name: "Laravel", icon: SiLaravel, color: "text-[#FF2D20]", group: "server" },
+  { name: "MongoDB", icon: SiMongodb, color: "text-[#47A248]", group: "server" },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "text-[#5B84F0]", group: "server" },
+  { name: "Prisma", icon: SiPrisma, color: "text-[#6D7CE8]", group: "server" },
+  { name: "Supabase", icon: SiSupabase, color: "text-[#3ECF8E]", group: "server" },
+  { name: "Git", icon: FaGitAlt, color: "text-[#F05032]", group: "delivery" },
+  { name: "Vite", icon: SiVite, color: "text-[#646CFF]", group: "delivery" },
+  { name: "Docker", icon: FaDocker, color: "text-[#2496ED]", group: "delivery" },
+  { name: "AWS", icon: FaAws, color: "text-[#FF9900]", group: "delivery" },
   { name: "Vercel", icon: SiVercel, color: "text-ink", group: "delivery" },
   { name: "Claude Code", icon: SiClaude, color: "text-[#D97757]", group: "ai" },
   { name: "GitHub Copilot", icon: SiGithubcopilot, color: "text-ink", group: "ai" },
-  { name: "ChatGPT", icon: SiOpenai, color: "text-ink", group: "ai" },
+  { name: "ChatGPT", icon: SiOpenai, color: "text-[#10A37F]", group: "ai" },
   { name: "Cursor", icon: MousePointer2, color: "text-ink", group: "ai" }
 ];
 
 /* =======================
    EXPERIENCE
+   Each role: a one-line overview, then what was done, action first and the result last
+   (present tense for the current role, past tense for earlier ones).
 ======================= */
 export const EXPERIENCE = [
   {
     role: "Frontend Developer",
-    company: "Care IO Infotech pvt ltd",
-    duration: "August 2022 - Present",
-    location: "Nashik, Maharashtra",
+    company: "Care IO Infotech Pvt. Ltd.",
+    duration: "Aug 2022 - Present",
+    location: "Nashik, Maharashtra, India",
+    summary:
+      "Care IO is a product-based healthcare technology company whose Healthcare Interoperability Cloud OS covers data governance, interoperability and collaboration. I build its web interfaces for medical imaging, diagnostic reports, patient records, scheduling and document workflows.",
     description: [
-      "Developed modular user interfaces with React.js and Tailwind CSS for healthcare applications, enabling a 40% increase in code reuse and reducing development time by 25% across 10+ products within a 12-month period.",
-      "Facilitated cross-team integration by partnering with backend engineers to deliver React.js user interfaces, reducing frontend-backend issue resolution time by 40% over a 12-month period using REST APIs and Git.",
-      "Developed and deployed over 30+ reusable React components and custom hooks using React.js and Tailwind CSS, reducing duplicate code by 40% and accelerating feature release cycles by 25%.",
-      "Implemented lazy loading techniques and efficient state management in React.js and Next.js to enhance application responsiveness.",
-      "Worked with backend, product, and QA teams under Agile methodologies to ensure seamless feature delivery."
+      "Build and maintain modular React and Tailwind CSS interfaces across 10+ healthcare products, increasing code reuse by 40% and reducing development time by 25% within twelve months.",
+      "Developed 30+ reusable React components and custom hooks that standardise UI patterns across products and shorten release cycles.",
+      "Integrate secure RESTful and FHIR-based APIs that fetch and display real-time clinical data, working closely with backend engineers and cutting issue resolution time by 40%.",
+      "Contribute to migrating Care IO's legacy ASP.NET web application to Next.js and React, keeping API contracts, role-based permissions and behaviour consistent screen by screen.",
+      "Improve load and interaction performance in React and Next.js applications through lazy loading and efficient state management.",
+      "Deliver responsive layouts with Tailwind CSS and Bootstrap that work from phones to large desktop screens.",
+      "Take part in sprint planning, daily stand-ups and reviews with backend, product and QA teams, shipping features from refinement through release."
     ],
-    technologies: ["React.js", "Next.js", "HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap", "Agile", "REST APIs", "Git"]
+    technologies: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Bootstrap", "REST APIs", "FHIR", "Git", "Agile"]
   },
   {
-    role: "Full-stack Developer",
-    company: "Suneko Info - Freelance",
+    role: "Full Stack Developer (Freelance)",
+    company: "Suneko Info",
     duration: "Sep 2022 - May 2023",
-    location: "Pune, Maharashtra, India - Hybrid",
+    location: "Pune, Maharashtra, India (hybrid)",
+    summary:
+      "Freelance full stack development for Suneko Info alongside my first months at Care IO: responsive client-facing web applications with React front ends backed by Node.js APIs, delivered from requirements through release.",
     description: [
-      "Frontend-focused Full-Stack Web Developer specializing in building scalable, responsive, and performance-optimized web interfaces, backed by reliable backend integration.",
-      "Designed and developed responsive, interactive user interfaces using React.js, HTML, CSS, JavaScript, and Tailwind CSS.",
-      "Integrated robust backend APIs built with Node.js to enable seamless data flow and enhance application performance.",
-      "Utilized Bootstrap and Tailwind CSS to implement mobile-first designs, ensuring a consistent user experience across platforms."
+      "Gathered requirements with the client and turned design mockups into responsive, interactive interfaces with React, JavaScript, HTML, CSS and Tailwind CSS.",
+      "Built a library of reusable React components and page layouts, keeping the codebase consistent and quick to extend as new screens were added.",
+      "Integrated Node.js REST APIs with clear loading, empty and error states, giving reliable data flow between client and server.",
+      "Implemented forms with client-side validation and user feedback, reducing failed submissions and support requests.",
+      "Delivered mobile-first layouts with Bootstrap and Tailwind CSS, tested across browsers and screen sizes for a consistent experience on every device.",
+      "Debugged and optimised pages for faster loads, and shipped work in agreed milestones through a Git-based workflow with regular client reviews."
     ],
-    technologies: ["React.js", "Node.js", "HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap"]
+    technologies: ["React.js", "Node.js", "REST APIs", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Bootstrap", "Git"]
   },
   {
-    role: "Quality Assurance Quality Control",
-    company: "Mungi Engineers Pvt. Ltd. - Full-time",
+    role: "Quality Assurance and Quality Control",
+    company: "Mungi Engineers Pvt. Ltd.",
     duration: "Feb 2017 - Dec 2021",
     location: "Nashik, Maharashtra, India",
+    summary:
+      "Nearly five years in quality assurance and quality control at an automotive component manufacturer, making sure parts supplied to automobile makers met drawing specifications and customer quality standards, before moving into software in 2022.",
     description: [
-      "In my role at Mungi Engineers Pvt. Ltd., I specialized in Quality Assurance and Quality Control within the automobile manufacturing domain, ensuring adherence to industry standards and internal quality requirements."
+      "Carried out incoming, in-process and final inspection of automotive components against engineering drawings, specifications and customer requirements.",
+      "Measured critical dimensions with precision instruments such as vernier calipers, micrometers, height gauges and bore gauges, and kept inspection records for every batch.",
+      "Identified non-conforming parts, raised non-conformance reports and led root cause analysis (why-why, fishbone) with production to put corrective and preventive actions in place.",
+      "Maintained quality documentation, inspection reports and gauge calibration records in line with ISO 9001 quality management practice, supporting internal and customer audits.",
+      "Tracked rejection and rework data to spot recurring defects, helping production teams reduce scrap and improve first-pass quality.",
+      "Trained shop-floor operators on inspection standards and quality checks, and supported 5S and continuous-improvement (Kaizen) activities.",
+      "Built the attention to detail, process discipline and habit of verifying before release that now carry into code review and testing."
     ],
-    technologies: []
+    technologies: ["Quality inspection", "Engineering drawings", "Precision measurement", "Root cause analysis", "CAPA", "ISO 9001", "5S and Kaizen", "MS Excel"]
   }
 ];
 
@@ -731,10 +806,12 @@ export const EDUCATION = [
 export const SOCIAL_LINKS = {
   github: "https://github.com/Suraj231194",
   linkedin: "https://www.linkedin.com/in/surajpawar2311/",
-  email: "surajpawar913@gmail.com"
+  email: "surajpawar913@gmail.com",
+  // International format without "+" or spaces, as wa.me expects (+91 88063 05038).
+  whatsapp: "918806305038"
 };
 
 /* =======================
    FOOTER
 ======================= */
-export const FOOTER_TEXT = `Designed and built by Suraj Pawar - ${new Date().getFullYear()}`;
+export const FOOTER_TEXT = `© ${new Date().getFullYear()} · Designed and built by Suraj Pawar`;

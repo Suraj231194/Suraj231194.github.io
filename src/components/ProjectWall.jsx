@@ -103,7 +103,7 @@ const ProjectWall = () => {
                     <SectionHeading
                         id="work-title"
                         title={`${TILES.length} live sites`}
-                        lead="Storefronts, company sites, dashboards and web apps, each one online. Open any of them, or read the case studies below."
+                        lead="Storefronts, company sites, dashboards and web apps, each one online. Open any of them, or scroll on for the featured case studies."
                     />
                 </Container>
 

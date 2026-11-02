@@ -6,10 +6,9 @@ const LINKS = [
     { label: 'GitHub', href: SOCIAL_LINKS.github, external: true },
     { label: 'LinkedIn', href: SOCIAL_LINKS.linkedin, external: true },
     { label: 'Email', href: `mailto:${SOCIAL_LINKS.email}`, external: false },
-    { label: 'Back to top', href: '#home', external: false },
 ];
 
-const Footer = () => (
+const Footer = ({ topHref = '#home' }) => (
     <footer className="night relative z-[1] border-t border-rule bg-paper">
         <Container className="flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -17,7 +16,7 @@ const Footer = () => (
                 <p className="text-sm text-pencil">{FOOTER_TEXT}</p>
             </div>
             <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-                {LINKS.map((link) => (
+                {[...LINKS, { label: 'Back to top', href: topHref, external: false }].map((link) => (
                     <li key={link.label}>
                         <a
                             href={link.href}

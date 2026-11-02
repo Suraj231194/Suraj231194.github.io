@@ -12,8 +12,9 @@ const handleImageError = (event) => {
 };
 
 const Education = () => {
+    // Natural height, not a full screen: three short cards would sit in a screen of empty space.
     return (
-        <section id="education" aria-labelledby="education-title" className="screen py-16 sm:py-20 lg:py-24">
+        <section id="education" aria-labelledby="education-title" className="py-14 sm:py-16 lg:py-20">
             <Container>
                 <SectionHeading id="education-title" title="Education" lead="From engineering college to full stack training." />
 

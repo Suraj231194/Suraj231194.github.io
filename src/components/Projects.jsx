@@ -14,14 +14,18 @@ const INITIAL_COUNT = 4;
 const countFor = (filter) =>
     filter === 'All' ? PROJECTS.length : PROJECTS.filter((project) => project.category.includes(filter)).length;
 
-const Projects = () => {
+/**
+ * Every case study, with the filters. `initialCount` is how many "All" shows before "Show all"
+ * (the projects page shows them all); `headingLevel` 1 makes the title the page's heading.
+ */
+const Projects = ({ initialCount = INITIAL_COUNT, headingLevel = 2 }) => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [showAll, setShowAll] = useState(false);
 
     const filteredProjects = activeFilter === 'All'
         ? PROJECTS
         : PROJECTS.filter((project) => project.category.includes(activeFilter));
-    const visibleProjects = activeFilter === 'All' && !showAll ? filteredProjects.slice(0, INITIAL_COUNT) : filteredProjects;
+    const visibleProjects = activeFilter === 'All' && !showAll ? filteredProjects.slice(0, initialCount) : filteredProjects;
 
     const selectFilter = (filter) => {
         setActiveFilter(filter);
@@ -41,6 +45,7 @@ const Projects = () => {
                     id="projects-title"
                     title="Projects"
                     lead="Live sites, each with its screens, what it does, and the stack behind it."
+                    level={headingLevel}
                 />
 
                 <Assemble from="up" distance={0.4} className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:mb-16">
@@ -91,7 +96,7 @@ const Projects = () => {
                     ))}
                 </div>
 
-                {activeFilter === 'All' && PROJECTS.length > INITIAL_COUNT && (
+                {activeFilter === 'All' && PROJECTS.length > initialCount && (
                     <div className="mt-14 flex justify-center">
                         <button
                             type="button"

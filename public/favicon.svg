@@ -1,20 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
   <defs>
-    <linearGradient id="tile" x1="3" y1="2" x2="37" y2="38" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3B8BFF"/>
-      <stop offset="0.62" stop-color="#1E5BEA"/>
-      <stop offset="1" stop-color="#1640C4"/>
+    <linearGradient id="tile" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1D4ED8"/>
+      <stop offset="0.55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
     </linearGradient>
-    <linearGradient id="light" x1="20" y1="0" x2="20" y2="22" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.32"/>
+    <linearGradient id="sheen" x1="20" y1="0" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <rect width="40" height="40" rx="11" fill="url(#tile)"/>
-  <rect x="0.75" y="0.75" width="38.5" height="38.5" rx="10.25" fill="url(#light)" stroke="#FFFFFF" stroke-opacity="0.22" stroke-width="1.5"/>
-  <g transform="translate(-0.75 0)" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M18.5 12.5h-5a3.75 3.75 0 0 0 0 7.5h2a3.75 3.75 0 0 1 0 7.5h-5"/>
-    <path d="M23 27.5v-15h4.5a4.25 4.25 0 0 1 0 8.5H23"/>
+  <rect x="0.5" y="0.5" width="39" height="39" rx="10.5" fill="url(#sheen)" stroke="#FFFFFF" stroke-opacity="0.18"/>
+  <g transform="translate(-1 0)" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.77 12.76A4.6 4.6 0 1 0 14 20A4.6 4.6 0 1 1 10.23 27.24"/>
+    <path d="M25 29.2V10.8H28.2A4.6 4.6 0 0 1 28.2 20H25"/>
   </g>
-  <circle cx="9.75" cy="27.5" r="2.4" fill="#22D3EE"/>
+  <circle cx="30.9" cy="27.2" r="2" fill="#A5F3FC"/>
 </svg>

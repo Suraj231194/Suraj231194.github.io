@@ -11,11 +11,13 @@ const HEADER = 'relative mb-10 grid gap-4 pt-6 sm:mb-14 md:grid-cols-12 md:gap-8
  *
  * As it scrolls in, the rule draws in from both ends until the halves meet, the title's words
  * rise and tip forward into line one after another, and the lead slides in. All of it is
- * scrubbed by the scroll. Without motion it is simply the finished heading.
+ * scrubbed by the scroll. Without motion it is simply the finished heading. `level` 1 makes the
+ * title the page's own heading (the projects page).
  */
-const SectionHeading = ({ id, title, lead }) => {
+const SectionHeading = ({ id, title, lead, level = 2 }) => {
     const ref = useRef(null);
     const words = title.split(' ');
+    const Title = level === 1 ? 'h1' : 'h2';
 
     useScrollMotion(ref, () => {
         const header = ref.current;
@@ -44,7 +46,7 @@ const SectionHeading = ({ id, title, lead }) => {
             <span data-rule className="absolute left-0 top-0 h-px w-1/2 origin-left bg-rule" aria-hidden="true" />
             <span data-rule className="absolute right-0 top-0 h-px w-1/2 origin-right bg-rule" aria-hidden="true" />
             <span data-tick className="absolute -top-px left-0 h-[3px] w-12 origin-left bg-ink" aria-hidden="true" />
-            <h2 id={id} className={TITLE}>
+            <Title id={id} className={TITLE}>
                 <span className="sr-only">{title}</span>
                 <span aria-hidden="true">
                     {words.map((word, index) => (
@@ -56,7 +58,7 @@ const SectionHeading = ({ id, title, lead }) => {
                         </React.Fragment>
                     ))}
                 </span>
-            </h2>
+            </Title>
             {lead && (
                 <p data-lead className={LEAD}>
                     {lead}

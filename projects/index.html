@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#040814" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#040814" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Every live project by Suraj Pawar, front-end developer: screenshots, features, contributions and the stack behind each one." />
+    <meta name="author" content="Suraj Pawar" />
+    <meta property="og:title" content="Projects | Suraj Pawar, Front-End Developer" />
+    <meta property="og:description" content="Live projects with screenshots, professional experience and the technical toolkit of Suraj Pawar." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://suraj231194.github.io/projects/" />
+    <meta property="og:image" content="https://suraj231194.github.io/images/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Projects | Suraj Pawar, Front-End Developer" />
+    <meta name="twitter:description" content="Explore MERN, Next.js, motion and 3D web projects by Suraj Pawar." />
+    <meta name="twitter:image" content="https://suraj231194.github.io/images/og-image.png" />
+    <link rel="canonical" href="https://suraj231194.github.io/projects/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" />
+    <script>
+        // Applies the theme before the first paint, so the page never flashes the wrong one: the
+        // theme picked with the toggle during this visit, otherwise the visitor's clock (dark from
+        // 7 PM to 8 AM). Same rule as src/constants/theme.js. Also clears the choice older versions
+        // kept for good in localStorage.
+        (function () {
+            var theme;
+            try {
+                theme = sessionStorage.getItem('theme');
+                localStorage.removeItem('theme');
+            } catch (error) {
+                theme = null;
+            }
+            if (theme !== 'light' && theme !== 'dark') {
+                var hour = new Date().getHours();
+                theme = hour >= 19 || hour < 8 ? 'dark' : 'light';
+            }
+            document.documentElement.classList.add(theme);
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
+    <title>Projects | Suraj Pawar, Front-End Developer</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/projects.jsx"></script>
+</body>
+
+</html>

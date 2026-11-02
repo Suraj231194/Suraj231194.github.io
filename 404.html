@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#040814" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#040814" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="This page does not exist. Go to the home page or see every project by Suraj Pawar, front-end developer." />
+    <meta name="author" content="Suraj Pawar" />
+    <!-- GitHub Pages serves this file for every address that does not exist; search engines should not list it. -->
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" />
+    <script>
+        // Applies the theme before the first paint, so the page never flashes the wrong one: the
+        // theme picked with the toggle during this visit, otherwise the visitor's clock (dark from
+        // 7 PM to 8 AM). Same rule as src/constants/theme.js. Also clears the choice older versions
+        // kept for good in localStorage.
+        (function () {
+            var theme;
+            try {
+                theme = sessionStorage.getItem('theme');
+                localStorage.removeItem('theme');
+            } catch (error) {
+                theme = null;
+            }
+            if (theme !== 'light' && theme !== 'dark') {
+                var hour = new Date().getHours();
+                theme = hour >= 19 || hour < 8 ? 'dark' : 'light';
+            }
+            document.documentElement.classList.add(theme);
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
+    <title>Page not found | Suraj Pawar</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/not-found.jsx"></script>
+</body>
+
+</html>

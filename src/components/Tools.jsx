@@ -17,8 +17,8 @@ const WIDE = 'border-t bg-gradient-to-r from-accent/[0.07] to-transparent sm:col
 
 /**
  * Skills as a parts list: four columns from interface to delivery, and the AI tools in a row
- * underneath. Icons stay grey until the pointer reaches their row; on touch screens they are
- * always in colour.
+ * underneath. Every icon is in its brand colour; the one under the pointer grows a little and
+ * glows in that colour.
  */
 const Tools = () => {
     return (
@@ -61,7 +61,7 @@ const Tools = () => {
                                             className="group/skill -mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition-colors duration-200 hover:bg-paper"
                                         >
                                             <tool.icon
-                                                className={`shrink-0 text-xl transition-[filter,opacity] duration-300 [&.lucide]:size-[1em] ${tool.color} opacity-60 grayscale group-hover/skill:opacity-100 group-hover/skill:grayscale-0 [@media(hover:none)]:opacity-100 [@media(hover:none)]:grayscale-0`}
+                                                className={`shrink-0 text-xl transition-[filter,transform] duration-300 [&.lucide]:size-[1em] ${tool.color} group-hover/skill:scale-110 group-hover/skill:[filter:drop-shadow(0_0_8px_currentColor)]`}
                                                 aria-hidden="true"
                                             />
                                             <span className="text-[0.95rem] text-ink">{tool.name}</span>
