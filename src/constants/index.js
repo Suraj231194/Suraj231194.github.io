@@ -30,9 +30,22 @@ import {
   SiThreedotjs,
   SiClaude,
   SiGithubcopilot,
-  SiOpenai
+  SiOpenai,
+  SiWebgl
 } from "react-icons/si";
-import { MousePointer2 } from "lucide-react";
+import {
+  Box,
+  Building2,
+  CodeXml,
+  LayoutDashboard,
+  LayoutTemplate,
+  Layers,
+  MessagesSquare,
+  Mouse,
+  MousePointer2,
+  ShieldCheck,
+  ShoppingBag
+} from "lucide-react";
 
 export const RESUME_LINK = "/Suraj-Pawar-Resume.pdf";
 // The page with every case study (projects/index.html).
@@ -648,14 +661,112 @@ const EARLIER_PROJECTS = [
 export const PROJECTS = [...NEW_PROJECTS, ...EARLIER_PROJECTS];
 
 /* =======================
+   SERVICES
+   What a visitor can hire Suraj for. Each service names what it includes and the live projects
+   that prove it (`proof` holds project ids, shown as links to their case studies), so every claim
+   is backed by work on this site. `from` and `to` are the RGB ends of the card's gradient, all
+   from the brand's blues, cyans and teals; `deep` is a darker shade of the same hue for ticks and
+   the "Seen in" links on the light theme, dark enough for small text on white (4.5:1 or more).
+======================= */
+export const SERVICES = [
+  {
+    id: "apps",
+    deep: "21 82 214",
+    from: "64 132 255",
+    to: "34 211 238",
+    icon: Layers,
+    title: "Full-stack web apps",
+    description: "Booking systems, file sharing and other products with sign-in, a database and an API, built end to end.",
+    includes: ["Sign-in and role-based access", "REST APIs on Node.js and Express", "PostgreSQL or MongoDB data"],
+    proof: ["appointment", "urban", "sharebox"]
+  },
+  {
+    id: "commerce",
+    deep: "15 118 110",
+    from: "34 211 238",
+    to: "45 212 191",
+    icon: ShoppingBag,
+    title: "E-commerce",
+    description: "Storefronts and ordering portals that take a visitor from browsing to a placed order.",
+    includes: ["Catalogues with search and filters", "Cart, checkout and order history", "Quotations and B2B ordering"],
+    proof: ["care", "nexaro", "biogenix"]
+  },
+  {
+    id: "dashboards",
+    deep: "79 70 229",
+    from: "99 102 241",
+    to: "64 132 255",
+    icon: LayoutDashboard,
+    title: "Dashboards",
+    description: "Analytics and admin screens that make numbers easy to read and act on.",
+    includes: ["KPI cards and charts", "Filters and searchable data", "Responsive from phone to desktop"],
+    proof: ["revenue", "mixo"]
+  },
+  {
+    id: "sites",
+    deep: "3 105 161",
+    from: "14 165 233",
+    to: "103 232 249",
+    icon: Building2,
+    title: "Company websites",
+    description: "Sites that present a business clearly and turn visitors into enquiries.",
+    includes: ["3D and scroll-driven motion", "Contact and enquiry forms", "Search-ready metadata"],
+    proof: ["build", "cortex", "aadrila"]
+  }
+];
+
+/* =======================
+   HOW I WORK
+   The four steps on the home page (Process.jsx), drawn from how the work is described under
+   EXPERIENCE and in the case studies: requirements and milestones with the client (Suneko Info),
+   reusable component systems (Care IO), API integration with clear states, and checking before
+   release (quality control, Playwright tests, Vercel and AWS).
+======================= */
+export const PROCESS = [
+  {
+    id: "understand",
+    icon: MessagesSquare,
+    title: "Understand",
+    description: "We agree on the goal, the users and the scope, then split the work into milestones you can review.",
+    tags: ["Requirements", "Milestones"]
+  },
+  {
+    id: "plan",
+    icon: LayoutTemplate,
+    title: "Plan the system",
+    description: "I map the screens to reusable components and layouts first, so every page stays consistent and new ones are quick to add.",
+    tags: ["Component system", "Responsive"]
+  },
+  {
+    id: "build",
+    icon: CodeXml,
+    title: "Build",
+    description: "React or Next.js with clean API integration, and clear loading, empty and error states on every screen.",
+    tags: ["React and Next.js", "REST APIs"]
+  },
+  {
+    id: "ship",
+    icon: ShieldCheck,
+    title: "Test and ship",
+    description: "Five years in quality control taught me to check before release: browser tests, then deployment and follow-up fixes.",
+    tags: ["Playwright", "Vercel and AWS"]
+  }
+];
+
+/* =======================
    TOOLS / TECH STACK
    Grouped like a parts list. Motion and 3D tools are the ones used in this portfolio and in
    the Care and Build case studies. The AI tools are the ones Suraj builds with, as Suraj listed
    them; that group runs the full width under the others. Cursor has no brand mark in react-icons, so it
-   takes a plain pointer.
-   Each icon is in its brand's colour on the midnight Skills band, at 4:1 contrast or more: CSS,
-   Redux, Bootstrap and PostgreSQL in a lighter shade of their own colour, Prisma in its indigo
-   (its navy would vanish), and the black-and-white brands in white.
+   takes a plain pointer; likewise ScrollTrigger (a GSAP plugin, in GSAP's green) takes a scroll mouse
+   and CSS 3D a cube. ScrollTrigger, WebGL and CSS 3D are the ones named in the Care and Build case
+   studies (the WebGL hero, the CSS 3D gift box, the ScrollTrigger choreography).
+   The Skills section follows the site theme, so each icon has two shades of its brand colour, at
+   3:1 contrast or more on its background. Light theme: the brand colour, or a deeper shade of it
+   where the brand colour is too pale for white (JavaScript, React, Tailwind CSS, GSAP, Supabase,
+   AWS and others). Dark theme (`dark:`): the colour as it was drawn on midnight, at 4:1 or more,
+   with CSS, Redux, Bootstrap and PostgreSQL in a lighter shade, Prisma in its indigo (its navy
+   would vanish). The black-and-white brands use the ink colour, navy or white.
 ======================= */
 export const SKILL_GROUPS = [
   { id: "interface", title: "Interface", description: "Markup, components and styling" },
@@ -667,32 +778,35 @@ export const SKILL_GROUPS = [
 
 export const TOOLS = [
   { name: "HTML", icon: FaHtml5, color: "text-[#E34F26]", group: "interface" },
-  { name: "CSS", icon: FaCss3Alt, color: "text-[#2A7DE1]", group: "interface" },
-  { name: "JavaScript", icon: FaJs, color: "text-[#F7DF1E]", group: "interface" },
+  { name: "CSS", icon: FaCss3Alt, color: "text-[#1572B6] dark:text-[#2A7DE1]", group: "interface" },
+  { name: "JavaScript", icon: FaJs, color: "text-[#A16207] dark:text-[#F7DF1E]", group: "interface" },
   { name: "TypeScript", icon: SiTypescript, color: "text-[#3178C6]", group: "interface" },
-  { name: "React", icon: FaReact, color: "text-[#61DAFB]", group: "interface" },
+  { name: "React", icon: FaReact, color: "text-[#087EA4] dark:text-[#61DAFB]", group: "interface" },
   { name: "Next.js", icon: SiNextdotjs, color: "text-ink", group: "interface" },
-  { name: "Redux", icon: SiRedux, color: "text-[#9469D9]", group: "interface" },
-  { name: "Tailwind CSS", icon: SiTailwindcss, color: "text-[#38BDF8]", group: "interface" },
-  { name: "Bootstrap", icon: FaBootstrap, color: "text-[#8B5CF6]", group: "interface" },
+  { name: "Redux", icon: SiRedux, color: "text-[#764ABC] dark:text-[#9469D9]", group: "interface" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "text-[#0284C7] dark:text-[#38BDF8]", group: "interface" },
+  { name: "Bootstrap", icon: FaBootstrap, color: "text-[#7952B3] dark:text-[#8B5CF6]", group: "interface" },
   { name: "Chakra UI", icon: SiChakraui, color: "text-[#319795]", group: "interface" },
-  { name: "Framer Motion", icon: SiFramer, color: "text-[#FF4D9E]", group: "motion" },
-  { name: "GSAP", icon: SiGreensock, color: "text-[#88CE02]", group: "motion" },
+  { name: "Framer Motion", icon: SiFramer, color: "text-[#E0287C] dark:text-[#FF4D9E]", group: "motion" },
+  { name: "GSAP", icon: SiGreensock, color: "text-[#4D7C0F] dark:text-[#88CE02]", group: "motion" },
+  { name: "ScrollTrigger", icon: Mouse, color: "text-[#4D7C0F] dark:text-[#88CE02]", group: "motion" },
   { name: "Three.js", icon: SiThreedotjs, color: "text-ink", group: "motion" },
-  { name: "Node.js", icon: FaNodeJs, color: "text-[#5FA04E]", group: "server" },
+  { name: "WebGL", icon: SiWebgl, color: "text-[#990000] dark:text-[#F87171]", group: "motion" },
+  { name: "CSS 3D", icon: Box, color: "text-[#6D28D9] dark:text-[#A78BFA]", group: "motion" },
+  { name: "Node.js", icon: FaNodeJs, color: "text-[#3E863D] dark:text-[#5FA04E]", group: "server" },
   { name: "Express", icon: SiExpress, color: "text-ink", group: "server" },
   { name: "PHP", icon: SiPhp, color: "text-[#777BB4]", group: "server" },
   { name: "Laravel", icon: SiLaravel, color: "text-[#FF2D20]", group: "server" },
   { name: "MongoDB", icon: SiMongodb, color: "text-[#47A248]", group: "server" },
-  { name: "PostgreSQL", icon: SiPostgresql, color: "text-[#5B84F0]", group: "server" },
-  { name: "Prisma", icon: SiPrisma, color: "text-[#6D7CE8]", group: "server" },
-  { name: "Supabase", icon: SiSupabase, color: "text-[#3ECF8E]", group: "server" },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "text-[#336791] dark:text-[#5B84F0]", group: "server" },
+  { name: "Prisma", icon: SiPrisma, color: "text-[#2D3748] dark:text-[#6D7CE8]", group: "server" },
+  { name: "Supabase", icon: SiSupabase, color: "text-[#249361] dark:text-[#3ECF8E]", group: "server" },
   { name: "Git", icon: FaGitAlt, color: "text-[#F05032]", group: "delivery" },
   { name: "Vite", icon: SiVite, color: "text-[#646CFF]", group: "delivery" },
-  { name: "Docker", icon: FaDocker, color: "text-[#2496ED]", group: "delivery" },
-  { name: "AWS", icon: FaAws, color: "text-[#FF9900]", group: "delivery" },
+  { name: "Docker", icon: FaDocker, color: "text-[#1D7FD0] dark:text-[#2496ED]", group: "delivery" },
+  { name: "AWS", icon: FaAws, color: "text-[#C46A00] dark:text-[#FF9900]", group: "delivery" },
   { name: "Vercel", icon: SiVercel, color: "text-ink", group: "delivery" },
-  { name: "Claude Code", icon: SiClaude, color: "text-[#D97757]", group: "ai" },
+  { name: "Claude Code", icon: SiClaude, color: "text-[#C2603F] dark:text-[#D97757]", group: "ai" },
   { name: "GitHub Copilot", icon: SiGithubcopilot, color: "text-ink", group: "ai" },
   { name: "ChatGPT", icon: SiOpenai, color: "text-[#10A37F]", group: "ai" },
   { name: "Cursor", icon: MousePointer2, color: "text-ink", group: "ai" }

@@ -22,7 +22,7 @@ const WIDE = 'border-t bg-gradient-to-r from-accent/[0.07] to-transparent sm:col
  */
 const Tools = () => {
     return (
-        <section id="tools" aria-labelledby="tools-title" className="screen night band-night py-16 sm:py-20 lg:py-24">
+        <section id="tools" aria-labelledby="tools-title" className="screen py-16 sm:py-20 lg:py-24">
             <Container>
                 <SectionHeading
                     id="tools-title"

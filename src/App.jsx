@@ -3,6 +3,8 @@ import SiteShell from './components/SiteShell';
 import Hero from './components/Hero';
 import ProjectWall from './components/ProjectWall';
 import FeaturedProjects from './components/FeaturedProjects';
+import Services from './components/Services';
+import Process from './components/Process';
 import Experience from './components/Experience';
 import Tools from './components/Tools';
 import About from './components/About';
@@ -18,6 +20,8 @@ function App() {
             <Hero />
             <ProjectWall />
             <FeaturedProjects />
+            <Services />
+            <Process />
             <Experience />
             <Tools />
             <About />

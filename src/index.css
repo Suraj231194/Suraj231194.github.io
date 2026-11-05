@@ -44,7 +44,7 @@
     --on-cta: 4 18 31;
 }
 
-/* A band drawn on midnight whatever the theme: the hero, Skills, Contact and the footer. */
+/* A band drawn on midnight whatever the theme: the hero, Contact and the footer. */
 .night {
     color: rgb(var(--ink));
     color-scheme: dark;
@@ -741,65 +741,66 @@
     will-change: transform;
 }
 
-/* ---------- Project wall ----------
-   Every live site as a tile on one tilted wall (ProjectWall.jsx). The tiles sit in rows from the
-   middle of the wall: --wc / --wr on tablets and up, --nc / --nr on phones, in tile steps. A tile
-   is sized by the stage's width and, on wide screens, by the screen's height, so the pinned wall
-   fits on one screen. The scroll tweens each tile's transform and the plane's --wall-* tilt. */
+/* ---------- Project stage ----------
+   Every live site as a screen in an amphitheatre around a lit floor (ProjectWall.jsx, geometry in
+   wall/wallLayout.js). The stage is a query container, so every position and size is in cqw
+   (hundredths of its width) and the composition scales as one. Wide screens: a 16:9 frame that
+   fits the window's height, with captions in its corners and the details panel on the floor.
+   Portrait screens: a 5:8 column of seven of the sites, with the panel below it. The intro, the
+   pointer lean and the pin are GSAP (ProjectWall.jsx); hover, the float and the layout are here. */
 .wall-stage {
+    position: relative;
     container-type: inline-size;
-    width: 100%;
-    max-width: 92rem;
+    width: min(100%, calc((100svh - 8.5rem) * 16 / 9));
     margin-inline: auto;
-    padding: 2.5rem 1.25rem 1.5rem;
-    perspective: 1600px;
-    perspective-origin: 50% 40%;
 }
 
-.wall-plane {
-    --gap: clamp(0.6rem, 1.5cqw, 1.4rem);
-    --cols: 3;
-    --rows: 5;
-    --tile: min(15.5rem, calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols)));
-    /* A browser bar on top of a 16:10 screenshot. */
-    --tile-h: calc(var(--tile) * 0.695);
+.wall-frame {
     position: relative;
-    height: calc(var(--rows) * var(--tile-h) + (var(--rows) - 1) * var(--gap));
+    aspect-ratio: 16 / 9;
+}
+
+.wall-world {
+    position: absolute;
+    inset: 0;
+    perspective: 75cqw;
+    perspective-origin: 50% 42%;
+}
+
+/* The deck, the slots and the move layers are planes in the 3D scene, and a plane in front of a
+   set-back screen would take its pointer. Only the screens themselves can be pointed at. */
+.wall-deck {
+    position: absolute;
+    inset: 0;
     margin: 0;
     padding: 0;
     list-style: none;
     transform-style: preserve-3d;
-    transform: rotateX(var(--wall-rx, 12deg)) rotateY(var(--wall-ry, -8deg)) rotateZ(var(--wall-rz, 1.5deg));
+    pointer-events: none;
 }
 
-@media (min-width: 768px) {
-    .wall-plane {
-        --cols: 5;
-        --rows: 3;
-        /* 88% of the width: the wall's tilt brings its right side nearer, and larger. */
-        --tile: min(15.5rem, calc((88cqw - 4 * var(--gap)) / 5), calc((100svh - 11rem - 2 * var(--gap)) / 2.085));
-    }
-}
-
-.wall-tile {
-    --c: var(--nc);
-    --r: var(--nr);
+/* A screen: placed in the frame, set back by its depth (--d) and turned toward the centre. */
+.wall-slot {
+    --tile: calc(var(--w) * 1cqw);
     position: absolute;
-    left: calc(50% + var(--c) * (var(--tile) + var(--gap)) - var(--tile) / 2);
-    top: calc(50% + var(--r) * (var(--tile-h) + var(--gap)) - var(--tile-h) / 2);
+    left: calc(var(--x) * 1cqw);
+    top: calc(var(--y) * 1cqw);
     width: var(--tile);
-    height: var(--tile-h);
+    /* A browser bar on top of a 16:10 screenshot. */
+    aspect-ratio: 1 / 0.695;
+    transform-style: preserve-3d;
+    transform-origin: var(--ox) 50%;
+    transform: translateZ(calc((0.6 - var(--d)) * 6cqw)) rotateY(var(--ry)) rotateX(var(--rx)) rotateZ(var(--rz));
+}
+
+/* The layer the intro and the pointer move (GSAP), apart from the slot's placement. */
+.wall-move {
+    position: absolute;
+    inset: 0;
     transform-style: preserve-3d;
 }
 
-@media (min-width: 768px) {
-    .wall-tile {
-        --c: var(--wc);
-        --r: var(--wr);
-    }
-}
-
-/* The tile itself: a small browser window that comes forward on hover and focus. */
+/* The screen itself: a small browser window that comes forward on hover and focus. */
 .wall-card {
     position: absolute;
     inset: 0;
@@ -810,7 +811,12 @@
     border: 1px solid rgb(var(--ink) / 0.12);
     background: rgb(var(--sheet));
     box-shadow: 0 24px 40px -26px rgb(15 40 110 / 0.5);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s, box-shadow 0.4s;
+    pointer-events: auto;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s, box-shadow 0.4s, opacity 0.4s;
+}
+
+.wall-card[data-active] {
+    border-color: rgb(var(--glow) / 0.6);
 }
 
 .wall-card:hover,
@@ -818,6 +824,29 @@
     transform: translateZ(calc(var(--tile) * 0.16));
     border-color: rgb(var(--glow) / 0.75);
     box-shadow: 0 0 0 1px rgb(var(--glow) / 0.35), 0 30px 60px -22px rgb(var(--accent) / 0.65);
+}
+
+/* While one screen is lifted, the others ease back so the depth reads. */
+.wall-deck:has(.wall-card:hover, .wall-card:focus-visible) .wall-card:not(:hover, :focus-visible) {
+    transform: translateZ(calc(var(--tile) * -0.04));
+    opacity: 0.72;
+}
+
+/* Once the stage has assembled, each screen floats on its own slow, out-of-step cycle. */
+.wall-stage.is-live .wall-card {
+    animation: wall-float calc(5.6s + var(--i) * 0.63s) ease-in-out calc(var(--i) * -1.27s) infinite alternate;
+}
+
+@keyframes wall-float {
+    from {
+        translate: 0 0;
+        rotate: 0deg;
+    }
+
+    to {
+        translate: 0 calc(var(--tile) * -0.02);
+        rotate: -0.35deg;
+    }
 }
 
 .wall-bar {
@@ -838,6 +867,16 @@
     background: rgb(var(--ink) / 0.22);
 }
 
+/* The site's number, at the bar's far end. */
+.wall-index {
+    margin-left: auto;
+    font-family: theme('fontFamily.mono');
+    font-size: calc(var(--tile) * 0.036);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: rgb(var(--accent-ink));
+}
+
 .wall-card img {
     display: block;
     width: 100%;
@@ -847,15 +886,15 @@
     object-position: top;
 }
 
-/* The site's name, shown on hover and focus where the tiles are big enough to carry it. */
+/* The site's name, shown on hover and focus where the screens are big enough to carry it. */
 .wall-label {
     position: absolute;
     inset-inline: 0;
     bottom: 0;
-    padding: 1.4rem 0.7rem 0.5rem;
+    padding: calc(var(--tile) * 0.08) calc(var(--tile) * 0.04) calc(var(--tile) * 0.03);
     background: linear-gradient(transparent, rgb(4 8 20 / 0.86));
     color: #fff;
-    font-size: 0.8rem;
+    font-size: clamp(0.5rem, calc(var(--tile) * 0.05), 0.8rem);
     font-weight: 600;
     line-height: 1.25;
     opacity: 0;
@@ -875,6 +914,595 @@
     .wall-label {
         opacity: 1;
         transform: none;
+    }
+}
+
+/* The lit rings: a halo behind the hero screen and the floor the details panel stands on. */
+.wall-ring {
+    position: absolute;
+    border: 1px solid rgb(var(--accent) / 0.32);
+    border-radius: 50%;
+    box-shadow: 0 0 2.4cqw -0.6cqw rgb(var(--glow) / 0.45), inset 0 0 2.4cqw -0.8cqw rgb(var(--glow) / 0.35);
+    pointer-events: none;
+}
+
+.wall-ring--halo {
+    left: 24.375cqw;
+    top: 1.875cqw;
+    width: 51.25cqw;
+    height: 15cqw;
+}
+
+.wall-ring--floor {
+    left: 26.25cqw;
+    top: 44.875cqw;
+    width: 47.5cqw;
+    height: 9cqw;
+    background: radial-gradient(closest-side, rgb(var(--accent) / 0.14), transparent);
+}
+
+.wall-ring--inner {
+    left: 34.375cqw;
+    top: 46.75cqw;
+    width: 31.25cqw;
+    height: 6cqw;
+    border-color: rgb(var(--glow) / 0.4);
+}
+
+/* Corner captions: small, widely spaced capitals, each block closed by a short rule. */
+.wall-hud {
+    position: absolute;
+    margin: 0;
+    font-size: clamp(0.625rem, 0.68cqw, 0.8125rem);
+    font-weight: 500;
+    line-height: 2;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgb(var(--pencil));
+    pointer-events: none;
+}
+
+.wall-hud strong {
+    font-weight: 600;
+    color: rgb(var(--ink));
+}
+
+.wall-line {
+    display: block;
+}
+
+.wall-hud--title::after,
+.wall-hud--kinds::after,
+.wall-hud--hint::after,
+.wall-hud--reach::after {
+    content: '';
+    display: block;
+    width: 1.6em;
+    height: 1px;
+    margin-top: 0.9em;
+    background: currentColor;
+    opacity: 0.55;
+}
+
+.wall-hud--title {
+    top: 2.6cqw;
+    left: 3.125cqw;
+    font-size: clamp(0.6875rem, 0.92cqw, 0.9375rem);
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    color: rgb(var(--accent-ink));
+}
+
+.wall-hud--kinds {
+    top: 9.4cqw;
+    left: 3.125cqw;
+}
+
+.wall-hud--hint {
+    top: 2.75cqw;
+    right: 3.125cqw;
+}
+
+.wall-hud--proof {
+    bottom: 3.5cqw;
+    left: 3.125cqw;
+}
+
+.wall-hud--reach {
+    bottom: 3.5cqw;
+    right: 3.125cqw;
+}
+
+/* The selected site's number, riding just over the hero screen's top-left corner. */
+.wall-num {
+    position: absolute;
+    left: 35.375cqw;
+    top: 0.6cqw;
+    font-family: theme('fontFamily.mono');
+    font-size: clamp(0.6875rem, 0.95cqw, 1rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    color: rgb(var(--accent-ink));
+    pointer-events: none;
+}
+
+/* The details panel, standing on the floor between the near screens. */
+.wall-focal {
+    position: absolute;
+    left: 35cqw;
+    top: 29.4cqw;
+    width: 30cqw;
+}
+
+/* On a smaller stage the panel keeps the name, the number and the links, and the list of kinds of
+   site (whose type cannot shrink with the stage) gives the screens room. */
+@container (max-width: 72rem) {
+    .wall-focal-blurb {
+        display: none;
+    }
+
+    /* Tighter, so both links still share one row. */
+    .wall-stage .wall-focal {
+        padding: 0.75rem;
+    }
+
+    .wall-actions a {
+        padding-inline: 0.625rem;
+    }
+}
+
+@container (max-width: 75rem) {
+    .wall-hud--kinds {
+        display: none;
+    }
+}
+
+/* Portrait, and screens too short for the wide stage (a phone held sideways): the curated column,
+   its captions on one line each, and the panel below it. */
+@media (max-aspect-ratio: 4/5), (max-width: 639px), (max-height: 499px) {
+    .wall-stage {
+        width: min(100%, 36rem);
+    }
+
+    .wall-frame {
+        aspect-ratio: 5 / 8;
+    }
+
+    .wall-slot {
+        --tile: calc(var(--pw) * 1cqw);
+        left: calc(var(--px) * 1cqw);
+        top: calc(var(--py) * 1cqw);
+        transform-origin: var(--pox) 50%;
+        transform: rotateY(var(--pry));
+    }
+
+    .wall-slot:not([data-portrait]),
+    .wall-ring,
+    .wall-hud--kinds,
+    .wall-hud--proof,
+    .wall-hud--reach,
+    .wall-num {
+        display: none;
+    }
+
+    .wall-hud {
+        font-size: clamp(0.625rem, 2.2cqw, 0.8125rem);
+        letter-spacing: 0.18em;
+    }
+
+    .wall-hud--title {
+        top: 1.5cqw;
+        left: 3cqw;
+        letter-spacing: 0.3em;
+    }
+
+    .wall-hud--hint {
+        top: 1.5cqw;
+        right: 3cqw;
+    }
+
+    .wall-hud--hint .wall-line {
+        display: inline;
+    }
+
+    .wall-hud--hint .wall-line + .wall-line::before {
+        content: ' · ';
+    }
+
+    .wall-focal {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: auto;
+        margin-top: 2rem;
+    }
+}
+
+/* A narrow phone: the title alone heads the column. */
+@container (max-width: 24rem) {
+    .wall-hud--hint {
+        display: none;
+    }
+}
+
+/* ---------- Services ----------
+   Services.jsx: four cards standing on a perspective grid that drifts toward the viewer as the
+   section scrolls. It follows the site theme. Each card carries its own pair of brand colours
+   (--from / --to, RGB) for its top edge, icon tile and number, and a deeper shade (--deep) for
+   ticks and hover colours on light paper; the dark theme uses the bright --to for those. On a mouse or pen the card leans
+   toward the pointer (--rx / --ry) and its layers lift off it to different depths (--z). */
+.services-floor {
+    --floor-alpha: 0.1;
+    position: absolute;
+    inset: auto -25% -6% -25%;
+    height: 62%;
+    background-image:
+        linear-gradient(to right, rgb(var(--accent) / var(--floor-alpha)) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(var(--accent) / var(--floor-alpha)) 1px, transparent 1px);
+    background-size: 64px 64px;
+    transform: perspective(700px) rotateX(66deg);
+    transform-origin: 50% 100%;
+    -webkit-mask-image: radial-gradient(58% 75% at 50% 100%, #000 25%, transparent 72%);
+    mask-image: radial-gradient(58% 75% at 50% 100%, #000 25%, transparent 72%);
+    pointer-events: none;
+}
+
+.services-halo {
+    position: absolute;
+    left: 50%;
+    top: 38%;
+    width: min(70rem, 120%);
+    height: 34rem;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(50% 50% at 35% 50%, rgb(var(--accent) / var(--halo-alpha)), transparent 70%),
+        radial-gradient(45% 45% at 70% 55%, rgb(var(--accent-2) / var(--halo-alpha)), transparent 70%);
+    --halo-alpha: 0.07;
+    pointer-events: none;
+}
+
+.dark .services-floor {
+    --floor-alpha: 0.16;
+}
+
+.dark .services-halo {
+    --halo-alpha: 0.14;
+}
+
+.service-card {
+    --rx: 0deg;
+    --ry: 0deg;
+    --tone: var(--deep);
+    --rest-shadow: 0 22px 44px -30px rgb(15 23 42 / 0.28);
+    --hover-glow: 0.38;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--rule));
+    border-radius: 0.875rem;
+    background:
+        radial-gradient(120% 60% at 0% 0%, rgb(var(--from) / 0.09), transparent 60%),
+        linear-gradient(180deg, rgb(var(--sheet)), rgb(var(--sheet) / 0.82));
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.05),
+        var(--rest-shadow);
+    transform: perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style: preserve-3d;
+    transition:
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s,
+        box-shadow 0.4s;
+}
+
+.dark .service-card {
+    --tone: var(--to);
+    --rest-shadow: 0 24px 48px -30px rgb(0 0 0 / 0.9);
+    --hover-glow: 0.75;
+}
+
+@media (min-width: 640px) {
+    .service-card {
+        padding: 1.75rem;
+    }
+}
+
+.service-edge {
+    position: absolute;
+    inset: -1px 1.25rem auto;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgb(var(--from)), rgb(var(--to)), transparent);
+    box-shadow: 0 0 14px rgb(var(--to) / 0.6);
+    pointer-events: none;
+}
+
+.service-glare {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+
+.service-layer {
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The icon tile: the card's gradient, a navy icon (as on the main button), and a ring that keeps
+   pulsing out from it, each card a beat after the last. */
+.service-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    color: rgb(var(--on-cta));
+    background: linear-gradient(135deg, rgb(var(--from)), rgb(var(--to)));
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.45),
+        inset 0 -8px 16px -8px rgb(0 0 0 / 0.25),
+        0 14px 30px -12px rgb(var(--from) / 0.85);
+}
+
+.service-icon::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 1.25rem;
+    border: 1px solid rgb(var(--to) / 0.5);
+    animation: service-ring 3.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    animation-delay: calc(var(--i, 0) * 0.6s);
+    pointer-events: none;
+}
+
+@keyframes service-ring {
+    0% {
+        transform: scale(0.92);
+        opacity: 0.9;
+    }
+
+    70%,
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+/* The number: large outlined digits that fill with the card's gradient on hover. */
+.service-num {
+    font-family: 'Bricolage Grotesque', 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+    color: transparent;
+    background-image: linear-gradient(135deg, rgb(var(--from)), rgb(var(--to)));
+    background-size: 100% 0%;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px rgb(var(--ink) / 0.22);
+    transition:
+        background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        -webkit-text-stroke-color 0.4s;
+}
+
+.service-check {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.22em;
+    border-radius: 999px;
+    color: rgb(var(--tone));
+    background: rgb(var(--tone) / 0.12);
+    box-shadow: inset 0 0 0 1px rgb(var(--tone) / 0.35);
+}
+
+/* "Seen in": a label in the card's gradient after a short gradient bar, and the projects as pills
+   tinted with the card's colours, each with a gradient dot. Names are in the card's deep shade on
+   light paper and its bright shade on the dark theme. */
+.service-seen {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(var(--tone));
+}
+
+.service-seen::before {
+    content: '';
+    width: 1.25rem;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgb(var(--from)), rgb(var(--to)));
+}
+
+.service-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.5rem 0.3rem 0.7rem;
+    border: 1px solid rgb(var(--tone) / 0.28);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgb(var(--from) / 0.1), rgb(var(--to) / 0.12));
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgb(var(--tone));
+    transition:
+        border-color 0.2s,
+        background-color 0.2s,
+        box-shadow 0.2s,
+        transform 0.2s;
+}
+
+.service-chip-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgb(var(--from)), rgb(var(--to)));
+    box-shadow: 0 0 8px rgb(var(--to) / 0.7);
+}
+
+.service-chip:hover,
+.service-chip:focus-visible {
+    border-color: rgb(var(--tone) / 0.65);
+    background: linear-gradient(135deg, rgb(var(--from) / 0.18), rgb(var(--to) / 0.22));
+    box-shadow: 0 8px 20px -10px rgb(var(--from) / 0.8);
+    transform: translateY(-1px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .service-card:hover {
+        border-color: rgb(var(--from) / 0.5);
+        box-shadow:
+            inset 0 1px 0 rgb(255 255 255 / 0.07),
+            0 36px 70px -34px rgb(var(--from) / var(--hover-glow));
+        transition:
+            transform 0.18s ease-out,
+            border-color 0.4s,
+            box-shadow 0.4s;
+    }
+
+    .service-card:hover .service-glare {
+        opacity: 1;
+    }
+
+    .service-card:hover .service-layer {
+        transform: translateZ(var(--z, 0px));
+    }
+
+    .service-card:hover .service-num {
+        background-size: 100% 100%;
+        -webkit-text-stroke-color: transparent;
+    }
+}
+
+/* The closing invitation: a gradient hairline round a midnight panel, light pooling at its right. */
+.service-cta {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    background:
+        radial-gradient(60% 120% at 100% 50%, rgb(var(--cta-from) / 0.14), transparent 70%) padding-box,
+        linear-gradient(rgb(var(--sheet)), rgb(var(--sheet))) padding-box,
+        linear-gradient(100deg, rgb(var(--accent) / 0.8), rgb(var(--accent-2) / 0.55) 45%, rgb(var(--rule)) 80%) border-box;
+    box-shadow: 0 30px 60px -36px rgb(var(--accent) / 0.6);
+}
+
+@media (min-width: 768px) {
+    .service-cta {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2rem 2.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .service-card,
+    .service-card:hover .service-layer {
+        transform: none;
+    }
+
+    .service-icon::after {
+        display: none;
+    }
+}
+
+/* ---------- How I work ----------
+   Process.jsx: a timeline of four steps. A rail runs down the left on narrow screens and across
+   the top on wide ones; the brand gradient fills it as the steps scroll past, and each step's
+   numbered stop sits on it, ringed in the page colour so the rail seems to pass behind it. */
+.process {
+    position: relative;
+}
+
+.process-rail {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 1.375rem;
+    width: 2px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: rgb(var(--rule));
+    overflow: hidden;
+}
+
+.process-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(var(--accent)), rgb(var(--accent-2)));
+    transform-origin: 50% 0;
+}
+
+.process-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-left: 4rem;
+}
+
+.process-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgb(var(--on-accent));
+    background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-2)));
+    box-shadow:
+        0 0 0 5px rgb(var(--paper)),
+        0 10px 24px -8px rgb(var(--accent) / 0.75);
+}
+
+@media (min-width: 1024px) {
+    /* From the first stop's centre to the last's: the stops sit at each column's left edge, and
+       the columns are a quarter of the row less the 1.25rem gaps. */
+    .process-rail {
+        top: 1.375rem;
+        right: calc(25% - 2.3125rem);
+        bottom: auto;
+        left: 1.375rem;
+        width: auto;
+        height: 2px;
+        transform: translateY(-50%);
+    }
+
+    .process-fill {
+        background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
+        transform-origin: 0 50%;
+    }
+
+    .process-step {
+        padding-top: 4.25rem;
+        padding-left: 0;
     }
 }
 

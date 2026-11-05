@@ -5,7 +5,8 @@ import SectionHeading from './SectionHeading';
 import Container from './ui/Container';
 import BrowserFrame from './ui/BrowserFrame';
 import { buttonClasses } from './ui/buttonStyles';
-import { MOTION_OK, SCRUB, gsap, useScrollMotion } from './motion/scroll';
+import { blurbFor, pad } from './ui/projectText';
+import { MOTION_OK, SCRUB, ScrollTrigger, gsap, useScrollMotion } from './motion/scroll';
 
 /*
  * The home page's projects: the first four as cards on the rim of a huge wheel whose centre lies
@@ -25,11 +26,6 @@ const FEATURED = PROJECTS.slice(0, FEATURED_COUNT);
 // The next few sites, as thumbnails on the "Show all" card.
 const MORE = PROJECTS.slice(FEATURED.length, FEATURED.length + 4);
 
-const pad = (number) => String(number).padStart(2, '0');
-
-// A card's description: the project's teaser, or else the first sentence of its summary.
-const blurbFor = (project) => project.teaser ?? project.summary.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? project.summary;
-
 // The wheel's radius in window widths: larger on narrow screens, where a card is wide relative to
 // the screen, so the arc stays gentle there too.
 const radiusFor = (width) => width * (width < 640 ? 4.2 : width < 1024 ? 3.2 : 2.4);
@@ -41,7 +37,7 @@ const SCREENS_PER_CARD = 0.7;
 const ARC_FITS = `${MOTION_OK} and (min-height: 520px)`;
 
 const useArc = (sectionRef) =>
-    useScrollMotion(sectionRef, () => {
+    useScrollMotion(sectionRef, ({ swipe }) => {
         const section = sectionRef.current;
         const cards = gsap.utils.toArray('[data-arc-card]', section);
         const count = section.querySelector('[data-arc-count]');
@@ -132,13 +128,115 @@ const useArc = (sectionRef) =>
         };
         section.addEventListener('focusin', onFocus);
 
+        // Phones and small tablets: a sideways swipe on the cards turns the wheel as well. The wheel
+        // stays driven by the scroll position, so the swipe moves the page: the cards follow the
+        // finger, and on release the wheel settles on the next or previous card. Vertical swipes
+        // scroll the page as usual, and a tap still opens a card.
+        const stopSwipe = swipe ? attachSwipe({ section, tween, state, first, last, spacing }) : () => {};
+
         return () => {
+            stopSwipe();
             section.removeEventListener('focusin', onFocus);
             section.classList.remove('is-arc');
             count.textContent = '';
             fill.style.transform = '';
         };
-    }, { motion: ARC_FITS });
+    }, { motion: ARC_FITS, swipe: '(pointer: coarse) and (max-width: 1023px)' });
+
+// How far a swipe has to travel, as a share of the card spacing, to move on by one card.
+const SWIPE_STEP = 0.12;
+// A flick this fast (px per ms) moves on by one card however short it is.
+const SWIPE_FLICK = 0.3;
+// Movement under this many pixels is still a tap.
+const SWIPE_SLOP = 8;
+
+/** Attaches the touch swipe to the arc's stage; returns the function that removes it. */
+function attachSwipe({ section, tween, state, first, last, spacing }) {
+    const stage = section.querySelector('.arc-stage');
+
+    // The scroll position at which the wheel stands at `track`.
+    const scrollFor = (track) => {
+        const trigger = tween.scrollTrigger;
+        const start = first();
+        return trigger.start + ((track - start) / (last - start)) * (trigger.end - trigger.start);
+    };
+
+    // Moves the page so the wheel stands at `track` now, skipping the scrub's catch-up, so the
+    // cards keep up with the finger.
+    const follow = (track) => {
+        window.scrollTo({ top: scrollFor(track), behavior: 'instant' });
+        ScrollTrigger.update();
+        tween.scrollTrigger.getTween()?.progress(1);
+    };
+
+    let drag = null;
+    let swallowClick = false;
+
+    const onDown = (event) => {
+        if (event.pointerType !== 'touch' || !event.isPrimary) return;
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, track: state.track, at: performance.now(), moved: false };
+    };
+
+    const onMove = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const dx = event.clientX - drag.x;
+        if (!drag.moved) {
+            // Mostly vertical: leave it to the page's own scrolling.
+            if (Math.abs(dx) < SWIPE_SLOP || Math.abs(dx) < Math.abs(event.clientY - drag.y)) return;
+            drag.moved = true;
+        }
+        follow(gsap.utils.clamp(first(), last, drag.track - dx / spacing()));
+    };
+
+    const onUp = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const { x, track, at, moved } = drag;
+        drag = null;
+        if (!moved) return;
+
+        // The swipe ends a drag, not a tap: the card under the finger must not open.
+        swallowClick = true;
+        window.setTimeout(() => {
+            swallowClick = false;
+        }, 400);
+
+        const dx = event.clientX - x;
+        const from = Math.round(track);
+        const travelled = Math.abs(dx) / spacing();
+        const fast = Math.abs(dx) / Math.max(1, performance.now() - at) > SWIPE_FLICK;
+        let to = Math.round(track - dx / spacing());
+        if (to === from && (fast || travelled > SWIPE_STEP)) to = from + (dx < 0 ? 1 : -1);
+        window.scrollTo({ top: scrollFor(gsap.utils.clamp(0, last, to)), behavior: 'smooth' });
+    };
+
+    const onCancel = () => {
+        drag = null;
+    };
+
+    const onClick = (event) => {
+        if (!swallowClick) return;
+        event.preventDefault();
+        event.stopPropagation();
+        swallowClick = false;
+    };
+
+    // Sideways movement on the stage comes to the script; up and down stays the page's.
+    stage.style.touchAction = 'pan-y';
+    stage.addEventListener('pointerdown', onDown, { passive: true });
+    stage.addEventListener('pointermove', onMove, { passive: true });
+    stage.addEventListener('pointerup', onUp);
+    stage.addEventListener('pointercancel', onCancel);
+    stage.addEventListener('click', onClick, true);
+
+    return () => {
+        stage.style.touchAction = '';
+        stage.removeEventListener('pointerdown', onDown);
+        stage.removeEventListener('pointermove', onMove);
+        stage.removeEventListener('pointerup', onUp);
+        stage.removeEventListener('pointercancel', onCancel);
+        stage.removeEventListener('click', onClick, true);
+    };
+}
 
 const CARD = 'group flex h-full flex-col rounded-2xl border border-rule bg-sheet p-3 shadow-[0_40px_70px_-50px_rgb(var(--ink)/0.6)] transition-[border-color,box-shadow] duration-300 hover:border-accent/60 hover:shadow-[0_40px_80px_-40px_rgb(var(--accent)/0.55)] focus-visible:border-accent sm:p-3.5';
 
@@ -251,11 +349,13 @@ const FeaturedProjects = () => {
             </div>
 
             {/* Where the wheel is: the card in the middle and a bar for the whole stretch. */}
-            <Container className="arc-hud mt-4 items-center gap-4 text-sm text-pencil" aria-hidden="true">
+            {/* On phones its right end stays clear of the back-to-top button (right-4, 2.75rem wide). */}
+            <Container className="arc-hud mt-4 items-center gap-4 pr-16 text-sm text-pencil sm:pr-8 lg:pr-10" aria-hidden="true">
                 <span data-arc-count className="min-w-[6.5rem] font-display font-semibold tabular-nums text-ink" />
                 <span className="relative h-px flex-1 bg-rule">
                     <span data-arc-fill className="absolute inset-0 origin-left scale-x-0 bg-gradient-to-r from-accent to-accent-2" />
                 </span>
+                <span className="sm:hidden">Swipe or scroll</span>
                 <span className="hidden sm:inline">Scroll to move through the projects</span>
             </Container>
         </section>

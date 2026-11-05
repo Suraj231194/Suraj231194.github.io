@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Github } from './ui/BrandIcons';
 import { useTheme } from '../context/ThemeContext';
@@ -8,6 +8,56 @@ import Assemble from './motion/Assemble';
 import Container from './ui/Container';
 import { buttonClasses } from './ui/buttonStyles';
 
+// The images come from free services that can hang for a minute before failing (the streak
+// service has answered 503 after 55 seconds). Once an image is near the screen it gets this
+// long to arrive before the fallback text replaces it.
+const LOAD_TIMEOUT = 12000;
+
+/**
+ * Tracks one live image: `loaded` turns true when it arrives (per src, so a theme change shows
+ * the placeholder again), and `onFail` runs if it has not arrived LOAD_TIMEOUT after it first
+ * comes near the screen. The images are lazy, so the clock starts then, not on page load.
+ */
+const useLiveImage = (src, onFail) => {
+    const ref = useRef(null);
+    const [loadedSrc, setLoadedSrc] = useState(null);
+    const loaded = loadedSrc === src;
+
+    useEffect(() => {
+        const image = ref.current;
+        if (!image || loaded) return undefined;
+        const arrived = () => image.complete && image.naturalWidth > 0;
+        if (arrived()) {
+            setLoadedSrc(src);
+            return undefined;
+        }
+        let timer;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) return;
+                observer.disconnect();
+                timer = window.setTimeout(() => {
+                    if (!arrived()) onFail();
+                }, LOAD_TIMEOUT);
+            },
+            { rootMargin: '600px 0px' }
+        );
+
+        observer.observe(image);
+        return () => {
+            observer.disconnect();
+            window.clearTimeout(timer);
+        };
+    }, [src, loaded, onFail]);
+
+    return { ref, loaded, onLoad: () => setLoadedSrc(src) };
+};
+
+// Shown in an image's place until it arrives.
+const ImagePlaceholder = ({ className = 'inset-3' }) => (
+    <span aria-hidden="true" className={`pointer-events-none absolute rounded bg-rule/40 motion-safe:animate-pulse ${className}`} />
+);
+
 const GithubStats = () => {
     const { theme } = useTheme();
     const [failedImages, setFailedImages] = useState([]);
@@ -16,9 +66,13 @@ const GithubStats = () => {
     const statsTheme = theme === 'dark' ? 'tokyonight' : 'default';
     const calendarColor = theme === 'dark' ? '4084ff' : '1e66f5';
 
-    const markImageAsFailed = (imageName) => {
+    const markImageAsFailed = useCallback((imageName) => {
         setFailedImages((images) => (images.includes(imageName) ? images : [...images, imageName]));
-    };
+    }, []);
+    const streakSrc = `https://streak-stats.demolab.com/?user=${username}&theme=${statsTheme}&hide_border=true&background=00000000`;
+    const calendarSrc = `https://ghchart.rshah.org/${calendarColor}/${username}`;
+    const streak = useLiveImage(streakSrc, useCallback(() => markImageAsFailed('streak'), [markImageAsFailed]));
+    const calendar = useLiveImage(calendarSrc, useCallback(() => markImageAsFailed('calendar'), [markImageAsFailed]));
 
     // Natural height, not a full screen, so no empty band sits above and below the card.
     return (
@@ -51,22 +105,27 @@ const GithubStats = () => {
 
                     {/* minmax(0, ...) tracks stop the 650px calendar from forcing the grid wider than a phone screen. */}
                     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-                        <div className="flex min-h-48 min-w-0 items-center justify-center overflow-hidden rounded-md border border-rule bg-paper p-3">
+                        <div className="relative flex min-h-48 min-w-0 items-center justify-center overflow-hidden rounded-md border border-rule bg-paper p-3">
                             {failedImages.includes('streak') ? (
                                 <p className="px-4 text-center text-sm text-pencil">
                                     The streak preview did not load. The profile shows current activity.
                                 </p>
                             ) : (
-                                <img
-                                    src={`https://streak-stats.demolab.com/?user=${username}&theme=${statsTheme}&hide_border=true&background=00000000`}
-                                    alt={`${username}'s GitHub contribution streak`}
-                                    width="495"
-                                    height="195"
-                                    loading="lazy"
-                                    decoding="async"
-                                    onError={() => markImageAsFailed('streak')}
-                                    className="h-auto w-full"
-                                />
+                                <>
+                                    {!streak.loaded && <ImagePlaceholder />}
+                                    <img
+                                        ref={streak.ref}
+                                        src={streakSrc}
+                                        alt={`${username}'s GitHub contribution streak`}
+                                        width="495"
+                                        height="195"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onLoad={streak.onLoad}
+                                        onError={() => markImageAsFailed('streak')}
+                                        className={`h-auto w-full transition-opacity duration-500 ${streak.loaded ? 'opacity-100' : 'opacity-0'}`}
+                                    />
+                                </>
                             )}
                         </div>
 
@@ -77,19 +136,22 @@ const GithubStats = () => {
                                     The contribution calendar did not load. The profile shows current activity.
                                 </p>
                             ) : (
-                                <div className="overflow-x-auto pb-2" tabIndex="0" aria-label="Scrollable GitHub contribution calendar">
+                                <div className="relative overflow-x-auto pb-2" tabIndex="0" aria-label="Scrollable GitHub contribution calendar">
+                                    {!calendar.loaded && <ImagePlaceholder className="inset-x-0 bottom-2 top-0" />}
                                     <img
-                                        src={`https://ghchart.rshah.org/${calendarColor}/${username}`}
+                                        ref={calendar.ref}
+                                        src={calendarSrc}
                                         alt={`${username}'s GitHub contribution calendar`}
                                         width="663"
                                         height="104"
                                         loading="lazy"
                                         decoding="async"
+                                        onLoad={calendar.onLoad}
                                         onError={() => markImageAsFailed('calendar')}
                                         // The chart draws empty days light grey in either theme. In the dark
                                         // theme inverting it and turning the hue back makes those days dark,
                                         // keeps the blue, and makes busier days brighter, as GitHub's dark theme does.
-                                        className="h-auto min-w-[650px] rounded dark:hue-rotate-180 dark:invert"
+                                        className={`h-auto min-w-[650px] rounded transition-opacity duration-500 dark:hue-rotate-180 dark:invert ${calendar.loaded ? 'opacity-100' : 'opacity-0'}`}
                                     />
                                 </div>
                             )}

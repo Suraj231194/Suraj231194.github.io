@@ -8,7 +8,10 @@ import { buttonClasses } from './ui/buttonStyles';
 import useModal from '../hooks/useModal';
 import Logo from './ui/Logo';
 
-const SECTION_IDS = ['home', ...NAV_LINKS.map((link) => link.id)];
+// Home-page sections without a link of their own mark the link they belong with. The rest
+// (the hero, What I can help with, How I work) mark none, so the bar never names a section
+// the reader has already left.
+const SECTION_LINK = { work: 'projects', education: 'about', 'github-stats': 'about' };
 
 // On the home page the links scroll to their sections. On the other pages (projects, not found)
 // they lead back to the home page's sections, and Projects is the projects page.
@@ -38,11 +41,13 @@ const Navbar = ({ page = 'home' }) => {
     // The section crossing the middle band of the screen is the current one.
     useEffect(() => {
         if (page !== 'home') return undefined;
-        const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
+        // Every section is watched, not only the linked ones, so the mark is the same whichever
+        // way the page is scrolled.
+        const sections = [...document.querySelectorAll('section[id]')];
         const observer = new IntersectionObserver(
             (entries) => {
                 const visible = entries.find((entry) => entry.isIntersecting);
-                if (visible) setActiveSection(visible.target.id);
+                if (visible) setActiveSection(SECTION_LINK[visible.target.id] ?? visible.target.id);
             },
             { rootMargin: '-40% 0px -55% 0px' }
         );
